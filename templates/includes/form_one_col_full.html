@@ -15,7 +15,7 @@ It's a collection of errors that are not related to a specific field.
     
 {% for field in form %}
 <div class="row">
-    <div class="col-sm form-group">
+    <div class="col form-group">
         {{ field.label_tag }}
 
         {% render_field field class=field|input_class %}

@@ -1,13 +1,13 @@
 {% extends '../base.html' %}
 {% load static form_tags %}
 
-{% block title %}Branches{% endblock title %}
+{% block title %}Clients{% endblock title %}
 
 {% block page_title %}
-{% if branch %}
-Edit Branch
+{% if client %}
+Edit Client
 {% else %}
-New Branch    
+New Client    
 {% endif %}
 {% endblock page_title %}
 
@@ -18,10 +18,10 @@ New Branch
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'branch_list' %}">Branches</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'client_list' %}">Clients</a></li>
     <li class="breadcrumb-item active">
         
-        {% if branch %}
+        {% if client %}
             Edit
         {% else %}
             New
@@ -41,18 +41,18 @@ New Branch
 
             <div class="card-body">
                 <div class="col-12">
-                    {% include '../includes/form.html' %}
+                    {% include '../includes/form_one_col.html' %}
                 </div>
             </div>
             
             <div class="card-footer">
                 
-                {% if not branch %}
+                {% if not client %}
                 <button type="submit" class="btn btn-primary" name="another">Save and add another</button>
                 {% endif %}
                     
                 <button type="submit" class="btn btn-success" name="save">Save</button>
-                <a href="{% url 'branch_list' %}" class="btn btn-default">Cancel</a>
+                <a href="{% url 'client_list' %}" class="btn btn-default">Cancel</a>
             </div>
         </form>
     </div>
@@ -62,7 +62,7 @@ New Branch
 {% block js %}
     <script>
         $(document).ready(function() {
-            $("#menu-records").addClass("active")
+            $("#menu-clients").addClass("active")
         })
     </script>
 {% endblock js %}

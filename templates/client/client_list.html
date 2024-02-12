@@ -1,11 +1,11 @@
 {% extends '../base.html' %}
 
-{% block title %}Branches{% endblock title %}
-{% block page_title %}Branch list{% endblock page_title %}
+{% block title %}Clients{% endblock title %}
+{% block page_title %}Client list{% endblock page_title %}
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
-    <li class="breadcrumb-item active">Branches</li>
+    <li class="breadcrumb-item active">Clients</li>
 {% endblock breadcrumb %}
 
 {% block main_content %}
@@ -14,7 +14,7 @@
         <div class="card-header">
             <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                <a href="{% url 'new_branch' %}" class="btn btn-primary">New</a>
+                <a href="{% url 'new_client' %}" class="btn btn-primary">New</a>
             </div>
             </div>
         </div>
@@ -25,11 +25,9 @@
                 <tr>
                     <th class="text-center" width="10%">Action</th>
                     <th class="text-center">Name</th>
-                    <th class="text-center">Address</th>
-                    <th class="text-center">VAT Info</th>
-                    <th class="text-center">Contact Number</th>
-                    <th class="text-center">Days Open</th>
-                    <th class="text-center">Status</th>
+                    <th class="text-center">Mobile Number</th>
+                    <th class="text-center">Phone Number</th>
+                    <th class="text-center">Email</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -44,34 +42,27 @@
         $(document).ready(function() {
             $("#table").DataTable({
                 serverSide: true,
-                sAjaxSource: "{% url 'branch_dtlist' %}", 
+                sAjaxSource: "{% url 'client_dtlist' %}", 
                 columns: [
                     {   
                         data: 0,
                         render: function (data) {
-                            let links = '<a href="branches/' + data + '/edit" title="Edit"><i class="far fa-edit"></i></a>';
+                            let links = '<a href="' + data + '/detail" title="Detail"><i class="far fa-eye"></i></a> | '+
+                                        '<a href="' + data + '/edit" title="Edit"><i class="far fa-edit"></i></a>';
 
                             return links;
                         },
                         className: 'text-center'
                     },
                     {name: "name", data: 1},
-                    {name: "address", data: 2},
-                    {name: "vat", data: 3},
-                    {name: "contact", data: 4},
-                    {name: "days-open", data: 5},
-                    {
-                        name: "status", 
-                        data: 6,
-                        render: function (data) {
-                            return (data && data[0].toUpperCase() + data.slice(1).toLowerCase()) || "";
-                        },
-                    },
+                    {name: "mob_num", data: 2},
+                    {name: "tel_num", data: 3},
+                    {name: "email", data: 4}
                 ],
                 order: [[1, 'asc']],
             });
             
-            $("#menu-records").addClass("active")
+            $("#menu-clients").addClass("active")
         })
     </script>
 {% endblock js %}
