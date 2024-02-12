@@ -1,0 +1,63 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>YourTime Center | {% block title %}{% endblock %}</title>
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <script src="https://kit.fontawesome.com/94b023f88f.js" crossorigin="anonymous"></script>
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
+  <link rel="icon" href="{% static 'img/logo.jpg' %}">
+</head>
+<body class="hold-transition login-page">
+<div class="login-box">
+  <!-- /.login-logo -->
+  {% block card %}
+  <div class="card card-outline card-primary">
+  {% endblock card %}
+    <div class="card-header">
+      <div class="container">
+        <div class="row">
+          <div class="col text-center">
+            <img src="{% static 'img/logo.jpg' %}" alt="Logo" width="100px">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col text-center">
+            <b style="font-size: 24pt;">YourTime Center</b><br>
+            <span style="font-size: 14pt;">Job Order Monitoring</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+        
+        {% block content %}
+        {% endblock content %}
+            
+    </div>
+    <!-- /.card-body -->
+  </div>
+  <!-- /.card -->
+</div>
+<!-- /.login-box -->
+
+<!-- Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>  
+<!-- AdminLTE App -->
+<script src="{% static 'dist/js/adminlte.min.js' %}"></script>
+
+
+{% block js %}
+{% endblock js %}
+  
+</body>
+</html>

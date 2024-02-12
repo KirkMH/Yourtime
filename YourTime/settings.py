@@ -37,7 +37,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
+    'widget_tweaks',
+    'crispy_forms',
+    'bootstrap_modal_forms',
+    'fontawesomefree',  # font-awesome
+    'simple_history',   # for tracking changes in models (audit trail)
+
+    # internally-created apps
+    'access',
 ]
+
+# setting the default pack to be used by crispy-form
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -47,6 +59,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # for tracking changes in models (audit trail)
+    # 'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
 ROOT_URLCONF = 'YourTime.urls'
@@ -54,7 +68,7 @@ ROOT_URLCONF = 'YourTime.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -79,6 +93,23 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# when using mysql
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'django_queens',
+#         'USER': 'root',
+#         'PASSWORD': 'p@$$w0rD',
+#         'HOST': 'localhost'
+#     }
+# }
+
+# # as per instructions from https://www.codementor.io/@jamesezechukwu/how-to-deploy-django-app-on-heroku-dtsee04d4
+# # ----------------------------------------------------------------------------
+# prod_db = dj_database_url.config(conn_max_age=500)
+# DATABASES['default'].update(prod_db)
+# # ----------------------------------------------------------------------------
 
 
 # Password validation
@@ -115,9 +146,32 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
+
+# as per instructions from https://www.codementor.io/@jamesezechukwu/how-to-deploy-django-app-on-heroku-dtsee04d4
+# ----------------------------------------------------------------------------
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATIC_URL = 'static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+
+#  Add configuration for static files storage using whitenoise
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# ----------------------------------------------------------------------------
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# other settings required by check --deploy
+# SECURE_SSL_REDIRECT = True
+CSRF_COOKIE_SECURE = True
+
+# the login route/URL
+LOGIN_URL = 'login'
+# which route to take after logging in
+LOGIN_REDIRECT_URL = 'dashboard'
+# which route to take after logging out
+LOGOUT_REDIRECT_URL = 'login'

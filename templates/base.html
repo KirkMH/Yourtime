@@ -1,0 +1,136 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{% endblock %} | YourTime</title>
+  <link rel="icon" href="{% static 'img/logo.jpg' %}">
+
+  
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Bootstrap 4 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+  <!-- Font Awesome -->
+  <script src="https://kit.fontawesome.com/94b023f88f.js" crossorigin="anonymous"></script>
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
+  <!-- Toastr -->
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+  <!-- Datatable styles -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap4.min.css">
+  <!-- other styles -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  {% block css %}{% endblock css %}
+  {% block extra_header %}{% endblock extra_header %}  
+    
+</head>
+<body class="hold-transition layout-top-nav">
+<div class="wrapper">
+  
+  {% block wrapper %}
+  {% endblock wrapper %}
+    
+
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand-lg navbar-light elevation-2 fixed-top">
+    <!-- Brand Logo -->
+    <a href="{% url 'dashboard' %}" class="brand-link">
+        <img src="{% static 'img/logo.jpg' %}" alt="Logo" class="brand-image my-auto logo">
+        <span class="h3 text-dark">YourTime Center</span>
+    </a>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto">
+        <!-- top navigation menu -->
+        {% include 'includes/topmenu.html' %}
+        <!-- full screen -->
+        <li class="nav-item"> 
+          <a class="nav-link" data-widget="fullscreen" href="#" role="button"> <i class="fas fa-expand-arrows-alt"></i> </a> 
+        </li>
+      </ul> 
+    </nav>
+  </div>
+  <!-- /.navbar -->
+  
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper" style="margin-top: 80px;">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">{% block page_title %}{% endblock page_title %}</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              {% block breadcrumb %}
+              {% endblock breadcrumb %}                  
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    {% block main_content %}
+    {% endblock main_content %}
+        
+  </div>
+  <!-- /.content-wrapper -->
+  <footer class="main-footer no-print pb-2">
+    <div class="float-left">
+      <strong>Copyright &copy; 2024 <a href="#">YourTime Center</a>.</strong><br>
+      <strong>All rights reserved.</strong> 
+      <br>&nbsp;
+    </div>
+  </footer>
+</div>
+<div style="display: none;">
+  {% if messages %}
+    {% for message in messages %}
+      <input type="hidden" class="message_notif" value="{{ message.tags }}:{{ message }}" />
+    {% endfor %}
+  {% endif %}
+</div>
+<!-- ./wrapper -->
+
+<!-- Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>  
+<!-- AdminLTE App -->
+<script src="{% static 'dist/js/adminlte.js' %}"></script>
+<!-- Toastr -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<!-- ChartJS -->
+<script src="https://www.jsdelivr.com/package/npm/chart.js?path=dist" crossorigin="anonymous"></script>  
+
+<script type="text/javascript" src="https://momentjs.com/downloads/moment.min.js"></script>
+
+<!-- DataTables -->
+<script type="text/javascript" src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap4.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.11.5/sorting/formatted-numbers.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+
+<!-- <script src="{% static 'js/menu-selector.js' %}"></script> -->
+<!-- <script src="{% static 'js/component-selector.js' %}"></script> -->
+<!-- <script src="{% static 'js/notif-loader.js' %}"></script> -->
+<script src="{% static 'js/toastr-loader.js' %}"></script>
+
+<script>
+  $(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+</script>
+
+{% block js %}
+{% endblock js %}
+
+</body>
+</html>
