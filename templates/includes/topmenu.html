@@ -39,7 +39,7 @@
             </ul>
         </li>
         <li class="nav-item dropdown my-auto" id="menu-account">
-            <a id="dropdownAccount" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">Account</a>
+            <a id="dropdownAccount" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle"><i class="fa fa-user" aria-hidden="true"></i>&nbsp;&nbsp;{{ request.user.username|title }}</a>
             <ul aria-labelledby="dropdownAccount" class="dropdown-menu border-0 shadow">
                 <li id="menu-credentials">
                     <a class="dropdown-item" href="#">Change Credentials</a>
