@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     # internally-created apps
     'access',
     "client",
+    "customization",
 ]
 
 # setting the default pack to be used by crispy-form
