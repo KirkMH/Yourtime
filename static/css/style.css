@@ -6,5 +6,8 @@
 
 .navbar {
     border-bottom: none !important;
+}
+
+.bg-theme {
     background-color: #333333 !important;
 }
