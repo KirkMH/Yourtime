@@ -48,3 +48,19 @@ class Warranty(models.Model):
     class Meta:
         verbose_name_plural = "Warranties"
         ordering = ['description']
+
+
+class ItemCondition(models.Model):
+    description = models.CharField(
+        _("Description"),
+        max_length=254,
+        null=False, blank=False
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.description.title()
+
+    class Meta:
+        ordering = ['description']
