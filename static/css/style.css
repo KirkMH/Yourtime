@@ -9,5 +9,50 @@
 }
 
 .bg-theme {
-    background-color: #333333 !important;
+    background-color: #434343 !important;
+}
+
+.outline-primary {
+    border-left: 5px solid #007bff;
+    color: #007bff;
+}
+
+.outline-primary .fas {
+    color: #007bff;
+}
+
+.outline-success {
+    border-left: 5px solid #28a745;
+    color: #28a745;
+}
+
+.outline-success .fas {
+    color: #28a745;
+}
+
+.outline-danger {
+    border-left: 5px solid #dc3545;
+    color: #dc3545;
+}
+
+.outline-danger .fas {
+    color: #dc3545;
+}
+
+.outline-warning {
+    border-left: 5px solid #c95d04;
+    color: #c95d04;
+}
+
+.outline-warning .fas {
+    color: #c95d04;
+}
+
+.outline-info {
+    border-left: 5px solid #17a2b8;
+    color: #17a2b8;
+}
+
+.outline-info .fas {
+    color: #17a2b8;
 }
