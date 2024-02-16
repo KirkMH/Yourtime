@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'access',
     "client",
     "customization",
+    "joborder",
 ]
 
 # setting the default pack to be used by crispy-form
