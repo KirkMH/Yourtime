@@ -1,0 +1,217 @@
+{% extends '../base.html' %}
+{% load static %}
+{% load humanize %}
+{% load form_tags %}
+
+{% block title %}Job Orders{% endblock title %}
+{% block page_title %}Job Order details{% endblock page_title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'jo_list' %}">Job Orders</a></li>
+    <li class="breadcrumb-item active">Details</li>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+    <div class="card mt-4 ml-4">
+        <div class="card-header row">
+            <div class="col-lg-10">
+                <h2>{{ joborder.client.name }}</h2>
+                <h6 class="card-subtitle mb-2 text-muted">{{ joborder.client.address }}</h6>
+                <h6 class="card-subtitle mb-2 text-muted">{{ joborder.client.get_contact_info }}</h6>
+                <h6 class="card-subtitle mb-2 text-muted">Email: <a href="mailto:{{ joborder.client.email }}">{{ joborder.client.email }}</a></h6>
+            </div>
+            <div class="col-lg-2">
+                <button class="btn btn-block btn-primary float-right">Generate Receiving Report</button>
+                <button class="btn btn-block btn-success float-right">Generate Releasing Report</button>
+            </div>
+        </div>
+        <div class="card-body p-2">
+            <div class="row">
+                <div class="col-lg-4">
+                    <!-- WATCH DETAIL CARD -->
+                    <div class="card card-outline card-primary mt-4 ml-4">
+                        <div class="card-header">
+                            <h4>Watch Details</h4>
+                        </div>
+                        <div class="card-body">
+                            {% if joborder.watch %}
+                            <div class="row">
+                                <div class="col-lg-3 col-sm-6">
+                                    <p class="card-text text-muted">Article:</p>
+                                </div>
+                                <div class="col-lg-3 col-sm-6">
+                                    <p class="card-text">{{ joborder.watch.article }}</p>
+                                </div>
+                            </div>
+                            {% else %}
+                            <i>Please add watch details.</i>
+                            {% endif %}
+                        </div>
+                        <div class="card-footer">
+                            {% if joborder.watch %}
+                                <a href="#" class="btn btn-warning card-link">Edit</a>
+                            {% else %}
+                                <a href="#" class="btn btn-primary card-link">Add Watch</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <!-- END OF WATCH DETAIL CARD -->
+                    
+                    <!-- JOB ORDER DETAILS -->
+                    <div class="card card-outline card-primary mt-4 ml-4">
+                        <div class="card-header">
+                            <h4>Job Order Details</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <p class="card-text text-muted">Repair Work:</p>
+                                </div>
+                                <div class="col-lg-6">
+                                    <p class="card-text">{{ joborder.repair_work }}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <p class="card-text text-muted">Item Condition:</p>
+                                </div>
+                                <div class="col-lg-6">
+                                    <p class="card-text">{{ joborder.item_condition }}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <p class="card-text text-muted">Assigned Technician:</p>
+                                </div>
+                                <div class="col-lg-6">
+                                    <p class="card-text">{{ joborder.assigned_technician }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <a href="#" class="btn btn-warning card-link">Edit</a>
+                        </div>
+                    </div>
+                    <!-- END OF JOB ORDER DETAILS -->
+                </div>
+
+                <div class="col-lg-5">
+                    <!-- ARRIVAL PHOTOS -->
+                    <div class="card card-outline card-primary mt-4 ml-4">
+                        <div class="card-header">
+                            <h4>Arrival Photos</h4>
+                        </div>
+                        <div class="card-body">
+                            <!-- Slick Carousel-->
+                        </div>
+                        <div class="card-footer">
+                            <a href="#" class="btn btn-primary card-link">Add Photo</a>
+                        </div>
+                    </div>
+                    <!-- END OF ARRIVAL PHOTOS -->
+                    
+                    <!-- RELEASE PHOTOS -->
+                    <div class="card card-outline card-primary mt-4 ml-4">
+                        <div class="card-header">
+                            <h4>Release Photos</h4>
+                        </div>
+                        <div class="card-body">
+                            <!-- Slick Carousel-->
+                        </div>
+                        <div class="card-footer">
+                            <a href="#" class="btn btn-primary card-link">Add Photo</a>
+                        </div>
+                    </div>
+                    <!-- END OF RELEASE PHOTOS -->
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="card card-outline card-primary mt-4 ml-4">
+                        <div class="card-header">
+                            <h4>Status</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <h5 class="text-muted">Current Status:</h5>
+                                <h4>{{ joborder.current_status }}</h3>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div>
+                                <h5 class="text-muted">Update to:</h5>
+                                <form id="update-status-form" method="POST">
+                                    {% csrf_token %}
+                                    <select name="status" class="form-control">
+                                        <option value="1">For Repair</option>
+                                        <option value="2">For Releasing</option>
+                                        <option value="3">Released</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-primary mt-2">Update</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Button card with tabs -->
+
+            <div class="card card-outline card-primary mt-4 ml-4">
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="tab1-tab" data-toggle="tab" href="#tab1" role="tab" aria-controls="tab1" aria-selected="true">Estimate</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="tab2-tab" data-toggle="tab" href="#tab2" role="tab" aria-controls="tab2" aria-selected="false">Assessments</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="tab3-tab" data-toggle="tab" href="#tab3" role="tab" aria-controls="tab3" aria-selected="false">Logs</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="tab4-tab" data-toggle="tab" href="#tab4" role="tab" aria-controls="tab4" aria-selected="false">Charges</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="tab5-tab" data-toggle="tab" href="#tab5" role="tab" aria-controls="tab5" aria-selected="false">Payments</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
+                            <h5 class="card-title">Tab 1 Content</h5>
+                            <p class="card-text">This is the content of Tab 1.</p>
+                        </div>
+                        <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
+                            <h5 class="card-title">Tab 2 Content</h5>
+                            <p class="card-text">This is the content of Tab 2.</p>
+                        </div>
+                        <div class="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-tab">
+                            <h5 class="card-title">Tab 3 Content</h5>
+                            <p class="card-text">This is the content of Tab 3.</p>
+                        </div>
+                        <div class="tab-pane fade" id="tab4" role="tabpanel" aria-labelledby="tab4-tab">
+                            <h5 class="card-title">Tab 4 Content</h5>
+                            <p class="card-text">This is the content of Tab 4.</p>
+                        </div>
+                        <div class="tab-pane fade" id="tab5" role="tabpanel" aria-labelledby="tab5-tab">
+                            <h5 class="card-title">Tab 5 Content</h5>
+                            <p class="card-text">This is the content of Tab 5.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock main_content %}
+
+
+{% block js %}
+    <script>
+        $(document).ready(function() {
+            $("#menu-jo").addClass("active")
+        })
+    </script>
+{% endblock js %}

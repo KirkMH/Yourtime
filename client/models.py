@@ -27,3 +27,13 @@ class Client(models.Model):
 
     def __str__(self):
         return self.name.title()
+
+    def get_contact_info(self):
+        contact = 'Contact Information: '
+        if self.mob_num and self.tel_num:
+            contact += f'{self.mob_num} | {self.tel_num}'
+        elif self.mob_num:
+            contact += f'{self.mob_num}'
+        elif self.tel_num:
+            contact += f'{self.tel_num}'
+        return contact
