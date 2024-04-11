@@ -24,4 +24,5 @@ urlpatterns = [
     path('', include('access.urls')),
     path('client/', include('client.urls')),
     path('joborder/', include('joborder.urls')),
+    path('settings/', include('customization.urls')),
 ]

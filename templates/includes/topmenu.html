@@ -28,13 +28,16 @@
                     <a class="dropdown-item" href="#">Users</a>
                 </li>
                 <li id="menu-repair-works">
-                    <a class="dropdown-item" href="#">Repair Works</a>
+                    <a class="dropdown-item" href="{% url 'setting_list' %}?type=works">Repair Works</a>
                 </li>
                 <li id="menu-item-conditions">
-                    <a class="dropdown-item" href="#">Item Conditions</a>
+                    <a class="dropdown-item" href="{% url 'setting_list' %}?type=conditions">Item Conditions</a>
                 </li>
                 <li id="menu-payment-modes">
-                    <a class="dropdown-item" href="#">Modes of Payment</a>
+                    <a class="dropdown-item" href="{% url 'setting_list' %}?type=payments">Modes of Payment</a>
+                </li>
+                <li id="menu-warranties">
+                    <a class="dropdown-item" href="{% url 'setting_list' %}?type=warranties">Warranties</a>
                 </li>
             </ul>
         </li>

@@ -7,10 +7,6 @@ a {
     color: var(--primary-color);
 }
 
-.primary-color {
-    color: var(--primary-color);
-}
-
 .logo {
     border-radius: 50%;
     height: 64px;
@@ -48,6 +44,11 @@ a {
 .btn-outline-secondary-color {
     border-color: var(--secondary-color);
     color: var(--secondary-color);
+}
+
+.btn-primary-color {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
 }
 
 .outline-primary {
