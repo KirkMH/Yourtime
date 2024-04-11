@@ -1,3 +1,16 @@
+body {
+    --primary-color: #800080;
+    --secondary-color: #ADFF2F;
+}
+
+a {
+    color: var(--primary-color);
+}
+
+.primary-color {
+    color: var(--primary-color);
+}
+
 .logo {
     border-radius: 50%;
     height: 64px;
@@ -9,7 +22,32 @@
 }
 
 .bg-theme {
-    background-color: #434343 !important;
+    background-color: var(--primary-color) !important;
+}
+
+.nav-link.active {
+    color: var(--secondary-color) !important;
+    text-decoration: overline;
+    background-color: var(--primary-color) !important;
+}
+
+.card .nav-link {
+    color: gray;
+}
+
+.card .nav-link.active {
+    background-color: transparent !important;
+    color: var(--primary-color) !important;
+    text-decoration: overline !important;
+}
+
+.card.card-primary-color {
+    border-top: 3px solid var(--primary-color);
+}
+
+.btn-outline-secondary-color {
+    border-color: var(--secondary-color);
+    color: var(--secondary-color);
 }
 
 .outline-primary {

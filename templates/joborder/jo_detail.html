@@ -22,7 +22,7 @@
                 <h6 class="card-subtitle mb-2 text-muted">Email: <a href="mailto:{{ joborder.client.email }}">{{ joborder.client.email }}</a></h6>
             </div>
             <div class="col-lg-2">
-                <button class="btn btn-block btn-primary float-right">Generate Receiving Report</button>
+                <button class="btn btn-block btn-success float-right">Generate Receiving Report</button>
                 <button class="btn btn-block btn-success float-right">Generate Releasing Report</button>
             </div>
         </div>
@@ -30,7 +30,7 @@
             <div class="row">
                 <div class="col-lg-4">
                     <!-- WATCH DETAIL CARD -->
-                    <div class="card card-outline card-primary mt-4 ml-4">
+                    <div class="card card-outline card-primary-color mt-4 ml-4">
                         <div class="card-header">
                             <h4>Watch Details</h4>
                         </div>
@@ -52,14 +52,14 @@
                             {% if joborder.watch %}
                                 <a href="#" class="btn btn-warning card-link">Edit</a>
                             {% else %}
-                                <a href="#" class="btn btn-primary card-link">Add Watch</a>
+                                <a href="#" class="btn btn-outline-secondary card-link">Add Watch</a>
                             {% endif %}
                         </div>
                     </div>
                     <!-- END OF WATCH DETAIL CARD -->
                     
                     <!-- JOB ORDER DETAILS -->
-                    <div class="card card-outline card-primary mt-4 ml-4">
+                    <div class="card card-outline card-primary-color mt-4 ml-4">
                         <div class="card-header">
                             <h4>Job Order Details</h4>
                         </div>
@@ -90,7 +90,7 @@
                             </div>
                         </div>
                         <div class="card-footer">
-                            <a href="#" class="btn btn-warning card-link">Edit</a>
+                            <a href="#" class="btn btn-outline-success card-link">Edit</a>
                         </div>
                     </div>
                     <!-- END OF JOB ORDER DETAILS -->
@@ -98,7 +98,7 @@
 
                 <div class="col-lg-5">
                     <!-- ARRIVAL PHOTOS -->
-                    <div class="card card-outline card-primary mt-4 ml-4">
+                    <div class="card card-outline card-primary-color mt-4 ml-4">
                         <div class="card-header">
                             <h4>Arrival Photos</h4>
                         </div>
@@ -106,13 +106,13 @@
                             <!-- Slick Carousel-->
                         </div>
                         <div class="card-footer">
-                            <a href="#" class="btn btn-primary card-link">Add Photo</a>
+                            <a href="#" class="btn  btn-outline-secondary card-link">Add Photo</a>
                         </div>
                     </div>
                     <!-- END OF ARRIVAL PHOTOS -->
                     
                     <!-- RELEASE PHOTOS -->
-                    <div class="card card-outline card-primary mt-4 ml-4">
+                    <div class="card card-outline card-primary-color mt-4 ml-4">
                         <div class="card-header">
                             <h4>Release Photos</h4>
                         </div>
@@ -120,14 +120,14 @@
                             <!-- Slick Carousel-->
                         </div>
                         <div class="card-footer">
-                            <a href="#" class="btn btn-primary card-link">Add Photo</a>
+                            <a href="#" class="btn  btn-outline-secondary card-link">Add Photo</a>
                         </div>
                     </div>
                     <!-- END OF RELEASE PHOTOS -->
                 </div>
 
                 <div class="col-lg-3">
-                    <div class="card card-outline card-primary mt-4 ml-4">
+                    <div class="card card-outline card-primary-color mt-4 ml-4">
                         <div class="card-header">
                             <h4>Status</h4>
                         </div>
@@ -147,7 +147,7 @@
                                         <option value="2">For Releasing</option>
                                         <option value="3">Released</option>
                                     </select>
-                                    <button type="submit" class="btn btn-primary mt-2">Update</button>
+                                    <button type="submit" class="btn btn-outline-success mt-2">Update</button>
                                 </form>
                             </div>
                         </div>
@@ -157,7 +157,7 @@
 
             <!-- Button card with tabs -->
 
-            <div class="card card-outline card-primary mt-4 ml-4">
+            <div class="card card-outline card-primary-color mt-4 ml-4">
                 <div class="card-header">
                     <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
                         <li class="nav-item">
