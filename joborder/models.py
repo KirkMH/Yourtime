@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
 
 from client.models import Client
 from access.models import Employee
@@ -7,7 +8,8 @@ from customization.models import (
     RepairWork,
     ModeOfPayment,
     Warranty,
-    ItemCondition
+    ItemCondition,
+    WatchCaliber
 )
 
 JO_STATUS = [
@@ -25,23 +27,6 @@ JO_STATUS = [
     ('IN-HOUSE', 'In House'),
     ('FINISHED', 'Finished')
 ]
-
-
-class WatchCaliber(models.Model):
-    caliber = models.CharField(
-        _("Caliber"),
-        max_length=100,
-        null=False, blank=False
-    )
-    service_charge = models.DecimalField(
-        _("Service Charge"),
-        max_digits=10,
-        decimal_places=2,
-        default=0
-    )
-
-    def __str__(self):
-        return self.caliber
 
 
 class Articles(models.Manager):
@@ -152,7 +137,7 @@ class JobOrder(models.Model):
         related_name="client_jo",
         on_delete=models.CASCADE
     )
-    watch = models.ForeignKey(
+    watch = models.OneToOneField(
         Watch,
         verbose_name=_("Watch"),
         related_name="watch_jo",
@@ -206,6 +191,12 @@ class JobOrder(models.Model):
         decimal_places=2,
         default=0,
         null=True, blank=True
+    )
+    created_at = models.DateField(auto_now_add=True)
+    promise_date = models.DateField(
+        _("Promise Date"),
+        null=True, blank=True,
+        default=timezone.now
     )
 
 

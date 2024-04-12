@@ -9,13 +9,13 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.http import Http404, QueryDict
 
-from .models import RepairWork, ModeOfPayment, ItemCondition, Warranty
+from .models import RepairWork, ModeOfPayment, ItemCondition, Warranty, WatchCaliber
 from .forms import create_setting_form, update_setting_form
 
 
 valid_types = [('works', 'Repair Works'), ('conditions',
                                            'Item Conditions'), ('payments', 'Modes of Payment'),
-               ('warranties', 'Warranties')]
+               ('warranties', 'Warranties'), ('calibers', 'Watch Calibers')]
 
 
 def get_pair(type):
@@ -32,6 +32,8 @@ def get_model(type):
         return ModeOfPayment
     elif type == 'warranties':
         return Warranty
+    elif type == 'calibers':
+        return WatchCaliber
     else:
         return None
 

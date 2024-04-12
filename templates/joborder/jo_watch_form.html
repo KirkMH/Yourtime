@@ -1,0 +1,50 @@
+{% extends '../base.html' %}
+{% load static form_tags %}
+
+{% block title %}Watch Details{% endblock title %}
+{% block page_title %}Watch Details{% endblock page_title %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/asterisk_on_required.css' %}">
+{% endblock css %}
+    
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'jo_list' %}">Job Orders</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'jo_details' jo.pk %}">JO # {{ jo.pk|stringformat:'08d' }}</a></li>
+    <li class="breadcrumb-item active">Watch Details</li>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+    <div class="card m-4">
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            <div class="card-header">
+                <h3>{{ jo.client }}'s watch details for JO # {{ jo.pk|stringformat:"08d" }}</h3>
+            </div>
+
+            <div class="card-body">
+                <span>Please fill in all the fields marked with an <label class="required">asterisk</label>.</h3><br />
+                <div class="col-12">
+                    {% include '../includes/form_one_col.html' %}
+                </div>
+            </div>
+            
+            <div class="card-footer">
+                <button type="submit" class="btn btn-secondary" name="save">Save</button>
+                <a href="{% url 'jo_details' jo.pk %}" class="btn btn-default">Cancel</a>
+            </div>
+        </form>
+    </div>
+{% endblock main_content %}
+
+
+{% block js %}
+    <script>
+        $(document).ready(function() {
+            $("#menu-jo").addClass("active")
+        })
+    </script>
+{% endblock js %}

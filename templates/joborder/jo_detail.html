@@ -13,7 +13,7 @@
 {% endblock breadcrumb %}
 
 {% block main_content %}
-    <div class="card mt-4 ml-4">
+    <div class="card m-4">
         <div class="card-header row">
             <div class="col-lg-10">
                 <h2>{{ joborder.client.name }}</h2>
@@ -37,11 +37,35 @@
                         <div class="card-body">
                             {% if joborder.watch %}
                             <div class="row">
-                                <div class="col-lg-3 col-sm-6">
+                                <div class="col-lg-5">
                                     <p class="card-text text-muted">Article:</p>
                                 </div>
-                                <div class="col-lg-3 col-sm-6">
+                                <div class="col-lg-7">
                                     <p class="card-text">{{ joborder.watch.article }}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-5">
+                                    <p class="card-text text-muted">Serial Number:</p>
+                                </div>
+                                <div class="col-lg-7">
+                                    <p class="card-text">{{ joborder.watch.serial_number }}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-5">
+                                    <p class="card-text text-muted">Watch Movement:</p>
+                                </div>
+                                <div class="col-lg-7">
+                                    <p class="card-text">{{ joborder.watch.watch_movement }}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-5">
+                                    <p class="card-text text-muted">Movement Caliber:</p>
+                                </div>
+                                <div class="col-lg-7">
+                                    <p class="card-text">{{ joborder.watch.movement_caliber }}</p>
                                 </div>
                             </div>
                             {% else %}
@@ -50,9 +74,9 @@
                         </div>
                         <div class="card-footer">
                             {% if joborder.watch %}
-                                <a href="#" class="btn btn-warning card-link">Edit</a>
+                                <a href="{% url 'jo_watch_edit' joborder.watch.pk %}" class="btn btn-warning card-link">Edit</a>
                             {% else %}
-                                <a href="#" class="btn btn-outline-secondary card-link">Add Watch</a>
+                                <a href="{% url 'jo_watch_add' joborder.pk %}" class="btn btn-outline-secondary card-link">Add Watch</a>
                             {% endif %}
                         </div>
                     </div>
@@ -65,26 +89,26 @@
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-lg-6">
+                                <div class="col-lg-5">
                                     <p class="card-text text-muted">Repair Work:</p>
                                 </div>
-                                <div class="col-lg-6">
+                                <div class="col-lg-7">
                                     <p class="card-text">{{ joborder.repair_work }}</p>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-6">
+                                <div class="col-lg-5">
                                     <p class="card-text text-muted">Item Condition:</p>
                                 </div>
-                                <div class="col-lg-6">
+                                <div class="col-lg-7">
                                     <p class="card-text">{{ joborder.item_condition }}</p>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-6">
+                                <div class="col-lg-5">
                                     <p class="card-text text-muted">Assigned Technician:</p>
                                 </div>
-                                <div class="col-lg-6">
+                                <div class="col-lg-7">
                                     <p class="card-text">{{ joborder.assigned_technician }}</p>
                                 </div>
                             </div>
