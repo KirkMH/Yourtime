@@ -9,7 +9,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 
 from .models import JobOrder, Watch
-from .forms import WatchForm
+from .forms import WatchForm, JobOrderForm
 from client.models import Client
 
 
@@ -79,19 +79,33 @@ class JobOrderWatchCreateView(CreateView):
 
 
 @method_decorator(login_required, name='dispatch')
-class JobOrderWatchUpdateView(UpdateView, SuccessMessageMixin):
-    model = Watch
-    form_class = WatchForm
-    context_object_name = 'watch'
+class JobOrderDetailUpdateView(UpdateView, SuccessMessageMixin):
     pk_url_kwarg = 'pk'
-    template_name = "joborder/jo_watch_form.html"
-    success_message = "The watch details was updated successfully."
+    template_name = "joborder/jo_detail_form.html"
+    success_message = "The details was updated successfully."
+
+    def get_model(self):
+        type = self.request.GET.get('type')
+        return Watch if type == 'watch' else JobOrder
+
+    def get_form_class(self):
+        type = self.request.GET.get('type')
+        return WatchForm if type == 'watch' else JobOrderForm
+
+    def get_queryset(self):
+        model = self.get_model()
+        return model.objects.all()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['jo'] = self.get_object().watch_jo
-        print(f'joborder: {context["jo"]}.pk')
+        type = self.request.GET.get('type')
+        context['type_name'] = 'Watch Details' if type == 'watch' else 'Job Order Details'
+        context['jo'] = self.get_object()
+        if type == 'watch':
+            context['jo'] = context['jo'].watch_jo
         return context
 
     def get_success_url(self):
-        return reverse('jo_details', kwargs={'pk': self.get_object().watch_jo.pk})
+        type = self.request.GET.get('type')
+        pk = self.get_object().watch_jo.pk if type == 'watch' else self.get_object().pk
+        return reverse('jo_details', kwargs={'pk': pk})

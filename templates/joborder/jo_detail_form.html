@@ -1,8 +1,8 @@
 {% extends '../base.html' %}
 {% load static form_tags %}
 
-{% block title %}Watch Details{% endblock title %}
-{% block page_title %}Watch Details{% endblock page_title %}
+{% block title %}{{ type_name }}{% endblock title %}
+{% block page_title %}{{ type_name }}{% endblock page_title %}
 
 {% block css %}
   <link rel="stylesheet" href="{% static 'css/asterisk_on_required.css' %}">
@@ -13,7 +13,7 @@
     <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
     <li class="breadcrumb-item"><a href="{% url 'jo_list' %}">Job Orders</a></li>
     <li class="breadcrumb-item"><a href="{% url 'jo_details' jo.pk %}">JO # {{ jo.pk|stringformat:'08d' }}</a></li>
-    <li class="breadcrumb-item active">Watch Details</li>
+    <li class="breadcrumb-item active">{{ type_name }}</li>
 {% endblock breadcrumb %}
 
 {% block main_content %}
@@ -22,7 +22,7 @@
             {% csrf_token %}
 
             <div class="card-header">
-                <h3>{{ jo.client }}'s watch details for JO # {{ jo.pk|stringformat:"08d" }}</h3>
+                <h3>{{ jo.client }}'s {{ type_name }} for JO # {{ jo.pk|stringformat:"08d" }}</h3>
             </div>
 
             <div class="card-body">

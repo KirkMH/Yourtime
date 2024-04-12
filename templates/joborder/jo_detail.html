@@ -29,6 +29,50 @@
         <div class="card-body p-2">
             <div class="row">
                 <div class="col-lg-4">
+                    <!-- JOB ORDER DETAILS -->
+                    <div class="card card-outline card-primary-color mt-4 ml-4">
+                        <div class="card-header">
+                            <h4>Job Order Details</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-5">
+                                    <p class="card-text text-muted">Repair Work:</p>
+                                </div>
+                                <div class="col-lg-7">
+                                    <p class="card-text">{{ joborder.repair_work }}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-5">
+                                    <p class="card-text text-muted">Item Condition:</p>
+                                </div>
+                                <div class="col-lg-7">
+                                    <p class="card-text">{{ joborder.item_condition }}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-5">
+                                    <p class="card-text text-muted">Assigned Technician:</p>
+                                </div>
+                                <div class="col-lg-7">
+                                    <p class="card-text">{{ joborder.assigned_technician }}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-5">
+                                    <p class="card-text text-muted">Promised Date:</p>
+                                </div>
+                                <div class="col-lg-7">
+                                    <p class="card-text">{{ joborder.promise_date|naturalday }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <a href="{% url 'jo_detail_edit' joborder.pk %}?type=jo" class="btn btn-outline-success card-link">Edit</a>
+                        </div>
+                    </div>
+                    <!-- END OF JOB ORDER DETAILS -->
                     <!-- WATCH DETAIL CARD -->
                     <div class="card card-outline card-primary-color mt-4 ml-4">
                         <div class="card-header">
@@ -74,50 +118,13 @@
                         </div>
                         <div class="card-footer">
                             {% if joborder.watch %}
-                                <a href="{% url 'jo_watch_edit' joborder.watch.pk %}" class="btn btn-warning card-link">Edit</a>
+                                <a href="{% url 'jo_detail_edit' joborder.watch.pk %}?type=watch" class="btn btn-outline-success card-link">Edit</a>
                             {% else %}
                                 <a href="{% url 'jo_watch_add' joborder.pk %}" class="btn btn-outline-secondary card-link">Add Watch</a>
                             {% endif %}
                         </div>
                     </div>
                     <!-- END OF WATCH DETAIL CARD -->
-                    
-                    <!-- JOB ORDER DETAILS -->
-                    <div class="card card-outline card-primary-color mt-4 ml-4">
-                        <div class="card-header">
-                            <h4>Job Order Details</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-5">
-                                    <p class="card-text text-muted">Repair Work:</p>
-                                </div>
-                                <div class="col-lg-7">
-                                    <p class="card-text">{{ joborder.repair_work }}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-5">
-                                    <p class="card-text text-muted">Item Condition:</p>
-                                </div>
-                                <div class="col-lg-7">
-                                    <p class="card-text">{{ joborder.item_condition }}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-5">
-                                    <p class="card-text text-muted">Assigned Technician:</p>
-                                </div>
-                                <div class="col-lg-7">
-                                    <p class="card-text">{{ joborder.assigned_technician }}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <a href="#" class="btn btn-outline-success card-link">Edit</a>
-                        </div>
-                    </div>
-                    <!-- END OF JOB ORDER DETAILS -->
                 </div>
 
                 <div class="col-lg-5">

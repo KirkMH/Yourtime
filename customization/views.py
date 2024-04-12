@@ -114,12 +114,10 @@ class SettingUpdateView(SuccessMessageMixin, UpdateView):
 
     def get_model(self):
         type = self.request.GET.get('type')
-        print('Type:', type)
         return get_model(type)
 
     def get_form_class(self):
         model = self.get_model()
-        print('Model:', model)
         return update_setting_form(model)
 
     def get_queryset(self):

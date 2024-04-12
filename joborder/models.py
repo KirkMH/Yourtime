@@ -307,7 +307,7 @@ class Charge(models.Model):
 
 
 class WorkToBeDone(models.Model):
-    job_order = models.ForeignKey(
+    job_order = models.OneToOneField(
         JobOrder,
         verbose_name=_("Job Order"),
         related_name="work_to_be_done_jo",
@@ -343,7 +343,7 @@ class WorkToBeDone(models.Model):
 
 
 class Estimate(models.Model):
-    job_order = models.ForeignKey(
+    job_order = models.OneToOneField(
         JobOrder,
         verbose_name=_("Job Order"),
         related_name="estimate_jo",
@@ -366,10 +366,6 @@ class Estimate(models.Model):
         max_digits=10,
         decimal_places=2,
         default=0
-    )
-    date_promised = models.DateField(
-        _("Date Promised"),
-        null=True, blank=True
     )
 
 
