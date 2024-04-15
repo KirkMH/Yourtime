@@ -211,8 +211,32 @@
                 <div class="card-body">
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
-                            <h5 class="card-title">Tab 1 Content</h5>
-                            <p class="card-text">This is the content of Tab 1.</p>
+                            <h5>Job Order Estimate</h5>
+                            <form id="estimate-form" method="POST" action="{% url 'jo_save_estimate' joborder.pk %}">
+                                {% csrf_token %}
+                                <div class="row mt-4">
+                                    <div class="col-lg-5">
+                                        <div class="row form-group">
+                                            <div class="col-lg-4"><label for="serviceFee">Service Fee:</label></div>
+                                            <div class="col-lg-8"><input type="number" name="serviceFee" id="serviceFee" class="form-control text-right" value="{{ joborder.estimate_jo.service_fee }}" min="0"></div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col-lg-4"><label for="parts">Parts:</label></div>
+                                            <div class="col-lg-8"><input type="number" name="parts" id="parts" class="form-control text-right" value="{{ joborder.estimate_jo.parts }}" min="0"></div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col-lg-4"><label for="total">Total Estimate:</label></div>
+                                            <div class="col-lg-8"><input type="number" name="total" id="total" class="form-control text-right" disabled></div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-4"></div>
+                                            <div class="col-lg-8 text-right">
+                                                <button type="submit" class="btn btn-outline-success">Update</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                         <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
                             <h5 class="card-title">Tab 2 Content</h5>
@@ -240,6 +264,7 @@
 
 
 {% block js %}
+    <script src="{% static 'js/joborder.js' %}"></script>
     <script>
         $(document).ready(function() {
             $("#menu-jo").addClass("active")

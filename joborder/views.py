@@ -8,7 +8,7 @@ from django.views.generic import CreateView, UpdateView, DetailView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 
-from .models import JobOrder, Watch
+from .models import JobOrder, Watch, Estimate
 from .forms import WatchForm, JobOrderForm
 from client.models import Client
 
@@ -75,6 +75,17 @@ class JobOrderWatchCreateView(CreateView):
         watch.save()
         jo.watch = watch
         jo.save()
+
+        estimate = None
+        if Estimate.objects.filter(job_order=jo).exists():
+            estimate = jo.estimate_jo
+        else:
+            estimate = Estimate.objects.create(job_order=jo)
+        if watch.movement_caliber and watch.movement_caliber.service_charge:
+            estimate.service_fee = watch.movement_caliber.service_charge
+            estimate.total = estimate.parts + estimate.service_fee
+            estimate.save()
+
         return super().form_valid(form)
 
 
@@ -105,7 +116,44 @@ class JobOrderDetailUpdateView(UpdateView, SuccessMessageMixin):
             context['jo'] = context['jo'].watch_jo
         return context
 
+    def form_valid(self, form):
+        type = self.request.GET.get('type')
+        if type == 'watch':
+            estimate = None
+            watch = self.get_object()
+            jo = watch.watch_jo
+            if Estimate.objects.filter(job_order=jo).exists():
+                estimate = jo.estimate_jo
+            else:
+                estimate = Estimate.objects.create(job_order=jo)
+            if watch.movement_caliber and watch.movement_caliber.service_charge:
+                estimate.service_fee = watch.movement_caliber.service_charge
+                estimate.total = estimate.parts + estimate.service_fee
+                estimate.save()
+        return super().form_valid(form)
+
     def get_success_url(self):
         type = self.request.GET.get('type')
         pk = self.get_object().watch_jo.pk if type == 'watch' else self.get_object().pk
         return reverse('jo_details', kwargs={'pk': pk})
+
+
+@login_required
+def save_estimate(request, pk):
+    parts = request.POST.get('parts') or 0
+    serviceFee = request.POST.get('serviceFee') or 0
+    total = parts + serviceFee
+
+    jo = get_object_or_404(JobOrder, pk=pk)
+    estimate = None
+    if jo.estimate_jo:
+        estimate = jo.estimate_jo
+    else:
+        estimate = Estimate.objects.create(job_order=jo)
+
+    estimate.parts = parts
+    estimate.service_fee = serviceFee
+    estimate.total = total
+    estimate.save()
+
+    return redirect(reverse('jo_details', kwargs={'pk': pk}))
