@@ -56,7 +56,7 @@ class JobOrderDetailView(DetailView):
 class JobOrderWatchCreateView(CreateView):
     model = Watch
     form_class = WatchForm
-    template_name = "joborder/jo_watch_form.html"
+    template_name = "joborder/jo_detail_form.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
