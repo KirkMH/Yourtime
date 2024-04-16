@@ -211,6 +211,10 @@ class Assessment(models.Model):
         _("Assessment"),
         null=False, blank=False
     )
+    assessment_date = models.DateField(
+        _("Assessment Date"),
+        null=False, blank=False
+    )
     encoded_at = models.DateTimeField(auto_now_add=True)
     assessed_by = models.ForeignKey(
         Employee,

@@ -22,13 +22,13 @@ a {
 }
 
 .nav-link.active {
-    color: var(--secondary-color) !important;
+    color: white !important;
     text-decoration: overline;
     background-color: var(--primary-color) !important;
 }
 
 .card .nav-link {
-    color: gray;
+    color: darkgray;
 }
 
 .card .nav-link.active {
