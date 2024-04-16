@@ -74,7 +74,7 @@ class Warranty(models.Model):
         ordering = ['description']
 
 
-class ItemCondition(models.Model):
+class ExternalCaseAndBracelet(models.Model):
     description = models.CharField(
         _("Description"),
         max_length=254,

@@ -1,3 +1,4 @@
+from django.forms import BaseModelForm
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.shortcuts import redirect
@@ -8,8 +9,8 @@ from django.views.generic import CreateView, UpdateView, DetailView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 
-from .models import JobOrder, Watch, Estimate, Assessment
-from .forms import WatchForm, JobOrderForm, AssessmentForm
+from .models import *
+from .forms import *
 from client.models import Client
 
 
@@ -20,6 +21,10 @@ def getModel(type):
         return JobOrder
     elif type == 'assessment':
         return Assessment
+    elif type == 'test':
+        return TestLog
+    elif type == 'jo':
+        return JobOrder
     return None
 
 
@@ -30,16 +35,25 @@ def getFormClass(type):
         return JobOrderForm
     elif type == 'assessment':
         return AssessmentForm
+    elif type == 'test':
+        return TestLogForm
+    elif type == 'jo':
+        return JobOrderForm
     return None
 
 
 def getDescription(type):
     if type == 'watch':
-        return 'Watch Details'
+        return 'Watch details'
     elif type == 'joborder':
-        return 'Job Order Details'
+        return 'Job Order details'
     elif type == 'assessment':
-        return 'Assessment Details'
+        return 'Assessment details'
+    elif type == 'test':
+        return 'Test Log details'
+    elif type == 'jo':
+        return 'Job Order details'
+    return 'Details'
 
 
 @login_required
@@ -84,7 +98,8 @@ class JobOrderDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['assessments'] = Assessment.objects.filter(
             job_order=self.object).order_by('-assessment_date')
-        print(f'Assessments: {context["assessments"]}')
+        context['tests'] = TestLog.objects.filter(
+            job_order=self.object).order_by('-tested_on')
         return context
 
 
@@ -206,24 +221,33 @@ def save_estimate(request, pk):
 
 
 @method_decorator(login_required, name='dispatch')
-class JobOrderAssessmentCreateView(CreateView):
-    model = Assessment
-    form_class = AssessmentForm
+class JobOrderDocumentationCreateView(CreateView):
     template_name = "joborder/jo_detail_form.html"
+
+    def get_model(self):
+        type = self.request.GET.get('type')
+        return getModel(type)
+
+    def get_form_class(self):
+        type = self.request.GET.get('type')
+        return getFormClass(type)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        type = self.request.GET.get('type')
         context['jo'] = get_object_or_404(JobOrder, pk=self.kwargs.get('pk'))
-        context['type_name'] = 'Assessment Details'
+        context['type_name'] = getDescription(type)
         return context
 
     def get_success_url(self):
         return reverse('jo_details', kwargs={'pk': self.kwargs.get('pk')})
 
     def form_valid(self, form):
+        type = self.request.GET.get('type')
         jo = get_object_or_404(JobOrder, pk=self.kwargs.get('pk'))
-        assessment = form.save(commit=False)
-        assessment.job_order = jo
-        assessment.save()
-        messages.success(self.request, 'Assessment was added successfully.')
+        documentation = form.save(commit=False)
+        documentation.job_order = jo
+        documentation.save()
+        messages.success(self.request, getDescription(
+            type) + ' was added successfully.')
         return super().form_valid(form)

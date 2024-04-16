@@ -12,6 +12,6 @@ urlpatterns = [
     path('<int:pk>/detail/edit', views.JobOrderDetailUpdateView.as_view(),
          name='jo_detail_edit'),   # pk is either the watch id, job order id, assessment id
     path('<int:pk>/estimate/save', views.save_estimate, name='jo_save_estimate'),
-    path('<int:pk>/assessment/add', views.JobOrderAssessmentCreateView.as_view(),
-         name='jo_assessment_add'),   # pk is the job order id
+    path('<int:pk>/documentation/add', views.JobOrderDocumentationCreateView.as_view(),
+         name='jo_documentation_add'),   # pk is the job order id
 ]

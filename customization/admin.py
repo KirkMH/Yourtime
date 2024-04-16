@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import RepairWork, ModeOfPayment, Warranty, ItemCondition
+from .models import *
 
 
 display_items = ('description', 'created_at', 'updated_at')
@@ -29,8 +29,8 @@ class WarrantyAdmin(admin.ModelAdmin):
     list_filter = filter_items
 
 
-@admin.register(ItemCondition)
-class ItemConditionAdmin(admin.ModelAdmin):
+@admin.register(ExternalCaseAndBracelet)
+class ExternalCaseAndBraceletAdmin(admin.ModelAdmin):
     list_display = display_items
     search_fields = search_items
     list_filter = filter_items

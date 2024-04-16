@@ -8,7 +8,7 @@ from customization.models import (
     RepairWork,
     ModeOfPayment,
     Warranty,
-    ItemCondition,
+    ExternalCaseAndBracelet,
     WatchCaliber
 )
 
@@ -151,10 +151,26 @@ class JobOrder(models.Model):
         on_delete=models.CASCADE,
         null=True, blank=True
     )
-    item_condition = models.ForeignKey(
-        ItemCondition,
-        verbose_name=_("Item Condition"),
-        related_name="item_condition_jo",
+    notices = models.TextField(
+        _("Notices"),
+        null=True, blank=True
+    )
+    condition = models.CharField(
+        _("Condition"),
+        max_length=254,
+        null=True, blank=True
+    )
+    external_case_and_bracelet = models.ForeignKey(
+        ExternalCaseAndBracelet,
+        verbose_name=_("External Case and Bracelet"),
+        related_name="case_bracelet_jo",
+        on_delete=models.CASCADE,
+        null=True, blank=True
+    )
+    warranty = models.ForeignKey(
+        Warranty,
+        verbose_name=_("Warranty"),
+        related_name="warranty",
         on_delete=models.CASCADE,
         null=True, blank=True
     )
@@ -234,12 +250,6 @@ class TestLog(models.Model):
         related_name="test_log_jo",
         on_delete=models.CASCADE
     )
-    status = models.CharField(
-        _("Status"),
-        max_length=25,
-        choices=JO_STATUS,
-        default='SORTING'
-    )
     amplitude = models.PositiveIntegerField(
         _("Amplitude"),
         null=True, blank=True
@@ -248,13 +258,18 @@ class TestLog(models.Model):
         _("Comments"),
         null=True, blank=True
     )
-    encoded_at = models.DateTimeField(auto_now_add=True)
+    tested_on = models.DateTimeField(
+        _("Tested On"),
+        null=False, blank=False,
+        default=timezone.now
+    )
     tested_by = models.ForeignKey(
         Employee,
         verbose_name=_("Tested By"),
         related_name="tested_by",
         on_delete=models.CASCADE
     )
+    encoded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f'Magnitude {self.amplitude}˚, {self.comments}'
@@ -308,42 +323,6 @@ class Charge(models.Model):
 
     def __str__(self):
         return f'{self.particular}, {self.quantity} x {self.unit_price} = {self.total_amount}'
-
-
-class WorkToBeDone(models.Model):
-    job_order = models.OneToOneField(
-        JobOrder,
-        verbose_name=_("Job Order"),
-        related_name="work_to_be_done_jo",
-        on_delete=models.CASCADE
-    )
-    notices = models.CharField(
-        _("Notices"),
-        max_length=254,
-        null=True, blank=True
-    )
-    external_case_and_bracelet = models.CharField(
-        _("External Case and Bracelet"),
-        max_length=254,
-        null=True, blank=True
-    )
-    condition = models.ForeignKey(
-        ItemCondition,
-        verbose_name=_("Condition"),
-        related_name="condition",
-        on_delete=models.CASCADE,
-        null=True, blank=True
-    )
-    warranty = models.ForeignKey(
-        Warranty,
-        verbose_name=_("Warranty"),
-        related_name="warranty",
-        on_delete=models.CASCADE,
-        null=True, blank=True
-    )
-
-    def __str__(self):
-        return self.notices
 
 
 class Estimate(models.Model):

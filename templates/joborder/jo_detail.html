@@ -46,10 +46,26 @@
                             </div>
                             <div class="row">
                                 <div class="col-lg-5">
-                                    <p class="card-text text-muted">Item Condition:</p>
+                                    <p class="card-text text-muted">Notices:</p>
                                 </div>
                                 <div class="col-lg-7">
-                                    <p class="card-text">{{ joborder.item_condition }}</p>
+                                    <p class="card-text">{{ joborder.notices }}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-5">
+                                    <p class="card-text text-muted" data-bs-toggle="tooltip" data-bs-placement="top" title="Case and Bracelet">External:</p>
+                                </div>
+                                <div class="col-lg-7">
+                                    <p class="card-text">{{ joborder.external_case_and_bracelet }}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-5">
+                                    <p class="card-text text-muted">Condition:</p>
+                                </div>
+                                <div class="col-lg-7">
+                                    <p class="card-text">{{ joborder.condition }}</p>
                                 </div>
                             </div>
                             <div class="row">
@@ -66,6 +82,14 @@
                                 </div>
                                 <div class="col-lg-7">
                                     <p class="card-text">{{ joborder.promise_date|naturalday }}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-5">
+                                    <p class="card-text text-muted">Warranty:</p>
+                                </div>
+                                <div class="col-lg-7">
+                                    <p class="card-text">{{ joborder.warranty }}</p>
                                 </div>
                             </div>
                         </div>
@@ -267,11 +291,40 @@
                             {% else %}
                             <p class="card-text">No assessments available.</p>
                             {% endif %}
-                            <a href="{% url 'jo_assessment_add' joborder.pk %}" class="btn btn-outline-secondary">Add Assessment</a>
+                            <a href="{% url 'jo_documentation_add' joborder.pk %}?type=assessment" class="btn btn-outline-secondary">Add Assessment</a>
                         </div>
+
                         <div class="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-tab">
-                            <h5 class="card-title">Tab 3 Content</h5>
-                            <p class="card-text">This is the content of Tab 3.</p>
+                            <h5>Test Logs</h5>
+                            {% if tests %}
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Tested On</th>
+                                        <th>Amplitude</th>
+                                        <th>Comments</th>
+                                        <th>Tested By</th>
+                                        <th width="10%" class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for test in tests %}
+                                    <tr>
+                                        <td>{{ test.tested_on|naturaltime }}</td>
+                                        <td>{{ test.amplitude }}</td>
+                                        <td>{{ test.comments }}</td>
+                                        <td>{{ test.tested_by }}</td>
+                                        <td class="text-center">
+                                            <a href="{% url 'jo_detail_edit' test.pk %}?type=test"><i class="far fa-edit"></i></a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            {% else %}
+                            <p class="card-text">No test logs available.</p>
+                            {% endif %}
+                            <a href="{% url 'jo_documentation_add' joborder.pk %}?type=test" class="btn btn-outline-secondary">Add Test Log</a>
                         </div>
                         <div class="tab-pane fade" id="tab4" role="tabpanel" aria-labelledby="tab4-tab">
                             <h5 class="card-title">Tab 4 Content</h5>
