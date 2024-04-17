@@ -330,9 +330,9 @@
                                 <thead>
                                     <tr>
                                         <th>Particular</th>
-                                        <th>Unit Price</th>
+                                        <th class="text-right">Unit Price</th>
                                         <th class="text-center">Quantity</th>
-                                        <th>Total</th>
+                                        <th class="text-right">Total</th>
                                         <th width="10%" class="text-center">Actions</th>
                                     </tr>
                                 </thead>
@@ -340,9 +340,9 @@
                                     {% for charge in charges %}
                                     <tr>
                                         <td>{{ charge.particular }}</td>
-                                        <td>{{ charge.unit_price|floatformat:2|intcomma }}</td>
+                                        <td class="text-right">{{ charge.unit_price|floatformat:2|intcomma }}</td>
                                         <td class="text-center">{{ charge.quantity }}</td>
-                                        <td>{{ charge.total_amount|floatformat:2|intcomma }}</td>
+                                        <td class="text-right">{{ charge.total_amount|floatformat:2|intcomma }}</td>
                                         <td class="text-center">
                                             <a href="{% url 'jo_detail_edit' charge.pk %}?type=charge"><i class="far fa-edit"></i></a>
                                         </td>
@@ -350,7 +350,7 @@
                                     {% endfor %}
                                     <tr style="font-weight: bold; font-size: large;">
                                         <td colspan="3">Total</td>
-                                        <td>{{ joborder.total_charges|floatformat:2|intcomma }}</td>
+                                        <td class="text-right">{{ joborder.total_charges|floatformat:2|intcomma }}</td>
                                         <td></td>
                                 </tbody>
                             </table>

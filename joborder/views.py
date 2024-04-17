@@ -226,8 +226,10 @@ class JobOrderDetailUpdateView(UpdateView, SuccessMessageMixin):
         pk = self.get_object().pk
         if type == 'watch':
             pk = self.get_object().watch_jo.pk
-        elif type == 'assessment':
+        elif type in ['assessment', 'test', 'charge']:
             pk = self.get_object().job_order.pk
+        messages.success(self.request, getDescription(
+            type) + ' was updated successfully.')
         return reverse('jo_details', kwargs={'pk': pk})
 
 
