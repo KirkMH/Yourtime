@@ -25,4 +25,5 @@ urlpatterns = [
     path('client/', include('client.urls')),
     path('joborder/', include('joborder.urls')),
     path('settings/', include('customization.urls')),
+    path('reports/', include('report.urls')),
 ]

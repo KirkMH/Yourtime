@@ -3,6 +3,8 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.db.models import F
 
+from datetime import datetime
+
 from client.models import Client
 from access.models import Employee
 from customization.models import (
@@ -29,6 +31,11 @@ JO_STATUS = [
     ('IN-HOUSE', 'In House'),
     ('FINISHED', 'Finished')
 ]
+
+OPEN_STATUSES = ['SORTING', 'IN-QUEUE', 'ONGOING', 'OBSERVATION',
+                 'SAFEKEEPING', 'PENDING', 'FOR-ESTIMATE', 'UNCLAIMED']
+CLOSE_STATUSES = ['CLAIMED', 'PULLED-OUT',
+                  'NOT-REPAIRABLE', 'IN-HOUSE', 'FINISHED']
 
 
 class Articles(models.Manager):
@@ -145,6 +152,20 @@ class Conditions(models.Manager):
         return super().get_queryset().values('condition').distinct()
 
 
+class OverDues(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(
+            promise_date__lt=datetime.now().date()).filter(
+                current_status__in=OPEN_STATUSES).order_by('promise_date')
+
+
+class DueInAWeek(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(
+            promise_date__lte=datetime.now().date() + timezone.timedelta(days=7)).filter(
+            current_status__in=OPEN_STATUSES).order_by('promise_date')
+
+
 class JobOrder(models.Model):
     client = models.ForeignKey(
         Client,
@@ -210,6 +231,8 @@ class JobOrder(models.Model):
     )
     objects = models.Manager()
     conditions = Conditions()
+    overdues = OverDues()
+    due_in_a_week = DueInAWeek()
 
     def total_charges(self):
         # total_amount = unit price * quantity
@@ -220,6 +243,18 @@ class JobOrder(models.Model):
 
     def balance(self):
         return self.total_charges() - self.total_paid()
+
+    def isClosed(self):
+        return self.current_status in ['CLAIMED', 'PULLED-OUT', 'NOT-REPAIRABLE', 'IN-HOUSE', 'FINISHED']
+
+    def isOpen(self):
+        return not self.isClosed()
+
+    def isPastDue(self):
+        return self.isOpen() and self.promise_date < timezone.now().date()
+
+    def isDueInAWeek(self):
+        return self.isOpen() and self.promise_date - timezone.now().date() <= 7
 
 
 class Assessment(models.Model):
@@ -321,7 +356,7 @@ class Charge(models.Model):
         default=1
     )
 
-    @property
+    @ property
     def total_amount(self):
         return self.unit_price * self.quantity
 

@@ -11,10 +11,13 @@
             <a id="dropdownReports" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">Reports</a>
             <ul aria-labelledby="dropdownReports" class="dropdown-menu border-0 shadow">
                 <li id="menu-past-due">
-                    <a class="dropdown-item" href="#">Past Due Job Orders</a>
+                    <a class="dropdown-item" href="{% url 'jo_overdue_report' %}">Past Due Job Orders</a>
                 </li>
                 <li id="menu-within-week">
                     <a class="dropdown-item" href="#">Job Orders within the Week</a>
+                </li>
+                <li id="menu-client-info">
+                    <a class="dropdown-item" href="#">Client Information Sheet</a>
                 </li>
                 <li id="menu-metrics">
                     <a class="dropdown-item" href="#">Technicians' Metrics</a>
