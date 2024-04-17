@@ -13,9 +13,12 @@ from .models import *
 from .forms import create_setting_form, update_setting_form
 
 
-valid_types = [('works', 'Repair Works'), ('externals',
-                                           'External - Case and Bracelet'), ('payments', 'Modes of Payment'),
-               ('warranties', 'Warranties'), ('calibers', 'Watch Calibers')]
+valid_types = [('works', 'Repair Works'),
+               ('externals', 'External - Case and Bracelet'),
+               ('payments', 'Modes of Payment'),
+               ('warranties', 'Warranties'),
+               ('calibers', 'Watch Calibers'),
+               ('movements', 'Watch Movements')]
 
 
 def get_pair(type):
@@ -34,6 +37,8 @@ def get_model(type):
         return Warranty
     elif type == 'calibers':
         return WatchCaliber
+    elif type == 'movements':
+        return WatchMovement
     else:
         return None
 

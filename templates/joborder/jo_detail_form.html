@@ -42,11 +42,30 @@
 
 
 {% block js %}
+    <!-- Bootstrap Typeahead -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.min.js"></script>
     <script>
         $(document).ready(function() {
             $('#id_assessment_date').attr('type', 'date');
+            $('#id_promise_date').attr('type', 'date');
             $('#id_tested_on').attr('type', 'datetime-local');
-            $("#menu-jo").addClass("active")
+            $("#menu-jo").addClass("active");
+
+            
+            // Data for autocomplete
+            const articles = "{{articles}}".split(',');
+            const dials = "{{dials}}".split(',');
+            const bracelets = "{{bracelets}}".split(',');
+            const components = "{{components}}".split(',');
+            const aesthetic_defects = "{{aesthetic_defects}}".split(',');
+
+            // Initialize Typeahead plugin
+            $('#id_article').typeahead({source: articles});
+            $('#id_dial').typeahead({source: dials});
+            $('#id_article').typeahead({source: articles});
+            $('#id_bracelet').typeahead({source: bracelets});
+            $('#id_component').typeahead({source: components});
+            $('#id_aesthetic_defect').typeahead({source: aesthetic_defects});
         })
     </script>
 {% endblock js %}

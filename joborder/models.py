@@ -9,7 +9,8 @@ from customization.models import (
     ModeOfPayment,
     Warranty,
     ExternalCaseAndBracelet,
-    WatchCaliber
+    WatchCaliber,
+    WatchMovement
 )
 
 JO_STATUS = [
@@ -39,14 +40,19 @@ class Dials(models.Manager):
         return super().get_queryset().values('dial').distinct()
 
 
-class WatchMovements(models.Manager):
+class Bracelets(models.Manager):
     def get_queryset(self):
-        return super().get_queryset().values('watch_movement').distinct()
+        return super().get_queryset().values('bracelet').distinct()
 
 
-class MovementCalibers(models.Manager):
+class Components(models.Manager):
     def get_queryset(self):
-        return super().get_queryset().values('movement_caliber').distinct()
+        return super().get_queryset().values('component').distinct()
+
+
+class AestheticDefects(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().values('aesthetic_defect').distinct()
 
 
 class Watch(models.Model):
@@ -58,7 +64,7 @@ class Watch(models.Model):
     serial_number = models.CharField(
         _("Serial Number"),
         max_length=100,
-        null=False, blank=False
+        null=True, blank=True
     )
     case_number = models.CharField(
         _("Case Number"),
@@ -73,22 +79,24 @@ class Watch(models.Model):
     bracelet = models.CharField(
         _("Bracelet"),
         max_length=100,
-        null=False, blank=False
+        null=True, blank=True
     )
-    components = models.CharField(
+    component = models.CharField(
         _("Components"),
         max_length=100,
-        null=False, blank=False
+        null=True, blank=True
     )
-    watch_movement = models.CharField(
-        _("Watch Movement"),
-        max_length=100,
+    watch_movement = models.ForeignKey(
+        WatchMovement,
+        verbose_name=_("Watch Movement"),
+        related_name="movement_watches",
+        on_delete=models.CASCADE,
         null=True, blank=True
     )
     movement_caliber = models.ForeignKey(
         WatchCaliber,
         verbose_name=_("Movement Caliber"),
-        related_name="movement_caliber",
+        related_name="caliber_watches",
         on_delete=models.CASCADE,
         null=True, blank=True
     )
@@ -97,7 +105,7 @@ class Watch(models.Model):
         max_length=100,
         null=True, blank=True
     )
-    aesthetic_defects = models.CharField(
+    aesthetic_defect = models.CharField(
         _("Aesthetic Defects"),
         max_length=254,
         null=True, blank=True
@@ -120,8 +128,9 @@ class Watch(models.Model):
     objects = models.Manager()
     articles = Articles()
     dials = Dials()
-    watch_movements = WatchMovements()
-    movement_calibers = MovementCalibers()
+    bracelets = Bracelets()
+    components = Components()
+    aesthetic_defects = AestheticDefects()
 
     def __str__(self):
         str = f"{self.article.title()} SN#-{self.serial_number}"

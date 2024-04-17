@@ -68,7 +68,7 @@ def jo_list(request):
 class JoDtListView(ServerSideDatatableView):
     queryset = JobOrder.objects.all()
     columns = ['pk', 'watch__serial_number', 'client__name', 'client__mob_num',
-               'client__tel_num', 'current_status', 'created_at', 'promise_date']
+               'client__tel_num', 'current_status', 'created_at', 'promise_date', 'watch__article']
 
 
 @login_required
@@ -112,7 +112,7 @@ class JobOrderWatchCreateView(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['jo'] = get_object_or_404(JobOrder, pk=self.kwargs.get('pk'))
-        print(f'joborder: {context["jo"].pk}')
+        context['type_name'] = 'Watch details'
         return context
 
     def get_success_url(self):
@@ -162,11 +162,22 @@ class JobOrderDetailUpdateView(UpdateView, SuccessMessageMixin):
         context = super().get_context_data(**kwargs)
         type = self.request.GET.get('type')
         context['type_name'] = getDescription(type)
-        context['jo'] = self.get_object()
+        jo = self.get_object()
         if type == 'watch':
-            context['jo'] = context['jo'].watch_jo
+            jo = jo.watch_jo
         elif type == 'assessment':
-            context['jo'] = context['jo'].job_order
+            jo = jo.job_order
+        context['jo'] = jo
+        context['articles'] = ','.join(str(movement['article'])
+                                       for movement in Watch.articles.all())
+        context['dials'] = ','.join(str(movement['dial'])
+                                    for movement in Watch.dials.all())
+        context['bracelets'] = ','.join(str(movement['bracelet'])
+                                        for movement in Watch.bracelets.all())
+        context['components'] = ','.join(str(movement['component'])
+                                         for movement in Watch.components.all())
+        context['aesthetic_defects'] = ','.join(str(movement['aesthetic_defect'])
+                                                for movement in Watch.aesthetic_defects.all())
         return context
 
     def form_valid(self, form):

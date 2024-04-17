@@ -100,9 +100,13 @@
                     },
                     {
                         name: "item", 
-                        data: 1,
+                        data: null,
                         render: function (data) {
-                            return "SN " + data;
+                            let description = data[8];
+                            if (data[1]) {
+                                description += " SN " + data[1];
+                            }
+                            return description;
                         },
                     },
                     {name: "client", data: 2},
