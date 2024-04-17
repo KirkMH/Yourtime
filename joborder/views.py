@@ -25,6 +25,8 @@ def getModel(type):
         return TestLog
     elif type == 'jo':
         return JobOrder
+    elif type == 'charge':
+        return Charge
     return None
 
 
@@ -39,6 +41,8 @@ def getFormClass(type):
         return TestLogForm
     elif type == 'jo':
         return JobOrderForm
+    elif type == 'charge':
+        return ChargeForm
     return None
 
 
@@ -53,7 +57,31 @@ def getDescription(type):
         return 'Test Log details'
     elif type == 'jo':
         return 'Job Order details'
+    elif type == 'charge':
+        return 'Charge details'
     return 'Details'
+
+
+def addContext(context, type):
+    if type == 'jo':
+        context['conditions'] = ','.join(str(data['condition'])
+                                         for data in JobOrder.conditions.all())
+    elif type == 'watch':
+        context['articles'] = ','.join(str(data['article'])
+                                       for data in Watch.articles.all())
+        context['dials'] = ','.join(str(data['dial'])
+                                    for data in Watch.dials.all())
+        context['bracelets'] = ','.join(str(data['bracelet'])
+                                        for data in Watch.bracelets.all())
+        context['components'] = ','.join(str(data['component'])
+                                         for data in Watch.components.all())
+        context['aesthetic_defects'] = ','.join(str(data['aesthetic_defect'])
+                                                for data in Watch.aesthetic_defects.all())
+
+    elif type == 'charge':
+        context['particulars'] = ','.join(
+            [str(particular) for particular in Particular.objects.all()])
+    return context
 
 
 @login_required
@@ -75,10 +103,8 @@ class JoDtListView(ServerSideDatatableView):
 def create_jo(request):
     if request.method == 'POST':
         owner_id = request.POST.get('owner', None)
-        print(f'Owner ID: {owner_id}')
         owner = get_object_or_404(Client, pk=owner_id)
         if owner:
-            print(f'Owner: {owner}')
             jo = JobOrder.objects.create(
                 client=owner
             )
@@ -100,6 +126,8 @@ class JobOrderDetailView(DetailView):
             job_order=self.object).order_by('-assessment_date')
         context['tests'] = TestLog.objects.filter(
             job_order=self.object).order_by('-tested_on')
+        context['charges'] = Charge.objects.filter(
+            job_order=self.object).order_by('-id')
         return context
 
 
@@ -113,6 +141,7 @@ class JobOrderWatchCreateView(CreateView):
         context = super().get_context_data(**kwargs)
         context['jo'] = get_object_or_404(JobOrder, pk=self.kwargs.get('pk'))
         context['type_name'] = 'Watch details'
+        context = addContext(context, 'watch')
         return context
 
     def get_success_url(self):
@@ -165,19 +194,10 @@ class JobOrderDetailUpdateView(UpdateView, SuccessMessageMixin):
         jo = self.get_object()
         if type == 'watch':
             jo = jo.watch_jo
-        elif type == 'assessment':
+        elif type in ['assessment', 'test', 'charge']:
             jo = jo.job_order
         context['jo'] = jo
-        context['articles'] = ','.join(str(movement['article'])
-                                       for movement in Watch.articles.all())
-        context['dials'] = ','.join(str(movement['dial'])
-                                    for movement in Watch.dials.all())
-        context['bracelets'] = ','.join(str(movement['bracelet'])
-                                        for movement in Watch.bracelets.all())
-        context['components'] = ','.join(str(movement['component'])
-                                         for movement in Watch.components.all())
-        context['aesthetic_defects'] = ','.join(str(movement['aesthetic_defect'])
-                                                for movement in Watch.aesthetic_defects.all())
+        context = addContext(context, type)
         return context
 
     def form_valid(self, form):
@@ -195,8 +215,9 @@ class JobOrderDetailUpdateView(UpdateView, SuccessMessageMixin):
                 estimate.total = estimate.parts + estimate.service_fee
                 estimate.save()
 
-        elif type == 'assessment':
-            form.save(commit=True)
+        elif type == 'charge':
+            charge = form.save(commit=True)
+            charge.addParticular()
 
         return super().form_valid(form)
 
@@ -248,7 +269,7 @@ class JobOrderDocumentationCreateView(CreateView):
         type = self.request.GET.get('type')
         context['jo'] = get_object_or_404(JobOrder, pk=self.kwargs.get('pk'))
         context['type_name'] = getDescription(type)
-        return context
+        return addContext(context, type)
 
     def get_success_url(self):
         return reverse('jo_details', kwargs={'pk': self.kwargs.get('pk')})
@@ -259,6 +280,8 @@ class JobOrderDocumentationCreateView(CreateView):
         documentation = form.save(commit=False)
         documentation.job_order = jo
         documentation.save()
+        if type == 'charge':
+            documentation.addParticular()
         messages.success(self.request, getDescription(
             type) + ' was added successfully.')
         return super().form_valid(form)

@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+from django.db.models import F
 
 from client.models import Client
 from access.models import Employee
@@ -139,6 +140,11 @@ class Watch(models.Model):
         return str
 
 
+class Conditions(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().values('condition').distinct()
+
+
 class JobOrder(models.Model):
     client = models.ForeignKey(
         Client,
@@ -196,33 +202,24 @@ class JobOrder(models.Model):
         choices=JO_STATUS,
         default='SORTING'
     )
-    total_charges = models.DecimalField(
-        _("Total Charges"),
-        max_digits=10,
-        decimal_places=2,
-        default=0,
-        null=True, blank=True
-    )
-    total_paid = models.DecimalField(
-        _("Total Paid"),
-        max_digits=10,
-        decimal_places=2,
-        default=0,
-        null=True, blank=True
-    )
-    balance = models.DecimalField(
-        _("Balance"),
-        max_digits=10,
-        decimal_places=2,
-        default=0,
-        null=True, blank=True
-    )
     created_at = models.DateField(auto_now_add=True)
     promise_date = models.DateField(
         _("Promise Date"),
         null=True, blank=True,
         default=timezone.now
     )
+    objects = models.Manager()
+    conditions = Conditions()
+
+    def total_charges(self):
+        # total_amount = unit price * quantity
+        return Charge.objects.filter(job_order=self).aggregate(total=models.Sum(F('unit_price') * F('quantity')))['total']
+
+    def total_paid(self):
+        return Payment.objects.filter(job_order=self).aggregate(total=models.Sum('amount_paid'))['total']
+
+    def balance(self):
+        return self.total_charges() - self.total_paid()
 
 
 class Assessment(models.Model):
@@ -298,7 +295,7 @@ class Particular(models.Model):
     )
 
     def __str__(self):
-        return self.description
+        return f"{self.description}@{self.unit_price}"
 
 
 class Charge(models.Model):
@@ -323,12 +320,16 @@ class Charge(models.Model):
         _("Quantity"),
         default=1
     )
-    total_amount = models.DecimalField(
-        _("Total Amount"),
-        max_digits=10,
-        decimal_places=2,
-        default=0
-    )
+
+    @property
+    def total_amount(self):
+        return self.unit_price * self.quantity
+
+    def addParticular(self):
+        particular, _ = Particular.objects.get_or_create(
+            description=self.particular)
+        particular.unit_price = self.unit_price
+        particular.save()
 
     def __str__(self):
         return f'{self.particular}, {self.quantity} x {self.unit_price} = {self.total_amount}'

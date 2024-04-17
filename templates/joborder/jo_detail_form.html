@@ -12,7 +12,7 @@
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
     <li class="breadcrumb-item"><a href="{% url 'jo_list' %}">Job Orders</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'jo_details' jo.pk %}">JO # {{ jo.pk|stringformat:'08d' }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'jo_details' jo.pk %}">JO # {{ jo.pk|stringformat:'05d' }}</a></li>
     <li class="breadcrumb-item active">{{ type_name }}</li>
 {% endblock breadcrumb %}
 
@@ -22,7 +22,7 @@
             {% csrf_token %}
 
             <div class="card-header">
-                <h3>{{ jo.client }}'s {{ type_name }} for JO # {{ jo.pk|stringformat:"08d" }}</h3>
+                <h3>{{ jo.client }}'s {{ type_name }} for JO # {{ jo.pk|stringformat:"05d" }}</h3>
             </div>
 
             <div class="card-body">
@@ -46,26 +46,56 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('#id_assessment_date').attr('type', 'date');
-            $('#id_promise_date').attr('type', 'date');
-            $('#id_tested_on').attr('type', 'datetime-local');
+            const type = "{{ type_name }}";
+            let particular_desc = [];
+            let particular_price = [];
+
+            if (type === 'Assessment details')
+                $('#id_assessment_date').attr('type', 'date');
+            else if (type === 'Job Order details') {
+                const conditions = "{{conditions}}".split(',');
+                $('#id_condition').typeahead({source: conditions});
+                $('#id_promise_date').attr('type', 'date');
+            }
+            else if (type === 'Test Log details')
+                $('#id_tested_on').attr('type', 'datetime-local');
+            else if (type === 'Watch details') {
+                // Data for autocomplete
+                const articles = "{{articles}}".split(',');
+                const dials = "{{dials}}".split(',');
+                const bracelets = "{{bracelets}}".split(',');
+                const components = "{{components}}".split(',');
+                const aesthetic_defects = "{{aesthetic_defects}}".split(',');
+
+                // Initialize Typeahead plugin
+                $('#id_article').typeahead({source: articles});
+                $('#id_dial').typeahead({source: dials});
+                $('#id_article').typeahead({source: articles});
+                $('#id_bracelet').typeahead({source: bracelets});
+                $('#id_component').typeahead({source: components});
+                $('#id_aesthetic_defect').typeahead({source: aesthetic_defects});
+            }
+            else if (type === 'Charge details') {
+                const particulars = "{{particulars}}".split(',');
+                for (let part of particulars) {
+                    let [desc, price] = part.split('@');
+                    particular_desc.push(desc);
+                    particular_price.push(price);
+                }
+                console.log("particulars: " + particulars)
+                console.log("particular_desc: " + particular_desc)
+                console.log("particular_price: " + particular_price)
+                $('#id_particular').typeahead({source: particular_desc});
+                $('#id_particular').on('change', function() {
+                    let index = particular_desc.indexOf($(this).val());
+                    console.log(`index: ${index}`);
+                    if (index === -1)
+                        return;
+                    $('#id_unit_price').val(particular_price[index]);
+                });
+            }
+
             $("#menu-jo").addClass("active");
-
-            
-            // Data for autocomplete
-            const articles = "{{articles}}".split(',');
-            const dials = "{{dials}}".split(',');
-            const bracelets = "{{bracelets}}".split(',');
-            const components = "{{components}}".split(',');
-            const aesthetic_defects = "{{aesthetic_defects}}".split(',');
-
-            // Initialize Typeahead plugin
-            $('#id_article').typeahead({source: articles});
-            $('#id_dial').typeahead({source: dials});
-            $('#id_article').typeahead({source: articles});
-            $('#id_bracelet').typeahead({source: bracelets});
-            $('#id_component').typeahead({source: components});
-            $('#id_aesthetic_defect').typeahead({source: aesthetic_defects});
         })
     </script>
 {% endblock js %}

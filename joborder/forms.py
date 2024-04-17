@@ -34,3 +34,11 @@ class TestLogForm(forms.ModelForm):
     class Meta:
         model = TestLog
         exclude = ('job_order', 'encoded_at', )
+
+
+class ChargeForm(forms.ModelForm):
+    required_css_class = 'required'
+
+    class Meta:
+        model = Charge
+        exclude = ('job_order', )

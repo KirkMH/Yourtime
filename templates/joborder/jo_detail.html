@@ -33,7 +33,7 @@
                     <!-- JOB ORDER DETAILS -->
                     <div class="card card-outline card-primary-color mt-4 ml-4">
                         <div class="card-header">
-                            <h4>Job Order Details</h4>
+                            <h4>JO# {{ joborder.pk|stringformat:'05d' }} Details</h4>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -228,9 +228,6 @@
                         <li class="nav-item">
                             <a class="nav-link" id="tab4-tab" data-toggle="tab" href="#tab4" role="tab" aria-controls="tab4" aria-selected="false">Charges</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="tab5-tab" data-toggle="tab" href="#tab5" role="tab" aria-controls="tab5" aria-selected="false">Payments</a>
-                        </li>
                     </ul>
                 </div>
                 <div class="card-body">
@@ -327,12 +324,40 @@
                             <a href="{% url 'jo_documentation_add' joborder.pk %}?type=test" class="btn btn-outline-secondary">Add Test Log</a>
                         </div>
                         <div class="tab-pane fade" id="tab4" role="tabpanel" aria-labelledby="tab4-tab">
-                            <h5 class="card-title">Tab 4 Content</h5>
-                            <p class="card-text">This is the content of Tab 4.</p>
-                        </div>
-                        <div class="tab-pane fade" id="tab5" role="tabpanel" aria-labelledby="tab5-tab">
-                            <h5 class="card-title">Tab 5 Content</h5>
-                            <p class="card-text">This is the content of Tab 5.</p>
+                            <h5>Charges</h5>
+                            {% if charges %}
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Particular</th>
+                                        <th>Unit Price</th>
+                                        <th class="text-center">Quantity</th>
+                                        <th>Total</th>
+                                        <th width="10%" class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for charge in charges %}
+                                    <tr>
+                                        <td>{{ charge.particular }}</td>
+                                        <td>{{ charge.unit_price|floatformat:2|intcomma }}</td>
+                                        <td class="text-center">{{ charge.quantity }}</td>
+                                        <td>{{ charge.total_amount|floatformat:2|intcomma }}</td>
+                                        <td class="text-center">
+                                            <a href="{% url 'jo_detail_edit' charge.pk %}?type=charge"><i class="far fa-edit"></i></a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    <tr style="font-weight: bold; font-size: large;">
+                                        <td colspan="3">Total</td>
+                                        <td>{{ joborder.total_charges|floatformat:2|intcomma }}</td>
+                                        <td></td>
+                                </tbody>
+                            </table>
+                            {% else %}
+                            <p class="card-text">No charges yet.</p>
+                            {% endif %}
+                            <a href="{% url 'jo_documentation_add' joborder.pk %}?type=charge" class="btn btn-outline-secondary">Add Charge</a>
                         </div>
                     </div>
                 </div>
