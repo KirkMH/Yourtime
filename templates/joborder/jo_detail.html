@@ -186,26 +186,22 @@
                         <div class="card-header">
                             <h4>Status</h4>
                         </div>
+                        <form id="update-status-form" method="POST" action="{% url 'update_jo_status' joborder.pk %}">
                         <div class="card-body">
                             <div class="mb-4">
                                 <h5 class="text-muted">Current Status:</h5>
-                                <h4>{{ joborder.current_status }}</h3>
+                                    {% csrf_token %}
+                                    <select name="status" class="form-control">
+                                        {% for status in statuses %}
+                                        <option value="{{status.0}}" {% if status.0 == joborder.current_status %}selected{%endif%}>{{ status.1 }}</option>
+                                        {% endfor %}
+                                    </select>
                             </div>
                         </div>
                         <div class="card-footer">
-                            <div>
-                                <h5 class="text-muted">Update to:</h5>
-                                <form id="update-status-form" method="POST">
-                                    {% csrf_token %}
-                                    <select name="status" class="form-control">
-                                        <option value="1">For Repair</option>
-                                        <option value="2">For Releasing</option>
-                                        <option value="3">Released</option>
-                                    </select>
-                                    <button type="submit" class="btn btn-outline-success mt-2">Update</button>
-                                </form>
-                            </div>
+                            <button type="submit" class="btn btn-outline-success mt-2">Update</button>
                         </div>
+                        </form>
                     </div>
                 </div>
             </div>

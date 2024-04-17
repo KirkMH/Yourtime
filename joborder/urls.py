@@ -14,4 +14,5 @@ urlpatterns = [
     path('<int:pk>/estimate/save', views.save_estimate, name='jo_save_estimate'),
     path('<int:pk>/documentation/add', views.JobOrderDocumentationCreateView.as_view(),
          name='jo_documentation_add'),   # pk is the job order id
+    path('<int:pk>/status', views.update_jo_status, name='update_jo_status'),
 ]

@@ -128,6 +128,7 @@ class JobOrderDetailView(DetailView):
             job_order=self.object).order_by('-tested_on')
         context['charges'] = Charge.objects.filter(
             job_order=self.object).order_by('-id')
+        context['statuses'] = JO_STATUS
         return context
 
 
@@ -287,3 +288,12 @@ class JobOrderDocumentationCreateView(CreateView):
         messages.success(self.request, getDescription(
             type) + ' was added successfully.')
         return super().form_valid(form)
+
+
+def update_jo_status(request, pk):
+    status = request.POST.get('status')
+    jo = get_object_or_404(JobOrder, pk=pk)
+    jo.current_status = status
+    jo.save()
+    messages.success(request, 'Job Order status updated successfully!')
+    return redirect(reverse('jo_details', kwargs={'pk': pk}))
