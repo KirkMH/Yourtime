@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure--%7)&o_qemv!amj3u2lwkfar1zjzomd#)beih!k$&%vwac=8c9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -53,7 +53,7 @@ INSTALLED_APPS = [
 ]
 
 # setting the default pack to be used by crispy-form
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
