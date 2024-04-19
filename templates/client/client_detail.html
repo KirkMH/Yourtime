@@ -87,16 +87,40 @@
         <div class="card-header">
             <h4>Job Orders</h3>
         </div>
-        <div class="card-body">
-            <div class="row mb-2">
-                <div class="col-12">
-                    <p class="card-text"><span class="text-muted">No records found.</span>
-                       <div class="ml-4 mr-4">
-                       </div>
-                    </p>
-                </div>
-            </div>
+        {% if client.client_jo.all.exists %}
+        <div class="card-body table-responsive">
+            <table id="table" class="table table-hover table-head-fixed table-sm">
+                <thead>
+                    <tr>
+                        <th class="text-center">JO #</th>
+                        <th class="text-center">Article</th>
+                        <th class="text-center">Repair Work</th>
+                        <th class="text-center">Date Created</th>
+                        <th class="text-center">Date Promised</th>
+                        <th class="text-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for jo in client.client_jo.all %}
+                        <tr>
+                            <td class="text-center">
+                                <a href="{% url 'jo_details' jo.pk %}">{{ jo.pk|stringformat:"05d" }}</a>
+                            </td>
+                            <td>{{ jo.watch.article }}</td>
+                            <td>{{ jo.repair_work }}</td>
+                            <td class="text-center">{{ jo.created_at|date:"M d, Y" }}</td>
+                            <td class="text-center">{{ jo.promise_date|date:"M d, Y" }}</td>
+                            <td class="text-center">{{ jo.current_status }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
+        {% else %}
+        <div class="card-body">
+            <p class="card-text">No job orders found.</p>
+        </div>
+        {% endif %}
     </div>
 
 {% endblock main_content %}
@@ -105,6 +129,7 @@
 {% block js %}
     <script>
         $(document).ready(function() {
+            $("#table").DataTable();
             $("#menu-clients").addClass("active")
         })
     </script>
