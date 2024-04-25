@@ -17,7 +17,7 @@
         <!-- Greeting section -->
         <div class="row mb-2">
           <div class="col-12">
-            <h5>Welcome back, {{ request.user.username|title }}!</h5>
+            <h5>{{ greeting }}, {{ request.user.get_full_name|title }}!</h5>
           </div>
         </div>
         <!-- Small boxes (Stat box) -->
@@ -68,7 +68,7 @@
             <!-- small box -->
             <div class="small-box outline-danger">
               <div class="inner">
-                <h3>{{ 0 }}&nbsp;<sup style="font-size: 12px">JOs</sup></h3>
+                <h3>{{ overdue }}&nbsp;<sup style="font-size: 12px">JOs</sup></h3>
 
                 <p>Past Due</p>
               </div>
@@ -108,6 +108,7 @@
                       <th>JO #</th>
                       <th>Item</th>
                       <th>Client</th>
+                      <th>Assigned to</th>
                       <th>Due Date</th>
                     </tr>
                   </thead>
@@ -119,9 +120,10 @@
                     {% endif %}
                     {% for jo in priority_jos %}
                     <tr>
-                      <td>{{ jo.pk }}</td>
+                      <td><a href="{% url 'jo_details' jo.pk %}">{{ jo.pk|stringformat:"05d" }}</a></td>
                       <td>{{ jo.watch.article }}</td>
                       <td>{{ jo.watch.owner }}</td>
+                      <td>{{ jo.assigned_technician }}</td>
                       <td>{{ jo.estimate.date_promised}}</td>
                     </tr>
                     {% endfor %}

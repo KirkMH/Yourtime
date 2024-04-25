@@ -166,6 +166,12 @@ class DueInAWeek(models.Manager):
             current_status__in=OPEN_STATUSES).order_by('promise_date')
 
 
+class OpenJobOrders(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(
+            current_status__in=OPEN_STATUSES).order_by('promise_date')
+
+
 class JobOrder(models.Model):
     client = models.ForeignKey(
         Client,
@@ -233,6 +239,7 @@ class JobOrder(models.Model):
     conditions = Conditions()
     overdues = OverDues()
     due_in_a_week = DueInAWeek()
+    open_jobs = OpenJobOrders()
 
     def total_charges(self):
         # total_amount = unit price * quantity
