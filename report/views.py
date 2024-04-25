@@ -22,3 +22,11 @@ def client_report(request):
         'clients': clients,
     }
     return render(request, 'report/client_is.html', context=context)
+
+
+def job_order(request, pk):
+    job_order = JobOrder.objects.get(pk=pk)
+    context = {
+        'joborder': job_order,
+    }
+    return render(request, 'report/job_order.html', context=context)

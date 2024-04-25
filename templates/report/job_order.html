@@ -1,0 +1,247 @@
+{% extends '../base.html' %}
+{% load static %}
+{% load humanize %}
+{% load form_tags %}
+
+{% block title %}{{ type }} Job Orders{% endblock title %}
+{% block page_title %}{{ type }} Job Orders{% endblock page_title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'jo_list' %}">Job Orders</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'jo_details' joborder.pk %}">JO# {{joborder.pk|stringformat:'05d'}}</a></li>
+    <li class="breadcrumb-item active">{{ type }}</li>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+    <div class="card m-4">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-sm-1">
+                    <img src="{% static 'img/logo-purple.jpg' %}" alt="YourTime Center OPC" class="img-fluid" >
+                </div>
+                <div class="col-sm-6">
+                    <h3>YourTime Center OPC</h3>
+                    2F Corinthian Plaza Bldg.<br />
+                    121 Paseo De Roxas<br />
+                    Makati City 1229<br />
+                    Philippines<br />
+                </div>
+                <div class="col-sm-5">
+                    <h1 class="display-5 text-center">JOB ORDER</h1>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="card">
+                                <div class="bg-theme text-center p-2">
+                                    <span class="text-light">JOB ORDER NUMBER</span>
+                                </div>
+                                <div class="card-footer text-center">
+                                    <span style="font-size: larger;">{{ joborder.pk|stringformat:"05d" }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="card">
+                                <div class="bg-theme text-center p-2">
+                                    <span class="text-light">DATE RECEIVED</span>
+                                </div>
+                                <div class="card-footer text-center">
+                                    <span style="font-size: larger;">{{ joborder.created_at|date:"F j, Y" }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="card">
+                <div class="card-header bg-theme">
+                    <h5 class="card-title text-center text-light">CLIENT INFORMATION</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-2">ID:</div>
+                        <div class="col-sm-4">{{ joborder.client.pk|stringformat:"05d" }}</div>
+                        <div class="col-sm-2">Tel. No.:</div>
+                        <div class="col-sm-4">{{ joborder.client.tel_num }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2">Name:</div>
+                        <div class="col-sm-4">{{ joborder.client }}</div>
+                        <div class="col-sm-2">CP No.:</div>
+                        <div class="col-sm-4">{{ joborder.client.mob_num }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2">Address:</div>
+                        <div class="col-sm-4">{{ joborder.client.address }}</div>
+                        <div class="col-sm-2">Email:</div>
+                        <div class="col-sm-4">{{ joborder.client.email }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card m-1">
+                <div class="card-header bg-theme">
+                    <h5 class="card-title text-center text-light">ITEM INFORMATION</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-2">Article:</div>
+                        <div class="col-sm-4">{{ joborder.watch.article }}</div>
+                        <div class="col-sm-6">
+                            {% if joborder.watch.for_him %}
+                            <i class="fa fa-check-square-o" aria-hidden="true"></i>
+                            {% else %}
+                            <i class="fa fa-square-o" aria-hidden="true"></i>
+                            {% endif %}
+                            Men's &nbsp;&nbsp;&nbsp;
+                            {% if joborder.watch.for_her %}
+                            <i class="fa fa-check-square-o" aria-hidden="true"></i>
+                            {% else %}
+                            <i class="fa fa-square-o" aria-hidden="true"></i>
+                            {% endif %}
+                            Lady's
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2">Serial No.:</div>
+                        <div class="col-sm-4">{{ joborder.watch.serial_number }}</div>
+                        <div class="col-sm-2">Watch Movement:</div>
+                        <div class="col-sm-4">{{ joborder.watch.watch_movement }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2">Case No.:</div>
+                        <div class="col-sm-4">{{ joborder.watch.case_number }}</div>
+                        <div class="col-sm-2">Movement Caliber:</div>
+                        <div class="col-sm-4">{{ joborder.watch.movement_caliber }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2">Dial:</div>
+                        <div class="col-sm-4">{{ joborder.watch.dial }}</div>
+                        <div class="col-sm-2">Movement Number:</div>
+                        <div class="col-sm-4">{{ joborder.watch.movement_number }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2">Bracelet:</div>
+                        <div class="col-sm-4">{{ joborder.watch.bracelet }}</div>
+                        <div class="col-sm-2">Components:</div>
+                        <div class="col-sm-4">{{ joborder.watch.component }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2">Aesthetic Defects:</div>
+                        <div class="col-sm-10">{{ joborder.watch.aesthetic_defect }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card m-1">
+                <div class="card-header bg-theme">
+                    <h5 class="card-title text-center text-light">WORK TO BE DONE</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <div class="col-sm-4">Repair Work:</div>
+                                <div class="col-sm-8">{{ joborder.repair_work }}</div>
+                            </div>
+                            {% for assessment in joborder.assessment_jo.all %}
+                            <div class="row">
+                                <div class="col-sm-4">Assessment {{ forloop.counter }}:</div>
+                                <div class="col-sm-8">{{ assessment.assessment }}</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <div class="col-sm-4">External Case & Bracelet:</div>
+                                <div class="col-sm-8">{{ joborder.external_case_and_bracelet }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">Condition:</div>
+                                <div class="col-sm-8">{{ joborder.condition }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">Warranty:</div>
+                                <div class="col-sm-8">{{ joborder.warranty }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2">Notices:</div>
+                        <div class="col-sm-10">{{ joborder.notices }}</div>
+                    </div>
+                    <div class="row">
+                        <p>Arrival Photos:</p>
+                        {% for arrival in joborder.arrivalphoto_jo.all %}
+                        <img src="{{ arrival.image.url }}" style="height: 150px;" class="img-fluid m-1" alt="Arrival Photo">
+                        {% endfor %}
+                    </div>
+                    <div class="row">
+                        <p>Releasing Photos:</p>
+                        {% for release in joborder.releasephoto_jo.all %}
+                        <img src="{{ release.image.url }}" style="height: 150px;" class="img-fluid m-1" alt="Releasing Photo">
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card m-1">
+                <div class="card-header bg-theme">
+                    <h5 class="card-title text-center text-light">ESTIMATED CHARGES</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-2">Service Fee:</div>
+                        <div class="col-sm-2">{{ joborder.estimate_jo.service_fee|floatformat:2 }}</div>
+                        <div class="col-sm-2">Parts (if any):</div>
+                        <div class="col-sm-2">{{ joborder.estimate_jo.parts|floatformat:2 }}</div>
+                        <div class="col-sm-2" style="font-weight: bold;">Grand Total:</div>
+                        <div class="col-sm-2 bg-success text-center" style="font-weight: bolder;">{{ joborder.estimate_jo.total_estimate|floatformat:2 }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2">Date Promised:</div>
+                        <div class="col-sm-10">{{ joborder.promise_date|date:"F j, Y" }}</div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <div class="col-sm-4">Received by:</div>
+                                <div class="col-sm-8">{{ joborder.assigned_technician }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">Date/Time generated:</div>
+                                <div class="col-sm-8">{% now 'F j, Y, P' %}</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 text-center">
+                            <p></p>
+                            <div class="m-auto" style="border-top: 1px solid black; width: 400px;">Client's Name and Signature</div>
+                        </div>
+                    </div>
+                    <p class="text-danger">Note: Claiming stub must be presented upon claiming the watch. Representatives should provide authorization letter.</p>
+                    <p>YOURTIME CENTER OPC is not affiliated with Rolex S. A. or any of its subsidiaries.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer no-print">
+            <div class="row">
+                <button type="button" class="btn btn-secondary card-link" onclick="window.print()">Print</button>
+                <a href="{% url 'jo_details' joborder.pk %}" class="btn btn-default card-link">Job Order Details</a>
+            </div>
+        </div>
+    </div>
+{% endblock main_content %}
+
+
+{% block js %}
+    <script>
+        $(document).ready(function() {
+            $("#menu-reports").addClass("active")
+        })
+    </script>
+{% endblock js %}
