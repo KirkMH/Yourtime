@@ -27,6 +27,10 @@ def getModel(type):
         return JobOrder
     elif type == 'charge':
         return Charge
+    elif type == 'arrival':
+        return ArrivalPhoto
+    elif type == 'release':
+        return ReleasePhoto
     return None
 
 
@@ -43,6 +47,10 @@ def getFormClass(type):
         return JobOrderForm
     elif type == 'charge':
         return ChargeForm
+    elif type == 'arrival':
+        return ArrivalPhotoForm
+    elif type == 'release':
+        return ReleasePhotoForm
     return None
 
 
@@ -59,6 +67,10 @@ def getDescription(type):
         return 'Job Order details'
     elif type == 'charge':
         return 'Charge details'
+    elif type == 'arrival':
+        return 'Arrival Photo'
+    elif type == 'release':
+        return 'Release Photo'
     return 'Details'
 
 
@@ -129,6 +141,10 @@ class JobOrderDetailView(DetailView):
         context['charges'] = Charge.objects.filter(
             job_order=self.object).order_by('-id')
         context['statuses'] = JO_STATUS
+        context['arrivalphotos'] = ArrivalPhoto.objects.filter(
+            job_order=self.object).order_by('id')
+        context['releasephotos'] = ReleasePhoto.objects.filter(
+            job_order=self.object).order_by('id')
         return context
 
 
@@ -297,3 +313,11 @@ def update_jo_status(request, pk):
     jo.save()
     messages.success(request, 'Job Order status updated successfully!')
     return redirect(reverse('jo_details', kwargs={'pk': pk}))
+
+
+def delete_photo(request, type, pk):
+    photo = get_object_or_404(getModel(type), pk=pk)
+    jo = photo.job_order
+    photo.delete()
+    messages.success(request, 'Photo deleted successfully!')
+    return redirect(reverse('jo_details', kwargs={'pk': jo.pk}))

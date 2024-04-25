@@ -438,3 +438,29 @@ class Payment(models.Model):
         related_name="received_by",
         on_delete=models.CASCADE
     )
+
+
+class ArrivalPhoto(models.Model):
+    job_order = models.ForeignKey(
+        JobOrder,
+        verbose_name=_("Job Order"),
+        related_name="arrivalphoto_jo",
+        on_delete=models.CASCADE
+    )
+    photo = models.ImageField(
+        upload_to='photos/arrival/'
+    )
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+
+class ReleasePhoto(models.Model):
+    job_order = models.ForeignKey(
+        JobOrder,
+        verbose_name=_("Job Order"),
+        related_name="releasephoto_jo",
+        on_delete=models.CASCADE
+    )
+    photo = models.ImageField(
+        upload_to='photos/release'
+    )
+    uploaded_at = models.DateTimeField(auto_now_add=True)

@@ -15,4 +15,7 @@ urlpatterns = [
     path('<int:pk>/documentation/add', views.JobOrderDocumentationCreateView.as_view(),
          name='jo_documentation_add'),   # pk is the job order id
     path('<int:pk>/status', views.update_jo_status, name='update_jo_status'),
+    # pk is photo id, type is either arrival or release
+    path('photos/<str:type>/<int:pk>/delete',
+         views.delete_photo, name='delete_photo'),
 ]

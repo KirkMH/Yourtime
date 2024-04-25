@@ -42,3 +42,19 @@ class ChargeForm(forms.ModelForm):
     class Meta:
         model = Charge
         exclude = ('job_order', )
+
+
+class ArrivalPhotoForm(forms.ModelForm):
+    required_css_class = 'required'
+
+    class Meta:
+        model = ArrivalPhoto
+        fields = ['photo']
+
+
+class ReleasePhotoForm(forms.ModelForm):
+    required_css_class = 'required'
+
+    class Meta:
+        model = ReleasePhoto
+        fields = ['photo']

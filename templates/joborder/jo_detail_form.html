@@ -18,7 +18,7 @@
 
 {% block main_content %}
     <div class="card m-4">
-        <form method="post" novalidate>
+        <form method="post" enctype="multipart/form-data" novalidate>
             {% csrf_token %}
 
             <div class="card-header">

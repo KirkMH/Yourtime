@@ -4,6 +4,41 @@
 {% load form_tags %}
 
 {% block title %}Job Orders{% endblock title %}
+
+{% block css %}
+  <!-- Slick Carousel -->
+  <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+  <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
+  <style>
+    .slick-prev,
+    .slick-next,
+    .slick-arrow
+    {
+        background-color: lightgray !important;
+        border-radius: 50%;
+    }
+    .image-container {
+        position: relative;
+        display: inline-block; /* Ensures that container takes the size of the image */
+        margin: 5px;
+        border: 1px solid lightgray;
+        border-radius: 5px;
+    }
+    .delete-link {
+        position: absolute;
+        top: 0;
+        right: 10px;
+        font-size: 24px;
+        color: red;
+        text-decoration: none;
+    }
+
+    .delete-link:hover {
+        color: darkred;
+    }
+  </style>
+{% endblock css%}
+
 {% block page_title %}Job Order details{% endblock page_title %}
 
 {% block breadcrumb %}
@@ -158,10 +193,21 @@
                             <h4>Arrival Photos</h4>
                         </div>
                         <div class="card-body">
-                            <!-- Slick Carousel-->
+                            {% if arrivalphotos %}
+                            <div class="arrival-photos">
+                                {% for photo in arrivalphotos %}
+                                    <div class="image-container">
+                                        <img src="{{ photo.photo.url }}" class="img-fluid" style="height: 150px;" alt="Arrival Photo">
+                                        <a href="{% url 'delete_photo' 'arrival' photo.pk %}" class="delete-link" title="Delete">×</a>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <p class="card-text">No arrival photos available.</p>
+                            {% endif %}
                         </div>
                         <div class="card-footer">
-                            <a href="#" class="btn  btn-outline-secondary card-link">Add Photo</a>
+                            <a href="{% url 'jo_documentation_add' joborder.pk %}?type=arrival" class="btn btn-outline-secondary card-link">Add Photo</a>
                         </div>
                     </div>
                     <!-- END OF ARRIVAL PHOTOS -->
@@ -172,10 +218,21 @@
                             <h4>Release Photos</h4>
                         </div>
                         <div class="card-body">
-                            <!-- Slick Carousel-->
+                            {% if releasephotos %}
+                            <div class="release-photos">
+                                {% for photo in releasephotos %}
+                                    <div class="image-container">
+                                        <img src="{{ photo.photo.url }}" class="img-fluid" style="height: 150px;" alt="Release Photo">
+                                        <a href="{% url 'delete_photo' 'release' photo.pk %}" class="delete-link" title="Delete">×</a>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <p class="card-text">No release photos available.</p>
+                            {% endif %}
                         </div>
                         <div class="card-footer">
-                            <a href="#" class="btn  btn-outline-secondary card-link">Add Photo</a>
+                            <a href="{% url 'jo_documentation_add' joborder.pk %}?type=release" class="btn btn-outline-secondary card-link">Add Photo</a>
                         </div>
                     </div>
                     <!-- END OF RELEASE PHOTOS -->
@@ -368,10 +425,24 @@
 
 
 {% block js %}
-    <script src="{% static 'js/joborder.js' %}"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+    <script src="{% static 'js/joborder.js' %}?v=0"></script>
     <script>
         $(document).ready(function() {
             $("#menu-jo").addClass("active")
+
+            // Slick Carousel
+            $(".arrival-photos").slick({
+                infinite: false,
+                slidesToShow: 3,
+                slidesToScroll: 3
+            });
+            $(".release-photos").slick({
+                infinite: false,
+                slidesToShow: 3,
+                slidesToScroll: 3,
+            });
+            console.log("Job Order JS Loaded!");
         })
     </script>
 {% endblock js %}
