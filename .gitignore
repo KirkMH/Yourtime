@@ -4,6 +4,6 @@
 */*/__pycache__/*
 */*/*/__pycache__
 */*/*/__pycache__/*
-.env
+.venv
 db.sqlite3
 YourTime/settings.ini
