@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load humanize %}
 {% load static %}
 
 {% block title %}Dashboard{% endblock title %}
@@ -124,7 +125,7 @@
                       <td>{{ jo.watch.article }}</td>
                       <td>{{ jo.watch.owner }}</td>
                       <td>{{ jo.assigned_technician }}</td>
-                      <td>{{ jo.estimate.date_promised}}</td>
+                      <td>{{ jo.promise_date|naturalday}}</td>
                     </tr>
                     {% endfor %}
                   </tbody>
