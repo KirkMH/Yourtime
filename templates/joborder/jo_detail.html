@@ -48,6 +48,18 @@
 {% endblock breadcrumb %}
 
 {% block main_content %}
+
+    <!-- Modal -->
+    <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <img id="modalImage" class="img-fluid" alt="Image">
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="card m-4">
         <div class="card-header row">
             <div class="col-lg-10">
@@ -197,7 +209,9 @@
                             <div class="arrival-photos">
                                 {% for photo in arrivalphotos %}
                                     <div class="image-container">
-                                        <img src="{{ photo.photo.url }}" class="img-fluid" style="height: 150px;" alt="Arrival Photo">
+                                        <a href="#" data-toggle="modal" data-target="#imageModal" data-imageurl="{{ photo.photo.url }}" title="Click to view actual size">
+                                            <img src="{{ photo.photo.url }}" class="img-fluid" style="height: 150px;" alt="Arrival Photo">
+                                        </a>
                                         <a href="{% url 'delete_photo' 'arrival' photo.pk %}" class="delete-link" title="Delete">×</a>
                                     </div>
                                 {% endfor %}
@@ -222,7 +236,9 @@
                             <div class="release-photos">
                                 {% for photo in releasephotos %}
                                     <div class="image-container">
-                                        <img src="{{ photo.photo.url }}" class="img-fluid" style="height: 150px;" alt="Release Photo">
+                                        <a href="#" data-toggle="modal" data-target="#imageModal" data-imageurl="{{ photo.photo.url }}" title="Click to view actual size">
+                                            <img src="{{ photo.photo.url }}" class="img-fluid" style="height: 150px;" alt="Release Photo">
+                                        </a>
                                         <a href="{% url 'delete_photo' 'release' photo.pk %}" class="delete-link" title="Delete">×</a>
                                     </div>
                                 {% endfor %}
@@ -430,6 +446,13 @@
     <script>
         $(document).ready(function() {
             $("#menu-jo").addClass("active")
+
+            $('#imageModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget); // Button that triggered the modal
+                var imageUrl = button.data('imageurl'); // Extract info from data-* attributes
+                var modal = $(this);
+                modal.find('#modalImage').attr('src', imageUrl);
+            });
 
             // Slick Carousel
             $(".arrival-photos").slick({
