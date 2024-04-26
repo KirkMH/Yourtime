@@ -57,8 +57,8 @@
                 <h6 class="card-subtitle mb-2 text-muted">Email: <a href="mailto:{{ joborder.client.email }}">{{ joborder.client.email }}</a></h6>
             </div>
             <div class="col-lg-2">
-                <button class="btn btn-block btn-success float-right">Generate Receiving Report</button>
-                <button class="btn btn-block btn-success float-right">Generate Releasing Report</button>
+                <a href="{% url 'generate_job_order' joborder.pk 'receiving' %}" class="btn btn-block btn-success float-right">Generate Receiving Report</a>
+                <a href="{% url 'generate_job_order' joborder.pk 'releasing' %}" class="btn btn-block btn-success float-right">Generate Releasing Report</a>
             </div>
         </div>
         <div class="card-body p-2">
@@ -306,7 +306,7 @@
                                             <div class="col-lg-4"></div>
                                             <div class="col-lg-8 text-right">
                                                 <button type="submit" class="btn btn-outline-success">Update</button>
-                                                <a href="{% url 'generate_job_order' joborder.pk %}" class="btn btn-success">Generate Estimate Form</a>
+                                                <a href="{% url 'generate_job_order' joborder.pk 'estimate' %}" class="btn btn-success">Generate Estimate Form</a>
                                             </div>
                                         </div>
                                     </div>

@@ -3,8 +3,8 @@
 {% load humanize %}
 {% load form_tags %}
 
-{% block title %}{{ type }} Job Orders{% endblock title %}
-{% block page_title %}{{ type }} Job Orders{% endblock page_title %}
+{% block title %}{{ type }} Job Order{% endblock title %}
+{% block page_title %}{{ type }} Job Order{% endblock page_title %}
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
@@ -182,6 +182,8 @@
                             {% endfor %}
                         </div>
                     </div>
+
+                    {% if type == 'Releasing' %}
                     <div class="row"><div class="col-sm-12 text-muted">Releasing Photos:</div></div>
                     <div class="row">
                         <div class="col-sm-12">
@@ -192,9 +194,12 @@
                             {% endfor %}
                         </div>
                     </div>
+                    {% endif %}
+
                 </div>
             </div>
 
+            {% if type == 'Estimate' %}
             <div class="card">
                 <div class="card-header bg-theme p-2">
                     <h5 class="card-title text-light">ESTIMATED CHARGES</h5>
@@ -234,6 +239,8 @@
                     <p>YOURTIME CENTER OPC is not affiliated with Rolex S. A. or any of its subsidiaries.</p>
                 </div>
             </div>
+            {% endif %}
+
         </div>
 
         <div class="card-footer no-print">
