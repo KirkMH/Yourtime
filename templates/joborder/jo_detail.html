@@ -428,7 +428,7 @@
                             {% endif %}
                             <a href="{% url 'jo_documentation_add' joborder.pk %}?type=charge" class="btn btn-outline-secondary">Add Charge</a>
                             {% if charges %}
-                            <button class="btn btn-success">Generate Invoice</button>
+                            <a href="{% url 'generate_job_order' joborder.pk 'invoice' %}" class="btn btn-success">Generate Invoice</a>
                             {% endif %}
                         </div>
                     </div>

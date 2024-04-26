@@ -183,7 +183,7 @@
                         </div>
                     </div>
 
-                    {% if type == 'Releasing' %}
+                    {% if type == 'Releasing' or type == 'Invoice' %}
                     <div class="row"><div class="col-sm-12 text-muted">Releasing Photos:</div></div>
                     <div class="row">
                         <div class="col-sm-12">
@@ -218,7 +218,50 @@
                         <div class="col-sm-10">{{ joborder.promise_date|date:"F j, Y" }}</div>
                     </div>
                 </div>
-                <div class="card-footer p-2">
+            </div>
+            {% endif %}
+
+            {% if type == 'Invoice' %}
+            <div class="card">
+                <div class="card-header bg-theme p-2">
+                    <h5 class="card-title text-light">CHARGES</h5>
+                </div>
+                <div class="card-body p-2">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Particular</th>
+                                <th class="text-right">Unit Price</th>
+                                <th class="text-center">Quantity</th>
+                                <th class="text-right">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Service Fee</td>
+                                <td class="text-right">{{ joborder.service_fee|floatformat:2|intcomma }}</td>
+                                <td class="text-center">1</td>
+                                <td class="text-right">{{ joborder.service_fee|floatformat:2|intcomma }}</td>
+                            </tr>
+                            {% for charge in joborder.charge_jo.all %}
+                            <tr>
+                                <td>{{ charge.particular }}</td>
+                                <td class="text-right">{{ charge.unit_price|floatformat:2|intcomma }}</td>
+                                <td class="text-center">{{ charge.quantity }}</td>
+                                <td class="text-right">{{ charge.total_amount|floatformat:2|intcomma }}</td>
+                            </tr>
+                            {% endfor %}
+                            <tr style="font-weight: bold; font-size: large;">
+                                <td colspan="3">Total</td>
+                                <td class="text-right text-bold" style="font-size: larger;">{{ joborder.grand_total|peso }}</td>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="card">
+                <div class="card-body">
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="row">
@@ -239,8 +282,6 @@
                     <p>YOURTIME CENTER OPC is not affiliated with Rolex S. A. or any of its subsidiaries.</p>
                 </div>
             </div>
-            {% endif %}
-
         </div>
 
         <div class="card-footer no-print">
