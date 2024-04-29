@@ -212,12 +212,16 @@
       });
     });
 
+    const jo_completion = "{{ jo_completion|safe }}".split(",")
+    const jo_ontime = "{{ jo_ontime|safe }}".split(",")
+    const labels = "{{ labels|safe }}".split(",")
+    const revenue = "{{ revenue|safe }}".split(",")
       
     //---------------------
     //- STACKED BAR CHART -
     //---------------------
     var barChartData = {
-      labels  : ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+      labels  : labels,
       datasets: [
         {
           label               : 'Completed JOs',
@@ -228,10 +232,10 @@
           pointStrokeColor    : 'rgba(60,141,188,1)',
           pointHighlightFill  : '#fff',
           pointHighlightStroke: 'rgba(60,141,188,1)',
-          data                : [28, 48, 40, 19, 86, 27, 90]
+          data                : jo_completion
         },
         {
-          label               : 'Opened JOs',
+          label               : 'Completed On-Time',
           backgroundColor     : 'rgba(210, 214, 222, 1)',
           borderColor         : 'rgba(210, 214, 222, 1)',
           pointRadius         : false,
@@ -239,7 +243,7 @@
           pointStrokeColor    : '#c1c7d1',
           pointHighlightFill  : '#fff',
           pointHighlightStroke: 'rgba(220,220,220,1)',
-          data                : [65, 59, 80, 81, 56, 55, 40]
+          data                : jo_ontime
         },
       ]
     }
@@ -270,7 +274,7 @@
     //--------------
 
     var lineChartData = {
-      labels  : ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+      labels  : labels,
       datasets: [
         {
           label               : 'Revenue, in thousands of pesos',
@@ -281,7 +285,7 @@
           pointStrokeColor    : 'rgba(38,157,66,1)',
           pointHighlightFill  : '#fff',
           pointHighlightStroke: 'rgba(38,157,66,1)',
-          data                : [28, 48, 40, 19, 86, 27, 90]
+          data                : revenue
         }
       ]
     }
@@ -300,6 +304,9 @@
         yAxes: [{
           gridLines : {
             display : false,
+          },
+          ticks: {
+            beginAtZero: true
           }
         }]
       }
