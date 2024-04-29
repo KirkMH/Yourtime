@@ -45,13 +45,13 @@ class Employee(models.Model):
         return JobOrder.closed_late.filter(assigned_technician=self)
 
     def jo_completed_within_the_month(self):
-        return JobOrder.objects.filter(assigned_technician=self, closed_at__month=timezone.now().month)
+        return JobOrder.objects.filter(assigned_technician=self, closed_at__month=timezone.localdate().month)
 
     def active_jo(self):
         return JobOrder.objects.filter(assigned_technician=self, closed_at=None)
 
     def active_overdue(self):
-        return JobOrder.objects.filter(assigned_technician=self, closed_at=None, promise_date__lt=timezone.now())
+        return JobOrder.objects.filter(assigned_technician=self, closed_at=None, promise_date__lt=timezone.localdate())
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'

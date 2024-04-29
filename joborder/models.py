@@ -3,8 +3,6 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.db.models import F
 
-from datetime import datetime
-
 from client.models import Client
 from customization.models import (
     RepairWork,
@@ -154,14 +152,14 @@ class Conditions(models.Manager):
 class OverDues(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(
-            promise_date__lt=datetime.now().date()).filter(
+            promise_date__lt=timezone.localdate()).filter(
                 current_status__in=OPEN_STATUSES).order_by('promise_date')
 
 
 class DueInAWeek(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(
-            promise_date__lte=datetime.now().date() + timezone.timedelta(days=7)).filter(
+            promise_date__lte=timezone.localdate() + timezone.timedelta(days=7)).filter(
             current_status__in=OPEN_STATUSES).order_by('promise_date')
 
 

@@ -11,7 +11,7 @@ def dashboard(request):
     open_count = JobOrder.open_jobs.count()
     greeting = 'Good '
 
-    current_hour = timezone.now().hour
+    current_hour = timezone.localtime().hour
     if 5 <= current_hour < 12:
         greeting += 'morning'
     elif 12 <= current_hour < 18:
@@ -23,8 +23,8 @@ def dashboard(request):
         'greeting': greeting,
         'clients': Client.objects.count(),
         'open_jo': open_count,
-        'due_jo': JobOrder.open_jobs.filter(promise_date=timezone.now()).count(),
-        'overdue': JobOrder.open_jobs.filter(promise_date__lt=timezone.now()).count(),
+        'due_jo': JobOrder.open_jobs.filter(promise_date=timezone.localdate()).count(),
+        'overdue': JobOrder.open_jobs.filter(promise_date__lt=timezone.localdate()).count(),
         'priority_jos': JobOrder.due_in_a_week.all()
     }
     return render(request, 'dashboard.html', context)
