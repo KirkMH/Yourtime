@@ -27,8 +27,12 @@ class Employee(models.Model):
     user_type = models.IntegerField(choices=userTypes)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
     objects = models.Manager()
     technicians = Technicians()
+
+    def get_type_description(self):
+        return dict(userTypes)[self.user_type]
 
     def get_delivery_performance_rating(self):
         jo_ontime = JobOrder.closed_on_time.filter(

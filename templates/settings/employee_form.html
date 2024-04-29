@@ -1,0 +1,68 @@
+{% extends '../base.html' %}
+{% load static form_tags %}
+
+{% block title %}Employees{% endblock title %}
+
+{% block page_title %}
+{% if setting %}
+Edit Employee
+{% else %}
+New Employee
+{% endif %}
+{% endblock page_title %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/asterisk_on_required.css' %}">
+{% endblock css %}
+    
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'employee_list' %}">Employees</a></li>
+    <li class="breadcrumb-item active">
+        
+        {% if client %}
+            Edit
+        {% else %}
+            New
+        {% endif %}
+            
+    </li>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+    <div class="card m-4">
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            <div class="card-header">
+                <h3 class="card-title">Please fill in all the fields marked with an <label class="required">asterisk</label>.</h3>
+            </div>
+
+            <div class="card-body">
+                <div class="col-12">
+                    {% include '../includes/form_one_col.html' %}
+                </div>
+            </div>
+            
+            <div class="card-footer">
+                
+                {% if not setting %}
+                <button type="submit" class="btn btn-success" name="another">Save and add another</button>
+                {% endif %}
+                    
+                <button type="submit" class="btn btn-secondary" name="save">Save</button>
+                <a href="{% url 'employee_list' %}" class="btn btn-default">Cancel</a>
+            </div>
+        </form>
+    </div>
+{% endblock main_content %}
+
+
+{% block js %}
+    <script>
+        $(document).ready(function() {
+            $("#menu-settings").addClass("active")
+        })
+    </script>
+{% endblock js %}

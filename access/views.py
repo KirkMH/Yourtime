@@ -1,10 +1,16 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.db.models import F, Sum
+from django.views.generic import ListView
+from django.contrib import messages
+from django.http import JsonResponse
 
 from client.models import Client
 from joborder.models import JobOrder, Payment
+from django.contrib.auth.models import User
+from .models import Employee
+from .forms import NewEmployeeForm
 
 
 @login_required
@@ -63,3 +69,38 @@ def dashboard(request):
         'revenue': ",".join(revenue),
     }
     return render(request, 'dashboard.html', context)
+
+
+class EmployeeList(ListView):
+    model = Employee
+    template_name = 'settings/employee_list.html'
+    context_object_name = 'employees'
+
+
+def employeeCreate(request):
+    if request.method == 'POST':
+        form = NewEmployeeForm(request.POST)
+        if form.is_valid():
+            user = User.objects.create_user(
+                username=form.cleaned_data['username'],
+                password='YTOPCpassword123!'
+            )
+            Employee.objects.create(
+                user=user,
+                first_name=form.cleaned_data['first_name'],
+                last_name=form.cleaned_data['last_name'],
+                user_type=form.cleaned_data['user_type']
+            )
+            return redirect('employee_list')
+    else:
+        form = NewEmployeeForm()
+    return render(request, 'settings/employee_form.html', {'form': form})
+
+
+def resetPassword(request, pk):
+    employee = Employee.objects.get(pk=pk)
+    employee.user.set_password('YTOPCpassword123!')
+    employee.user.save()
+    print("reset")
+    messages.success(request, "Password reset was successful.")
+    return JsonResponse({'success': True})

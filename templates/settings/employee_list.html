@@ -1,0 +1,97 @@
+{% extends '../base.html' %}
+{% load static %}
+
+{% block title %}Employee List{% endblock title %}
+{% block page_title %}Employee list{% endblock page_title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+    <li class="breadcrumb-item active">Employees</li>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+<div class="card m-4">
+    <form method="get">
+        <div class="card-header">
+            <div class="row">
+            <div class="col-lg-12 text-right">
+                <a href="{% url 'new_employee' %}" class="btn btn-secondary">New Employee</a>
+            </div>
+            </div>
+        </div>
+    </form>
+    <div class="card-body table-responsive">
+        <table id="table" class="table table-hover table-head-fixed table-sm">
+            <thead>
+                <tr>
+                    <th class="text-center" width="10%">Action</th>
+                    <th class="text-center">Name</th>
+                    <th class="text-center">Type</th>
+                    <th class="text-center">Username</th>
+                    <th class="text-center">Date Created</th>
+                    <th class="text-center">Last Updated</th>
+                    <th class="text-center">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for employee in employees %}
+                <tr>
+                    <td class="text-center">
+                        <a href="#" title="Reset password?" onclick="confirmReset('{{ employee.pk }}')"><i class="fa fa-key"></i></a>
+                    </td>
+                    <td>{{ employee }}</td>
+                    <td>{{ employee.get_type_description }}</td>
+                    <td>{{ employee.user.username }}</td>
+                    <td>{{ employee.created_at|date:"F j, Y" }}</td>
+                    <td>{{ employee.updated_at|date:"F j, Y" }}</td>
+                    <td class="text-center">{{ employee.is_active|yesno:"Active,Deactivated"  }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock main_content %}
+
+
+{% block js %}
+    <!-- bootboxjs -->
+    <script src="{% static 'js/bootbox.all.min.js' %}"></script>
+    <script>
+        function confirmReset(employee_id) {
+            bootbox.confirm({message: 'Are you sure you want to reset the password?',
+                buttons: {
+                    confirm: {
+                        label: 'Yes',
+                        className: 'btn-success'
+                    },
+                    cancel: {
+                        label: 'No',
+                        className: 'btn-danger'
+                    }
+                },
+                callback: function (result) {
+                    console.log(result)
+                    if (result) {
+                        $.ajax({
+                            url: "{% url 'employee_list'  %}/" + employee_id + "/reset", 
+                            dataType: 'json',
+                            success: function(data){
+                                console.log("success")
+                                toastr.success("Password reset was successful.")
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            $("#table").DataTable({
+                order: [[ 1, "asc" ]],
+            });
+            
+            $("#menu-settings").addClass("active")
+        })
+    </script>
+{% endblock js %}
