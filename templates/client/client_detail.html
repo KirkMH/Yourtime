@@ -85,7 +85,7 @@
     
     <div class="card m-4">
         <div class="card-header">
-            <h4>Job Orders</h3>
+            <h4>Last 10 Job Orders</h3>
         </div>
         {% if client.client_jo.all.exists %}
         <div class="card-body table-responsive">
@@ -101,7 +101,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for jo in client.client_jo.all %}
+                    {% for jo in client.client_jo.all|dictsortreversed:"created_at"|slice:":10" %}
                         <tr>
                             <td class="text-center">
                                 <a href="{% url 'jo_details' jo.pk %}">{{ jo.pk|stringformat:"05d" }}</a>
@@ -129,7 +129,9 @@
 {% block js %}
     <script>
         $(document).ready(function() {
-            $("#table").DataTable();
+            $("#table").DataTable({
+                order: [[0, 'desc']],
+            });
             $("#menu-clients").addClass("active")
         })
     </script>
