@@ -10,7 +10,7 @@ from client.models import Client
 from joborder.models import JobOrder, Payment
 from django.contrib.auth.models import User
 from .models import Employee
-from .forms import NewEmployeeForm
+from .forms import *
 
 
 @login_required
@@ -77,6 +77,7 @@ class EmployeeList(ListView):
     context_object_name = 'employees'
 
 
+@login_required
 def employeeCreate(request):
     if request.method == 'POST':
         form = NewEmployeeForm(request.POST)
@@ -91,12 +92,14 @@ def employeeCreate(request):
                 last_name=form.cleaned_data['last_name'],
                 user_type=form.cleaned_data['user_type']
             )
+            messages.success(request, "Employee was successfully created.")
             return redirect('employee_list')
     else:
         form = NewEmployeeForm()
     return render(request, 'settings/employee_form.html', {'form': form})
 
 
+@login_required
 def resetPassword(request, pk):
     employee = Employee.objects.get(pk=pk)
     employee.user.set_password('YTOPCpassword123!')
@@ -104,3 +107,27 @@ def resetPassword(request, pk):
     print("reset")
     messages.success(request, "Password reset was successful.")
     return JsonResponse({'success': True})
+
+
+@login_required
+def changeCredentials(request):
+    # get currently logged in user
+    employee = Employee.objects.get(user=request.user)
+
+    if request.method == 'POST':
+        form = UpdateEmployeeForm(request.POST)
+        if form.is_valid():
+            employee.first_name = form.cleaned_data['first_name']
+            employee.last_name = form.cleaned_data['last_name']
+            employee.save()
+            messages.success(
+                request, "Your credentials was successfully updated.")
+            if form.cleaned_data['password'] != "":
+                user = employee.user
+                user.set_password(form.cleaned_data['password'])
+                user.save()
+                return redirect('logout')
+    else:
+        form = UpdateEmployeeForm(
+            initial={'first_name': employee.first_name, 'last_name': employee.last_name})
+    return render(request, 'settings/change_credentials.html', {'form': form})
