@@ -169,6 +169,38 @@
                             </div>
                             <div class="row">
                                 <div class="col-lg-5">
+                                    <p class="card-text text-muted">Case Number:</p>
+                                </div>
+                                <div class="col-lg-7">
+                                    <p class="card-text">{{ joborder.watch.case_number }}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-5">
+                                    <p class="card-text text-muted">Dial:</p>
+                                </div>
+                                <div class="col-lg-7">
+                                    <p class="card-text">{{ joborder.watch.dial }}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-5">
+                                    <p class="card-text text-muted">Bracelet:</p>
+                                </div>
+                                <div class="col-lg-7">
+                                    <p class="card-text">{{ joborder.watch.bracelet }}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-5">
+                                    <p class="card-text text-muted">Components:</p>
+                                </div>
+                                <div class="col-lg-7">
+                                    <p class="card-text">{{ joborder.watch.component }}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-5">
                                     <p class="card-text text-muted">Watch Movement:</p>
                                 </div>
                                 <div class="col-lg-7">
@@ -181,6 +213,14 @@
                                 </div>
                                 <div class="col-lg-7">
                                     <p class="card-text">{{ joborder.watch.movement_caliber }}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-5">
+                                    <p class="card-text text-muted">Guarantee/Warranty?</p>
+                                </div>
+                                <div class="col-lg-7">
+                                    <p class="card-text">{{ joborder.watch.with_card|yesno:"Yes,No" }}</p>
                                 </div>
                             </div>
                             {% else %}

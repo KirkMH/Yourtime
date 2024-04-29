@@ -19,6 +19,7 @@ JO_STATUS = [
     ('ONGOING', 'Ongoing'),
     ('OBSERVATION', 'Observation'),
     ('SAFEKEEPING', 'Safekeeping'),
+    ('PARTS WAITING', 'Parts Waiting'),
     ('PENDING', 'Pending'),
     ('FOR-ESTIMATE', 'For Estimate'),
     ('UNCLAIMED', 'Unclaimed'),
@@ -30,7 +31,7 @@ JO_STATUS = [
 ]
 
 OPEN_STATUSES = ['SORTING', 'IN-QUEUE', 'ONGOING', 'OBSERVATION',
-                 'PENDING', 'FOR-ESTIMATE']
+                 'PENDING', 'FOR-ESTIMATE', 'PARTS WAITING']
 CLOSE_STATUSES = ['SAFEKEEPING', 'UNCLAIMED', 'CLAIMED', 'PULLED-OUT',
                   'NOT-REPAIRABLE', 'IN-HOUSE', 'FINISHED']
 
@@ -120,6 +121,10 @@ class Watch(models.Model):
         verbose_name=_("Owner"),
         related_name="watch_owner",
         on_delete=models.CASCADE
+    )
+    with_card = models.BooleanField(
+        _("with Guarantee/Warranty Card?"),
+        default=True
     )
     for_him = models.BooleanField(
         _("For Him?"),
