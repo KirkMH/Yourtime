@@ -104,7 +104,6 @@ def resetPassword(request, pk):
     employee = Employee.objects.get(pk=pk)
     employee.user.set_password('YTOPCpassword123!')
     employee.user.save()
-    print("reset")
     messages.success(request, "Password reset was successful.")
     return JsonResponse({'success': True})
 
