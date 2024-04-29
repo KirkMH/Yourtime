@@ -7,4 +7,5 @@ urlpatterns = [
     path('clients', views.client_report, name='client_report'),
     path('job_order/<int:pk>/<str:type>',
          views.job_order, name='generate_job_order'),
+    path('technicians', views.technician_metrics, name='tech_metrics'),
 ]

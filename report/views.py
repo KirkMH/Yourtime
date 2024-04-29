@@ -2,6 +2,7 @@ from django.shortcuts import render
 
 from joborder.models import JobOrder
 from client.models import Client
+from access.models import Employee
 
 
 def due_report(request):
@@ -31,3 +32,11 @@ def job_order(request, pk, type):
         'type': type.title(),
     }
     return render(request, 'report/job_order.html', context=context)
+
+
+def technician_metrics(request):
+    technicians = Employee.technicians.all()
+    context = {
+        'technicians': technicians,
+    }
+    return render(request, 'report/tech_metrics.html', context=context)

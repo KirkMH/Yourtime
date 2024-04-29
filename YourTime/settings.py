@@ -166,6 +166,7 @@ AWS_S3_OBJECT_PARAMETERS = {
 }
 AWS_LOCATION = 'static'
 
+
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]

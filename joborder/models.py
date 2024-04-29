@@ -6,7 +6,6 @@ from django.db.models import F
 from datetime import datetime
 
 from client.models import Client
-from access.models import Employee
 from customization.models import (
     RepairWork,
     ModeOfPayment,
@@ -33,8 +32,8 @@ JO_STATUS = [
 ]
 
 OPEN_STATUSES = ['SORTING', 'IN-QUEUE', 'ONGOING', 'OBSERVATION',
-                 'SAFEKEEPING', 'PENDING', 'FOR-ESTIMATE', 'UNCLAIMED']
-CLOSE_STATUSES = ['CLAIMED', 'PULLED-OUT',
+                 'PENDING', 'FOR-ESTIMATE']
+CLOSE_STATUSES = ['SAFEKEEPING', 'UNCLAIMED', 'CLAIMED', 'PULLED-OUT',
                   'NOT-REPAIRABLE', 'IN-HOUSE', 'FINISHED']
 
 
@@ -172,6 +171,20 @@ class OpenJobOrders(models.Manager):
             current_status__in=OPEN_STATUSES).order_by('promise_date')
 
 
+class ClosedOnTime(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(
+            current_status__in=CLOSE_STATUSES).filter(
+            closed_at__lte=F('promise_date')).order_by('-pk')
+
+
+class ClosedLate(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(
+            current_status__in=CLOSE_STATUSES).filter(
+            closed_at__gt=F('promise_date')).order_by('-pk')
+
+
 class JobOrder(models.Model):
     client = models.ForeignKey(
         Client,
@@ -217,7 +230,7 @@ class JobOrder(models.Model):
         null=True, blank=True
     )
     assigned_technician = models.ForeignKey(
-        Employee,
+        'access.Employee',
         verbose_name=_("Assigned Technician"),
         related_name="assigned_technician_jo",
         on_delete=models.CASCADE,
@@ -235,11 +248,17 @@ class JobOrder(models.Model):
         null=True, blank=True,
         default=timezone.now
     )
+    closed_at = models.DateField(
+        _("Closed At"),
+        null=True, blank=True
+    )
     objects = models.Manager()
     conditions = Conditions()
     overdues = OverDues()
     due_in_a_week = DueInAWeek()
     open_jobs = OpenJobOrders()
+    closed_on_time = ClosedOnTime()
+    closed_late = ClosedLate()
 
     def total_charges(self):
         # total_amount = unit price * quantity
@@ -259,7 +278,7 @@ class JobOrder(models.Model):
         return self.total_charges() - self.total_paid()
 
     def isClosed(self):
-        return self.current_status in ['CLAIMED', 'PULLED-OUT', 'NOT-REPAIRABLE', 'IN-HOUSE', 'FINISHED']
+        return self.current_status in CLOSE_STATUSES
 
     def isOpen(self):
         return not self.isClosed()
@@ -269,6 +288,17 @@ class JobOrder(models.Model):
 
     def isDueInAWeek(self):
         return self.isOpen() and self.promise_date - timezone.now().date() <= 7
+
+    def isClosedOnTime(self):
+        return self.isClosed() and self.closed_at <= self.promise_date
+
+    def isClosedLate(self):
+        return self.isClosed() and self.closed_at > self.promise_date
+
+    def save(self, *args, **kwargs):
+        if self.current_status in CLOSE_STATUSES:
+            self.closed_at = timezone.now().date()
+        super().save(*args, **kwargs)
 
 
 class Assessment(models.Model):
@@ -288,7 +318,7 @@ class Assessment(models.Model):
     )
     encoded_at = models.DateTimeField(auto_now_add=True)
     assessed_by = models.ForeignKey(
-        Employee,
+        'access.Employee',
         verbose_name=_("Assessed By"),
         related_name="assessed_by",
         on_delete=models.CASCADE
@@ -319,7 +349,7 @@ class TestLog(models.Model):
         default=timezone.now
     )
     tested_by = models.ForeignKey(
-        Employee,
+        'access.Employee',
         verbose_name=_("Tested By"),
         related_name="tested_by",
         on_delete=models.CASCADE
@@ -440,7 +470,7 @@ class Payment(models.Model):
         null=True, blank=True
     )
     received_by = models.ForeignKey(
-        Employee,
+        'access.Employee',
         verbose_name=_("Received By"),
         related_name="received_by",
         on_delete=models.CASCADE
