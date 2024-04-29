@@ -114,20 +114,21 @@
                     </tr>
                   </thead>
                   <tbody>
-                    {% if priority_jos == None %}
+                    {% if priority_jos %}
+                      {% for jo in priority_jos %}
+                      <tr>
+                        <td><a href="{% url 'jo_details' jo.pk %}">{{ jo.pk|stringformat:"05d" }}</a></td>
+                        <td>{{ jo.watch.article }}</td>
+                        <td>{{ jo.watch.owner }}</td>
+                        <td>{{ jo.assigned_technician }}</td>
+                        <td>{{ jo.promise_date|naturalday}}</td>
+                      </tr>
+                      {% endfor %}
+                    {% else %}
                     <tr>
-                      <td colspan="4" class="text-center">No priority job orders</td>
+                      <td colspan="4" class="text-center">No priority job orders.</td>
                     </tr>
                     {% endif %}
-                    {% for jo in priority_jos %}
-                    <tr>
-                      <td><a href="{% url 'jo_details' jo.pk %}">{{ jo.pk|stringformat:"05d" }}</a></td>
-                      <td>{{ jo.watch.article }}</td>
-                      <td>{{ jo.watch.owner }}</td>
-                      <td>{{ jo.assigned_technician }}</td>
-                      <td>{{ jo.promise_date|naturalday}}</td>
-                    </tr>
-                    {% endfor %}
                   </tbody>
                 </table>
               </div>
