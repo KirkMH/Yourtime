@@ -252,15 +252,15 @@ class JobOrderDetailUpdateView(UpdateView, SuccessMessageMixin):
 
 @login_required
 def save_estimate(request, pk):
-    parts = request.POST.get('parts') or 0
-    serviceFee = request.POST.get('serviceFee') or 0
+    parts = float(request.POST.get('parts') or '0')
+    serviceFee = float(request.POST.get('serviceFee') or '0')
     total = parts + serviceFee
 
     jo = get_object_or_404(JobOrder, pk=pk)
     estimate, _ = Estimate.objects.get_or_create(job_order=jo)
     estimate.parts = parts
     estimate.service_fee = serviceFee
-    estimate.total = total
+    estimate.total_estimate = total
     estimate.save()
 
     return redirect(reverse('jo_details', kwargs={'pk': pk}))
