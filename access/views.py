@@ -1,3 +1,5 @@
+from typing import Any
+from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
@@ -76,16 +78,21 @@ class EmployeeList(ListView):
     template_name = 'settings/employee_list.html'
     context_object_name = 'employees'
 
+    def get_queryset(self):
+        return super().get_queryset()
+
 
 @login_required
 def employeeCreate(request):
     if request.method == 'POST':
         form = NewEmployeeForm(request.POST)
         if form.is_valid():
-            user = User.objects.create_user(
-                username=form.cleaned_data['username'],
-                password='YTOPCpassword123!'
-            )
+            user = None
+            if form.cleaned_data['username'] != "":
+                user = User.objects.create_user(
+                    username=form.cleaned_data['username'],
+                    password='YTOPCpassword123!'
+                )
             Employee.objects.create(
                 user=user,
                 first_name=form.cleaned_data['first_name'],
@@ -105,6 +112,32 @@ def resetPassword(request, pk):
     employee.user.set_password('YTOPCpassword123!')
     employee.user.save()
     messages.success(request, "Password reset was successful.")
+    return JsonResponse({'success': True})
+
+
+@login_required
+def removeAsUser(request, pk):
+    employee = Employee.objects.get(pk=pk)
+    user = employee.user
+    user.delete()
+    employee.user = None
+    employee.save()
+    messages.success(request, "Request was successful.")
+    return JsonResponse({'success': True})
+
+
+@login_required
+def addAsUser(request, pk):
+    username = request.GET.get('username')
+    print(f"Username: {username}")
+    user = User.objects.create_user(
+        username=username,
+        password='YTOPCpassword123!'
+    )
+    employee = Employee.objects.get(pk=pk)
+    employee.user = user
+    employee.save()
+    messages.success(request, "Request was successful.")
     return JsonResponse({'success': True})
 
 

@@ -5,7 +5,8 @@ from .models import userTypes
 class NewEmployeeForm(forms.Form):
     required_css_class = 'required'
 
-    username = forms.CharField(max_length=100, required=True)
+    username = forms.CharField(max_length=100, required=False,
+                               help_text="Leave blank if this employee is a non-user.")
     first_name = forms.CharField(max_length=100, required=True)
     last_name = forms.CharField(max_length=100, required=True)
     user_type = forms.ChoiceField(choices=userTypes, required=True)

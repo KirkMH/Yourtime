@@ -14,4 +14,8 @@ urlpatterns = [
     path('employees/new', views.employeeCreate, name='new_employee'),
     path('employees/<int:pk>/reset',
          views.resetPassword, name='employee_reset'),
+    path('employees/<int:pk>/remove',
+         views.removeAsUser, name='employee_remove'),
+    path('employees/<int:pk>/add',
+         views.addAsUser, name='employee_add'),
 ]

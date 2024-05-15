@@ -37,7 +37,12 @@
                 {% for employee in employees %}
                 <tr>
                     <td class="text-center">
-                        <a href="#" title="Reset password?" onclick="confirmReset('{{ employee.pk }}')"><i class="fa fa-key"></i></a>
+                        {% if employee.user %}
+                        <a href="#" title="Reset password?" onclick="confirmReset('{{ employee.pk }}')"><i class="fa fa-key"></i></a> | 
+                        <a href="#" title="Remove as user" onclick="confirmRemove('{{ employee.pk }}')"><i class="fa fa-user-times"></i></a>
+                        {% else %}
+                        <a href="#" title="Add as user" onclick="confirmAdd('{{ employee.pk }}')"><i class="fa fa-user-plus"></i></a>
+                        {% endif %}
                     </td>
                     <td>{{ employee }}</td>
                     <td>{{ employee.get_type_description }}</td>
@@ -63,11 +68,11 @@
                 buttons: {
                     confirm: {
                         label: 'Yes',
-                        className: 'btn-success'
+                        className: 'btn-danger'
                     },
                     cancel: {
                         label: 'No',
-                        className: 'btn-danger'
+                        className: 'btn-default'
                     }
                 },
                 callback: function (result) {
@@ -77,13 +82,57 @@
                             url: "{% url 'employee_list'  %}/" + employee_id + "/reset", 
                             dataType: 'json',
                             success: function(data){
-                                console.log("success")
-                                toastr.success("Password reset was successful.")
+                                location.href = "{% url 'employee_list' %}?success=" + data.success
                             }
                         });
                     }
                 }
             });
+        }
+
+        function confirmRemove(employee_id) {
+            bootbox.confirm({message: 'Are you sure you want to remove this employee as a user?',
+                buttons: {
+                    confirm: {
+                        label: 'Yes',
+                        className: 'btn-danger'
+                    },
+                    cancel: {
+                        label: 'No',
+                        className: 'btn-default'
+                    }
+                },
+                callback: function (result) {
+                    console.log(result)
+                    if (result) {
+                        $.ajax({
+                            url: "{% url 'employee_list'  %}/" + employee_id + "/remove", 
+                            dataType: 'json',
+                            success: function(data){
+                                location.href = "{% url 'employee_list' %}?success=" + data.success
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
+        function confirmAdd(employee_id) {
+            bootbox.prompt('Please enter the username for this employee:',
+                function (result) {
+                    console.log(result)
+                    if (result) {
+                        $.ajax({
+                            url: "{% url 'employee_list'  %}/" + employee_id + "/add",
+                            data: {username: result},
+                            dataType: 'json',
+                            success: function(data){
+                                location.href = "{% url 'employee_list' %}?success=" + data.success
+                            }
+                        });
+                    }
+                }
+            );
         }
 
         $(document).ready(function() {

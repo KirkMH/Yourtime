@@ -1,6 +1,7 @@
 from django import forms
 
 from .models import *
+from access.models import Employee
 
 
 class WatchForm(forms.ModelForm):
@@ -18,6 +19,11 @@ class JobOrderForm(forms.ModelForm):
         model = JobOrder
         fields = ['repair_work', 'external_case_and_bracelet', 'notices', 'condition', 'warranty',
                   'assigned_technician', 'current_status', 'promise_date']
+
+    def __init__(self, *args, **kwargs):
+        super(JobOrderForm, self).__init__(*args, **kwargs)
+        self.fields['assigned_technician'].queryset = Employee.technicians.filter(
+            is_active=True)
 
 
 class AssessmentForm(forms.ModelForm):
