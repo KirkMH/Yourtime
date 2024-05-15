@@ -257,12 +257,7 @@ def save_estimate(request, pk):
     total = parts + serviceFee
 
     jo = get_object_or_404(JobOrder, pk=pk)
-    estimate = None
-    if jo.estimate_jo:
-        estimate = jo.estimate_jo
-    else:
-        estimate = Estimate.objects.create(job_order=jo)
-
+    estimate, _ = Estimate.objects.get_or_create(job_order=jo)
     estimate.parts = parts
     estimate.service_fee = serviceFee
     estimate.total = total
