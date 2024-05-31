@@ -7,9 +7,32 @@ from access.models import Employee
 class WatchForm(forms.ModelForm):
     required_css_class = 'required'
 
+    BOOLEAN_CHOICES = [
+        (True, 'Yes'),
+        (False, 'No'),
+    ]
+
     class Meta:
         model = Watch
         exclude = ('owner', )
+
+    def __init__(self, *args, **kwargs):
+        super(WatchForm, self).__init__(*args, **kwargs)
+        self.fields['with_card'] = forms.ChoiceField(
+            choices=self.BOOLEAN_CHOICES,
+            required=True,
+            widget=forms.Select
+        )
+        self.fields['for_him'] = forms.ChoiceField(
+            choices=self.BOOLEAN_CHOICES,
+            required=True,
+            widget=forms.Select
+        )
+        self.fields['for_her'] = forms.ChoiceField(
+            choices=self.BOOLEAN_CHOICES,
+            required=True,
+            widget=forms.Select
+        )
 
 
 class JobOrderForm(forms.ModelForm):
