@@ -19,16 +19,19 @@ class WatchForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(WatchForm, self).__init__(*args, **kwargs)
         self.fields['with_card'] = forms.ChoiceField(
+            label="With Guarantee/Warranty Card?",
             choices=self.BOOLEAN_CHOICES,
             required=True,
             widget=forms.Select
         )
         self.fields['for_him'] = forms.ChoiceField(
+            label="For Him?",
             choices=self.BOOLEAN_CHOICES,
             required=True,
             widget=forms.Select
         )
         self.fields['for_her'] = forms.ChoiceField(
+            label="For Her?",
             choices=self.BOOLEAN_CHOICES,
             required=True,
             widget=forms.Select
