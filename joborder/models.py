@@ -232,6 +232,21 @@ class JobOrder(models.Model):
         on_delete=models.CASCADE,
         null=True, blank=True
     )
+    warranty_file_1 = models.FileField(
+        _("Warranty File 1"),
+        upload_to='warranty',
+        null=True, blank=True
+    )
+    warranty_file_2 = models.FileField(
+        _("Warranty File 2"),
+        upload_to='warranty',
+        null=True, blank=True
+    )
+    warranty_file_3 = models.FileField(
+        _("Warranty File 3"),
+        upload_to='warranty',
+        null=True, blank=True
+    )
     assigned_technician = models.ForeignKey(
         'access.Employee',
         verbose_name=_("Assigned Technician"),

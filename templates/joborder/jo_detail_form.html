@@ -56,6 +56,27 @@
                 const conditions = "{{conditions}}".split(',');
                 $('#id_condition').typeahead({source: conditions});
                 $('#id_promise_date').attr('type', 'date');
+                // hide these fields by default
+                $("#id_warranty_file_1").closest("div").closest("div").hide();
+                $("#id_warranty_file_2").closest("div").closest("div").hide();
+                $("#id_warranty_file_3").closest("div").closest("div").hide();
+
+                $('#id_warranty').on('change', function() {
+
+                    if ($('#id_warranty').val()) {
+                        $("#id_warranty_file_1").closest("div").closest("div").show();
+                        $("#id_warranty_file_2").closest("div").closest("div").show();
+                        $("#id_warranty_file_3").closest("div").closest("div").show();
+                    }
+                    else {
+                        $("#id_warranty_file_1").val("");
+                        $("#id_warranty_file_2").val("");
+                        $("#id_warranty_file_3").val("");
+                        $("#id_warranty_file_1").closest("div").closest("div").hide();
+                        $("#id_warranty_file_2").closest("div").closest("div").hide();
+                        $("#id_warranty_file_3").closest("div").closest("div").hide();
+                    }
+                })
             }
             else if (type === 'Test Log details')
                 $('#id_tested_on').attr('type', 'datetime-local');

@@ -135,7 +135,18 @@
                                     <p class="card-text text-muted">Warranty:</p>
                                 </div>
                                 <div class="col-lg-7">
-                                    <p class="card-text">{{ joborder.warranty }}</p>
+                                    <p class="card-text">
+                                        {{ joborder.warranty }}
+                                        {% if joborder.warranty_file_1 %}
+                                            | <a href="{{ joborder.warranty_file_1.url }}" class="text-primary" target="_blank">File 1</a>
+                                        {% endif %}
+                                        {% if joborder.warranty_file_2 %}
+                                            | <a href="{{ joborder.warranty_file_2.url }}" class="text-primary" target="_blank">File 2</a>
+                                        {% endif %}
+                                        {% if joborder.warranty_file_3 %}
+                                            | <a href="{{ joborder.warranty_file_3.url }}" class="text-primary" target="_blank">File 3</a>
+                                        {% endif %}
+                                    </p>
                                 </div>
                             </div>
                         </div>

@@ -44,6 +44,7 @@ class JobOrderForm(forms.ModelForm):
     class Meta:
         model = JobOrder
         fields = ['repair_work', 'external_case_and_bracelet', 'notices', 'condition', 'warranty',
+                  'warranty_file_1', 'warranty_file_2', 'warranty_file_3',
                   'assigned_technician', 'current_status', 'promise_date']
 
     def __init__(self, *args, **kwargs):
