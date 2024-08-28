@@ -13,19 +13,23 @@
     <li class="breadcrumb-item active">{{ type }}</li>
 {% endblock breadcrumb %}
 
+{% block css %}
+<style>
+    .card { font-family: "Times New Roman", Times, serif; }
+</style>
+{% endblock css %}
+
 {% block main_content %}
     <div class="card m-4">
         <div class="card-header">
             <div class="row">
-                <div class="col-sm-1">
-                    <img src="{% static 'img/logo-purple.jpg' %}" alt="YourTime Center OPC" class="img-fluid" >
+                <div class="col-sm-1 mt-4">
+                    <img src="{% static 'img/logo-purple.jpg' %}" alt="Yourtime Center OPC" class="img-fluid" >
                 </div>
-                <div class="col-sm-6">
-                    <h3>YourTime Center OPC</h3>
-                    2F Corinthian Plaza Bldg.<br />
-                    121 Paseo De Roxas<br />
-                    Makati City 1229<br />
-                    Philippines
+                <div class="col-sm-6 mt-4">
+                    <h3>Yourtime Center OPC</h3>
+                    B1 Garden Level, Corinthian Plaza Bldg.<br />
+                    121 Paseo De Roxas, Makati City 1229, Philippines
                 </div>
                 <div class="col-sm-5">
                     <h1 class="display-5 text-center">JOB ORDER</h1>
@@ -35,8 +39,8 @@
                                 <div class="bg-theme text-center p-1">
                                     <span class="text-light">JOB ORDER NUMBER</span>
                                 </div>
-                                <div class="card-footer text-center p-2">
-                                    <span style="font-size: large;">{{ joborder.pk|stringformat:"05d" }}</span>
+                                <div class="card-footer text-center p-1 header-box" style="height: 60px;">
+                                    <span style="font-size: xx-large; color: red;">{{ joborder.pk|stringformat:"05d" }}</span>
                                 </div>
                             </div>
                         </div>
@@ -45,7 +49,7 @@
                                 <div class="bg-theme text-center p-1">
                                     <span class="text-light">DATE RECEIVED</span>
                                 </div>
-                                <div class="card-footer text-center p-2">
+                                <div class="card-footer text-center p-3 header-box" style="height: 60px;">
                                     <span style="font-size: large;">{{ joborder.created_at|date:"F j, Y" }}</span>
                                 </div>
                             </div>
@@ -56,8 +60,8 @@
         </div>
         <div class="card-body">
             <div class="card">
-                <div class="card-header bg-theme p-2">
-                    <h5 class="card-title text-light">CLIENT INFORMATION</h5>
+                <div class="card-header outline-theme-bottom p-2">
+                    <h5 class="card-title text-theme">CLIENT INFORMATION</h5>
                 </div>
                 <div class="card-body p-2">
                     <div class="row">

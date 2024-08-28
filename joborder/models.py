@@ -27,13 +27,14 @@ JO_STATUS = [
     ('PULLED-OUT', 'Pulled Out'),
     ('NOT-REPAIRABLE', 'Not Repairable'),
     ('IN-HOUSE', 'In House'),
-    ('FINISHED', 'Finished')
+    ('FINISHED', 'Finished'),
+    ('CANCELLED', 'Cancelled')
 ]
 
 OPEN_STATUSES = ['SORTING', 'IN-QUEUE', 'ONGOING', 'OBSERVATION',
                  'PENDING', 'FOR-ESTIMATE', 'PARTS WAITING']
 CLOSE_STATUSES = ['SAFEKEEPING', 'UNCLAIMED', 'CLAIMED', 'PULLED-OUT',
-                  'NOT-REPAIRABLE', 'IN-HOUSE', 'FINISHED']
+                  'NOT-REPAIRABLE', 'IN-HOUSE', 'FINISHED', 'CANCELLED']
 
 
 class Articles(models.Manager):
@@ -277,6 +278,9 @@ class JobOrder(models.Model):
     open_jobs = OpenJobOrders()
     closed_on_time = ClosedOnTime()
     closed_late = ClosedLate()
+
+    class Meta:
+        ordering = ['-pk']
 
     def total_charges(self):
         # total_amount = unit price * quantity

@@ -85,7 +85,10 @@
     
     <div class="card m-4">
         <div class="card-header">
-            <h4>Last 10 Job Orders</h3>
+            <h4>
+                Last 10 Job Orders
+                <span class="float-right"><a href="{% url 'create_jo_from_client' client.pk %}" class="btn btn-primary">New Job Order</a></span>
+            </h3>
         </div>
         {% if client.client_jo.all.exists %}
         <div class="card-body table-responsive">

@@ -88,16 +88,19 @@ def employeeCreate(request):
         form = NewEmployeeForm(request.POST)
         if form.is_valid():
             user = None
+            is_active = False
             if form.cleaned_data['username'] != "":
                 user = User.objects.create_user(
                     username=form.cleaned_data['username'],
                     password='YTOPCpassword123!'
                 )
+                is_active = True
             Employee.objects.create(
                 user=user,
                 first_name=form.cleaned_data['first_name'],
                 last_name=form.cleaned_data['last_name'],
-                user_type=form.cleaned_data['user_type']
+                user_type=form.cleaned_data['user_type'],
+                is_active=is_active
             )
             messages.success(request, "Employee was successfully created.")
             return redirect('employee_list')
@@ -121,6 +124,7 @@ def removeAsUser(request, pk):
     user = employee.user
     user.delete()
     employee.user = None
+    employee.is_active = False
     employee.save()
     messages.success(request, "Request was successful.")
     return JsonResponse({'success': True})
@@ -136,6 +140,7 @@ def addAsUser(request, pk):
     )
     employee = Employee.objects.get(pk=pk)
     employee.user = user
+    employee.is_active = True
     employee.save()
     messages.success(request, "Request was successful.")
     return JsonResponse({'success': True})

@@ -126,6 +126,19 @@ def create_jo(request):
     return redirect(reverse_lazy('jo_list'))
 
 
+@login_required
+def create_jo_from_client(request, pk):
+    owner = get_object_or_404(Client, pk=pk)
+    if owner:
+        jo = JobOrder.objects.create(
+            client=owner
+        )
+        jo.save()
+        messages.success(request, 'Job Order created successfully!')
+        return redirect(reverse_lazy('jo_details', kwargs={'pk': jo.pk}))
+    return redirect(reverse_lazy('jo_list'))
+
+
 @method_decorator(login_required, name='dispatch')
 class JobOrderDetailView(DetailView):
     model = JobOrder

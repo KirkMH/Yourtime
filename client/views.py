@@ -40,7 +40,7 @@ class ClientCreateView(CreateView):
             if "another" in request.POST:
                 return redirect('new_client')
             else:
-                return redirect('client_list')
+                return redirect('create_jo_from_client', pk=saved.pk)
 
         else:
             return render(request, 'client/client_form.html', {'form': form})

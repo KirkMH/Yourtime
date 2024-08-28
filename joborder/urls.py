@@ -6,6 +6,8 @@ urlpatterns = [
     path('', views.jo_list, name='jo_list'),
     path('dt', views.JoDtListView.as_view(), name='jo_dtlist'),
     path('create', views.create_jo, name='create_jo'),
+    path('<int:pk>/create', views.create_jo_from_client,
+         name='create_jo_from_client'),  # pk is client id
     path('<int:pk>/detail', views.JobOrderDetailView.as_view(), name='jo_details'),
     path('<int:pk>/watch/add', views.JobOrderWatchCreateView.as_view(),
          name='jo_watch_add'),   # pk is the job order id

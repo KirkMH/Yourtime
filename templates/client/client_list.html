@@ -47,8 +47,9 @@
                     {   
                         data: 0,
                         render: function (data) {
-                            let links = '<a href="' + data + '/detail" title="Detail"><i class="far fa-eye"></i></a> | '+
-                                        '<a href="' + data + '/edit" title="Edit"><i class="far fa-edit"></i></a>';
+                            let links = '<a href="' + data + '/detail" title="Detail"><i class="far fa-eye"></i></a> | ' +
+                                        '<a href="' + data + '/edit" title="Edit"><i class="far fa-edit"></i></a> | ' +
+                                        '<a href="/joborder/' + data + '/create" title="New JO"><i class="fa fa-file-o"></i>';
 
                             return links;
                         },

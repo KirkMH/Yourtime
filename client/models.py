@@ -37,3 +37,6 @@ class Client(models.Model):
         elif self.tel_num:
             contact += f'{self.tel_num}'
         return contact
+
+    class Meta:
+        ordering = ['name']

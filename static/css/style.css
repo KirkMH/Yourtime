@@ -21,6 +21,10 @@ a {
     background-color: var(--primary-color) !important;
 }
 
+.text-theme {
+    color: var(--primary-color) !important;
+}
+
 .nav-link.active {
     color: white !important;
     text-decoration: overline;
@@ -94,4 +98,9 @@ a {
 
 .outline-info .fas {
     color: #17a2b8;
+}
+
+.outline-theme-bottom {
+    border-bottom: 5px solid var(--primary-color);
+    color: var(--primary-color);
 }
