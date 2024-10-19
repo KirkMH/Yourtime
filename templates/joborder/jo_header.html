@@ -78,7 +78,17 @@
             </div>
             <div class="row">
                 <div class="col-lg-12">
-                    <h6 class="card-subtitle mb-2 text-muted">{{ joborder.client.address }} &bull; {{ joborder.client.get_contact_info }} &bull; <a href="mailto:{{ joborder.client.email }}">{{ joborder.client.email }}</a></h6>
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        {% if joborder.client.address %}
+                        {{ joborder.client.address }}
+                        {% endif %}
+                        {% if joborder.client.get_contact_info %}
+                        &bull; {{ joborder.client.get_contact_info }}
+                        {% endif %}
+                        {% if joborder.client.email %}
+                        &bull; <a href="mailto:{{ joborder.client.email }}">{{ joborder.client.email }}</a>
+                        {% endif %}
+                    </h6>
                 </div>
             </div>
         </div>
