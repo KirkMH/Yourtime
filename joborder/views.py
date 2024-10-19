@@ -13,65 +13,100 @@ from .models import *
 from .forms import *
 from client.models import Client
 
+objects = [
+    {
+        'type': 'watch',
+        'model': Watch,
+        'form': WatchForm,
+        'description': 'Watch details',
+        'tab_index': -1
+    },
+    {
+        'type': 'joborder',
+        'model': JobOrder,
+        'form': JobOrderForm,
+        'description': 'Job Order details',
+        'tab_index': -1
+    },
+    {
+        'type': 'assessment',
+        'model': Assessment,
+        'form': AssessmentForm,
+        'description': 'Assessment details',
+        'tab_index': 2
+    },
+    {
+        'type': 'test',
+        'model': TestLog,
+        'form': TestLogForm,
+        'description': 'Test Log details',
+        'tab_index': 3
+    },
+    {
+        'type': 'charge',
+        'model': Charge,
+        'form': ChargeForm,
+        'description': 'Charge details',
+        'tab_index': 4
+    },
+    {
+        'type': 'arrival',
+        'model': ArrivalPhoto,
+        'form': ArrivalPhotoForm,
+        'description': 'Arrival Photo',
+        'tab_index': -1
+    },
+    {
+        'type': 'release',
+        'model': ReleasePhoto,
+        'form': ReleasePhotoForm,
+        'description': 'Release Photo',
+        'tab_index': -1
+    },
+    {
+        'type': 'payment',
+        'model': Payment,
+        'form': PaymentForm,
+        'description': 'Payment details',
+        'tab_index': 5
+    }
+]
+
+
+def findObject(type):
+    # find the type from the objects list and return the object if found, otherwise return None
+    for obj in objects:
+        if obj['type'] == type:
+            return obj
+    return None
+
 
 def getModel(type):
-    if type == 'watch':
-        return Watch
-    elif type == 'joborder':
-        return JobOrder
-    elif type == 'assessment':
-        return Assessment
-    elif type == 'test':
-        return TestLog
-    elif type == 'jo':
-        return JobOrder
-    elif type == 'charge':
-        return Charge
-    elif type == 'arrival':
-        return ArrivalPhoto
-    elif type == 'release':
-        return ReleasePhoto
+    obj = findObject(type)
+    if obj:
+        return obj['model']
     return None
 
 
 def getFormClass(type):
-    if type == 'watch':
-        return WatchForm
-    elif type == 'joborder':
-        return JobOrderForm
-    elif type == 'assessment':
-        return AssessmentForm
-    elif type == 'test':
-        return TestLogForm
-    elif type == 'jo':
-        return JobOrderForm
-    elif type == 'charge':
-        return ChargeForm
-    elif type == 'arrival':
-        return ArrivalPhotoForm
-    elif type == 'release':
-        return ReleasePhotoForm
+    obj = findObject(type)
+    if obj:
+        return obj['form']
     return None
 
 
 def getDescription(type):
-    if type == 'watch':
-        return 'Watch details'
-    elif type == 'joborder':
-        return 'Job Order details'
-    elif type == 'assessment':
-        return 'Assessment details'
-    elif type == 'test':
-        return 'Test Log details'
-    elif type == 'jo':
-        return 'Job Order details'
-    elif type == 'charge':
-        return 'Charge details'
-    elif type == 'arrival':
-        return 'Arrival Photo'
-    elif type == 'release':
-        return 'Release Photo'
-    return 'Details'
+    obj = findObject(type)
+    if obj:
+        return obj['description']
+    return None
+
+
+def getTabIndex(type):
+    obj = findObject(type)
+    if obj:
+        return obj['tab_index']
+    return None
 
 
 def addContext(context, type):
@@ -146,7 +181,10 @@ class JobOrderDetailView(DetailView):
     context_object_name = 'joborder'
 
     def get_context_data(self, **kwargs):
+        type = self.request.GET.get('type')
+        index = getTabIndex(type)
         context = super().get_context_data(**kwargs)
+        context['selected'] = index
         context['assessments'] = Assessment.objects.filter(
             job_order=self.object).order_by('-assessment_date')
         context['tests'] = TestLog.objects.filter(
@@ -157,6 +195,8 @@ class JobOrderDetailView(DetailView):
         context['arrivalphotos'] = ArrivalPhoto.objects.filter(
             job_order=self.object).order_by('id')
         context['releasephotos'] = ReleasePhoto.objects.filter(
+            job_order=self.object).order_by('id')
+        context['payments'] = Payment.objects.filter(
             job_order=self.object).order_by('id')
         return context
 
@@ -260,7 +300,7 @@ class JobOrderDetailUpdateView(UpdateView, SuccessMessageMixin):
             pk = self.get_object().job_order.pk
         messages.success(self.request, getDescription(
             type) + ' was updated successfully.')
-        return reverse('jo_details', kwargs={'pk': pk})
+        return reverse('jo_details', kwargs={'pk': pk}) + f'?type={type}'
 
 
 @login_required
@@ -299,13 +339,21 @@ class JobOrderDocumentationCreateView(CreateView):
         return addContext(context, type)
 
     def get_success_url(self):
-        return reverse('jo_details', kwargs={'pk': self.kwargs.get('pk')})
+        return reverse('jo_details', kwargs={'pk': self.kwargs.get('pk')}) + f"?type={self.request.GET['type']}"
 
     def form_valid(self, form):
         type = self.request.GET.get('type')
         jo = get_object_or_404(JobOrder, pk=self.kwargs.get('pk'))
         documentation = form.save(commit=False)
         documentation.job_order = jo
+        if type == 'payment':
+            emp = Employee.objects.filter(
+                user=self.request.user)
+            if emp.count() > 0:
+                emp = emp.first()
+            else:
+                emp = None
+            documentation.received_by = emp
         documentation.save()
         if type == 'charge':
             documentation.addParticular()

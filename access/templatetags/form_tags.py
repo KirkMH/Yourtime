@@ -48,3 +48,12 @@ def currency(amount):
         return "%s%s" % (intcomma(int(amount)), ("%0.2f" % amount)[-3:])
     else:
         return "0.00"
+
+
+@register.filter
+def accounting(amount):
+    if amount:
+        amount = round(float(amount), 2)
+        return "%s%s" % (intcomma(int(amount)), ("%0.2f" % amount)[-3:])
+    else:
+        return "-"

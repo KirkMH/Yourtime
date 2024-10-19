@@ -91,3 +91,11 @@ class ReleasePhotoForm(forms.ModelForm):
     class Meta:
         model = ReleasePhoto
         fields = ['photo']
+
+
+class PaymentForm(forms.ModelForm):
+    required_css_class = 'required'
+
+    class Meta:
+        model = Payment
+        exclude = ['job_order', 'received_by', ]

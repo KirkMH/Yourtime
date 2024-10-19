@@ -1,0 +1,155 @@
+{% extends '../base.html' %}
+{% load static %}
+{% load humanize %}
+{% load form_tags %}
+
+{% block title %}Job Orders{% endblock title %}
+
+{% block css %}
+  <!-- Slick Carousel -->
+  <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+  <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
+  <style>
+    .smaller {
+        font-size: 14px;
+    }
+    .slick-prev,
+    .slick-next,
+    .slick-arrow
+    {
+        background-color: lightgray !important;
+        border-radius: 50%;
+    }
+    .image-container {
+        position: relative;
+        display: inline-block; /* Ensures that container takes the size of the image */
+        margin: 5px;
+        border: 1px solid lightgray;
+        border-radius: 5px;
+    }
+    .image-container img {
+        height: 150px;
+        width: auto;
+    }
+    .delete-link {
+        position: absolute;
+        top: 0;
+        right: 10px;
+        font-size: 24px;
+        color: red;
+        text-decoration: none;
+    }
+    .delete-link:hover {
+        color: darkred;
+    }
+    .card-primary-color-left {
+    border-left: 3px solid var(--primary-color);
+}
+  </style>
+{% endblock css%}
+
+{% block page_title %}Job Order details{% endblock page_title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'jo_list' %}">Job Orders</a></li>
+    <li class="breadcrumb-item active">Details</li>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+
+    <!-- Modal -->
+    <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <img id="modalImage" class="img-fluid" alt="Image">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card ml-4 mr-4 mt-4">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2>{{ joborder.client.name }}</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <h6 class="card-subtitle mb-2 text-muted">{{ joborder.client.address }} &bull; {{ joborder.client.get_contact_info }} &bull; <a href="mailto:{{ joborder.client.email }}">{{ joborder.client.email }}</a></h6>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-6 col-md-12" style="border-right: 1px solid lightgray;">
+                    <h5 class="card-text"><a href="{% url 'jo_detail_edit' joborder.pk %}?type=joborder" title="Edit">JO# {{ joborder.pk|stringformat:'05d' }} Details</a></h5>
+                    <div class="row smaller">
+                        <div class="col-sm-6">
+                            <div class="card-text"><span class="text-muted">Repair Work: </span>{{ joborder.repair_work }}</div>
+                            <div class="card-text"><span class="text-muted">Notices: </span>{{ joborder.notices }}</div>
+                            <div class="card-text"><span class="text-muted">External: </span>{{ joborder.external_case_and_bracelet }}</div>
+                            <div class="card-text"><span class="text-muted">Condition: </span>{{ joborder.condition }}</div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="card-text"><span class="text-muted">Technician: </span>{{ joborder.assigned_technician }}</div>
+                            <div class="card-text"><span class="text-muted">Promised Date: </span>{{ joborder.promise_date|naturalday }}</div>
+                            <div class="card-text"><span class="text-muted">Warranty: </span>
+                                {{ joborder.warranty }}
+                                {% if joborder.warranty_file_1 %}
+                                    | <a href="{{ joborder.warranty_file_1.url }}" class="text-primary" target="_blank">File 1</a>
+                                {% endif %}
+                                {% if joborder.warranty_file_2 %}
+                                    | <a href="{{ joborder.warranty_file_2.url }}" class="text-primary" target="_blank">File 2</a>
+                                {% endif %}
+                                {% if joborder.warranty_file_3 %}
+                                    | <a href="{{ joborder.warranty_file_3.url }}" class="text-primary" target="_blank">File 3</a>
+                                {% endif %}
+                            </div>
+                            <div class="card-text"><span class="text-muted">Status: </span><a href="#" title="Update" data-toggle="modal" data-target="#statusModal">{{ joborder.current_status }}</a></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                    <h5 class="card-text">
+                        {% if joborder.watch %}
+                            <a href="{% url 'jo_detail_edit' joborder.watch.pk %}?type=watch" title="Edit">Watch Details</a>
+                        {% else %}
+                            <a href="{% url 'jo_watch_add' joborder.pk %}" title="Add">Watch Details</a>
+                        {% endif %}
+                    </h5>
+                    <div class="row smaller">
+                        {% if joborder.watch %}
+                        <div class="col-sm-6">
+                            <div class="card-text"><span class="text-muted">Article: </span>{{ joborder.watch.article }}</div>
+                            <div class="card-text"><span class="text-muted">Serial Number: </span>{{ joborder.watch.serial_number }}</div>
+                            <div class="card-text"><span class="text-muted">Case Number: </span>{{ joborder.watch.case_number }}</div>
+                            <div class="card-text"><span class="text-muted">Dial: </span>{{ joborder.watch.dial }}</div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="card-text"><span class="text-muted">Bracelet: </span>{{ joborder.watch.bracelet }}</div>
+                            <div class="card-text"><span class="text-muted">Components: </span>{{ joborder.watch.component }}</div>
+                            <div class="card-text"><span class="text-muted">Watch Movement: </span>{{ joborder.watch.watch_movement }}</div>
+                            <div class="card-text"><span class="text-muted">Movement Caliber: </span>{{ joborder.watch.movement_caliber }}</div>
+                        </div>
+                        {% else %}
+                        <div class="col-sm-12">No watch detail available.</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--
+        <div class="col-lg-2">
+            <a href="{% url 'generate_job_order' joborder.pk 'receiving' %}" class="btn btn-block btn-success float-right">Generate Receiving Report</a>
+            <a href="{% url 'generate_job_order' joborder.pk 'releasing' %}" class="btn btn-block btn-success float-right">Generate Releasing Report</a>
+        </div>
+        -->
+    </div>
+
+    {% block jo_body %}
+    {% endblock jo_body %}
+
+{% endblock main_content %}

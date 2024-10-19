@@ -1,494 +1,288 @@
-{% extends '../base.html' %}
+{% extends './jo_header.html' %}
 {% load static %}
 {% load humanize %}
 {% load form_tags %}
 
-{% block title %}Job Orders{% endblock title %}
-
-{% block css %}
-  <!-- Slick Carousel -->
-  <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
-  <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
-  <style>
-    .slick-prev,
-    .slick-next,
-    .slick-arrow
-    {
-        background-color: lightgray !important;
-        border-radius: 50%;
-    }
-    .image-container {
-        position: relative;
-        display: inline-block; /* Ensures that container takes the size of the image */
-        margin: 5px;
-        border: 1px solid lightgray;
-        border-radius: 5px;
-    }
-    .delete-link {
-        position: absolute;
-        top: 0;
-        right: 10px;
-        font-size: 24px;
-        color: red;
-        text-decoration: none;
-    }
-
-    .delete-link:hover {
-        color: darkred;
-    }
-  </style>
-{% endblock css%}
-
-{% block page_title %}Job Order details{% endblock page_title %}
-
-{% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'jo_list' %}">Job Orders</a></li>
-    <li class="breadcrumb-item active">Details</li>
-{% endblock breadcrumb %}
-
-{% block main_content %}
-
-    <!-- Modal -->
-    <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-body text-center">
-                    <img id="modalImage" class="img-fluid" alt="Image">
-                </div>
+{% block jo_body %}
+        <div class="card card-outline card-primary-color ml-4 mr-4 mb-4">
+            <div class="card-header submenu">
+                <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link {{active.0}}" id="photos-tab" data-toggle="tab" href="#photos" role="tab" aria-controls="photos" aria-selected="{{selected.0}}">Photos:</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{active.1}}" id="estimate-tab" data-toggle="tab" href="#estimate" role="tab" aria-controls="estimate" aria-selected="{{selected.1}}">Estimate</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{active.2}}" id="assessments-tab" data-toggle="tab" href="#assessments" role="tab" aria-controls="assessments" aria-selected="{{selected.2}}">Assessments</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{active.3}}" id="tests-tab" data-toggle="tab" href="#tests" role="tab" aria-controls="tests" aria-selected="{{selected.3}}">Test Logs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{active.4}}" id="charges-tab" data-toggle="tab" href="#charges" role="tab" aria-controls="charges" aria-selected="{{selected.4}}">Charges</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{active.5}}" id="payments-tab" data-toggle="tab" href="#payments" role="tab" aria-controls="payments" aria-selected="{{selected.5}}">Payments</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="receiving-tab" href="{% url 'generate_job_order' joborder.pk 'receiving' %}" aria-selected="false">Receiving Report</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="releasing-tab" href="{% url 'generate_job_order' joborder.pk 'releasing' %}" aria-selected="false">Releasing Report</a>
+                    </li>
+                </ul>
             </div>
-        </div>
-    </div>
-
-    <div class="card m-4">
-        <div class="card-header row">
-            <div class="col-lg-10">
-                <h2>{{ joborder.client.name }}</h2>
-                <h6 class="card-subtitle mb-2 text-muted">{{ joborder.client.address }}</h6>
-                <h6 class="card-subtitle mb-2 text-muted">{{ joborder.client.get_contact_info }}</h6>
-                <h6 class="card-subtitle mb-2 text-muted">Email: <a href="mailto:{{ joborder.client.email }}">{{ joborder.client.email }}</a></h6>
-            </div>
-            <div class="col-lg-2">
-                <a href="{% url 'generate_job_order' joborder.pk 'receiving' %}" class="btn btn-block btn-success float-right">Generate Receiving Report</a>
-                <a href="{% url 'generate_job_order' joborder.pk 'releasing' %}" class="btn btn-block btn-success float-right">Generate Releasing Report</a>
-            </div>
-        </div>
-        <div class="card-body p-2">
-            <div class="row">
-                <div class="col-lg-4">
-                    <!-- JOB ORDER DETAILS -->
-                    <div class="card card-outline card-primary-color mt-4 ml-4">
-                        <div class="card-header">
-                            <h4>JO# {{ joborder.pk|stringformat:'05d' }} Details</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-5">
-                                    <p class="card-text text-muted">Repair Work:</p>
-                                </div>
-                                <div class="col-lg-7">
-                                    <p class="card-text">{{ joborder.repair_work }}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-5">
-                                    <p class="card-text text-muted">Notices:</p>
-                                </div>
-                                <div class="col-lg-7">
-                                    <p class="card-text">{{ joborder.notices }}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-5">
-                                    <p class="card-text text-muted" title="Case and Bracelet">External:</p>
-                                </div>
-                                <div class="col-lg-7">
-                                    <p class="card-text">{{ joborder.external_case_and_bracelet }}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-5">
-                                    <p class="card-text text-muted">Condition:</p>
-                                </div>
-                                <div class="col-lg-7">
-                                    <p class="card-text">{{ joborder.condition }}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-5">
-                                    <p class="card-text text-muted">Assigned Technician:</p>
-                                </div>
-                                <div class="col-lg-7">
-                                    <p class="card-text">{{ joborder.assigned_technician }}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-5">
-                                    <p class="card-text text-muted">Promised Date:</p>
-                                </div>
-                                <div class="col-lg-7">
-                                    <p class="card-text">{{ joborder.promise_date|naturalday }}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-5">
-                                    <p class="card-text text-muted">Warranty:</p>
-                                </div>
-                                <div class="col-lg-7">
-                                    <p class="card-text">
-                                        {{ joborder.warranty }}
-                                        {% if joborder.warranty_file_1 %}
-                                            | <a href="{{ joborder.warranty_file_1.url }}" class="text-primary" target="_blank">File 1</a>
-                                        {% endif %}
-                                        {% if joborder.warranty_file_2 %}
-                                            | <a href="{{ joborder.warranty_file_2.url }}" class="text-primary" target="_blank">File 2</a>
-                                        {% endif %}
-                                        {% if joborder.warranty_file_3 %}
-                                            | <a href="{{ joborder.warranty_file_3.url }}" class="text-primary" target="_blank">File 3</a>
-                                        {% endif %}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <a href="{% url 'jo_detail_edit' joborder.pk %}?type=jo" class="btn btn-outline-success card-link">Edit</a>
-                        </div>
-                    </div>
-                    <!-- END OF JOB ORDER DETAILS -->
-                    <!-- WATCH DETAIL CARD -->
-                    <div class="card card-outline card-primary-color mt-4 ml-4">
-                        <div class="card-header">
-                            <h4>Watch Details</h4>
-                        </div>
-                        <div class="card-body">
-                            {% if joborder.watch %}
-                            <div class="row">
-                                <div class="col-lg-5">
-                                    <p class="card-text text-muted">Article:</p>
-                                </div>
-                                <div class="col-lg-7">
-                                    <p class="card-text">{{ joborder.watch.article }}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-5">
-                                    <p class="card-text text-muted">Serial Number:</p>
-                                </div>
-                                <div class="col-lg-7">
-                                    <p class="card-text">{{ joborder.watch.serial_number }}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-5">
-                                    <p class="card-text text-muted">Case Number:</p>
-                                </div>
-                                <div class="col-lg-7">
-                                    <p class="card-text">{{ joborder.watch.case_number }}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-5">
-                                    <p class="card-text text-muted">Dial:</p>
-                                </div>
-                                <div class="col-lg-7">
-                                    <p class="card-text">{{ joborder.watch.dial }}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-5">
-                                    <p class="card-text text-muted">Bracelet:</p>
-                                </div>
-                                <div class="col-lg-7">
-                                    <p class="card-text">{{ joborder.watch.bracelet }}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-5">
-                                    <p class="card-text text-muted">Components:</p>
-                                </div>
-                                <div class="col-lg-7">
-                                    <p class="card-text">{{ joborder.watch.component }}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-5">
-                                    <p class="card-text text-muted">Watch Movement:</p>
-                                </div>
-                                <div class="col-lg-7">
-                                    <p class="card-text">{{ joborder.watch.watch_movement }}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-5">
-                                    <p class="card-text text-muted">Movement Caliber:</p>
-                                </div>
-                                <div class="col-lg-7">
-                                    <p class="card-text">{{ joborder.watch.movement_caliber }}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-5">
-                                    <p class="card-text text-muted">Guarantee/Warranty?</p>
-                                </div>
-                                <div class="col-lg-7">
-                                    <p class="card-text">{{ joborder.watch.with_card|yesno:"Yes,No" }}</p>
-                                </div>
-                            </div>
-                            {% else %}
-                            <i>Please add watch details.</i>
-                            {% endif %}
-                        </div>
-                        <div class="card-footer">
-                            {% if joborder.watch %}
-                                <a href="{% url 'jo_detail_edit' joborder.watch.pk %}?type=watch" class="btn btn-outline-success card-link">Edit</a>
-                            {% else %}
-                                <a href="{% url 'jo_watch_add' joborder.pk %}" class="btn btn-outline-secondary card-link">Add Watch</a>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <!-- END OF WATCH DETAIL CARD -->
-                </div>
-
-                <div class="col-lg-5">
-                    <!-- ARRIVAL PHOTOS -->
-                    <div class="card card-outline card-primary-color mt-4 ml-4">
-                        <div class="card-header">
-                            <h4>Arrival Photos</h4>
-                        </div>
-                        <div class="card-body">
-                            {% if arrivalphotos %}
-                            <div class="arrival-photos">
-                                {% for photo in arrivalphotos %}
-                                    <div class="image-container">
-                                        <a href="#" data-toggle="modal" data-target="#imageModal" data-imageurl="{{ photo.photo.url }}" title="Click to view actual size">
-                                            <img src="{{ photo.photo.url }}" class="img-fluid" style="height: 150px;" alt="Arrival Photo">
-                                        </a>
-                                        <a href="{% url 'delete_photo' 'arrival' photo.pk %}" class="delete-link" title="Delete">×</a>
+            <div class="card-body">
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="photos" role="tabpanel" aria-labelledby="photos-tab">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <!-- ARRIVAL PHOTOS -->
+                                <div class="card card-outline card-primary-color-left m-4">
+                                    <div class="card-header">
+                                        <h4>Arrival Photos</h4>
                                     </div>
-                                {% endfor %}
-                            </div>
-                            {% else %}
-                            <p class="card-text">No arrival photos available.</p>
-                            {% endif %}
-                        </div>
-                        <div class="card-footer">
-                            <a href="{% url 'jo_documentation_add' joborder.pk %}?type=arrival" class="btn btn-outline-secondary card-link">Add Photo</a>
-                        </div>
-                    </div>
-                    <!-- END OF ARRIVAL PHOTOS -->
-                    
-                    <!-- RELEASE PHOTOS -->
-                    <div class="card card-outline card-primary-color mt-4 ml-4">
-                        <div class="card-header">
-                            <h4>Release Photos</h4>
-                        </div>
-                        <div class="card-body">
-                            {% if releasephotos %}
-                            <div class="release-photos">
-                                {% for photo in releasephotos %}
-                                    <div class="image-container">
-                                        <a href="#" data-toggle="modal" data-target="#imageModal" data-imageurl="{{ photo.photo.url }}" title="Click to view actual size">
-                                            <img src="{{ photo.photo.url }}" class="img-fluid" style="height: 150px;" alt="Release Photo">
-                                        </a>
-                                        <a href="{% url 'delete_photo' 'release' photo.pk %}" class="delete-link" title="Delete">×</a>
+                                    <div class="card-body">
+                                        {% if arrivalphotos %}
+                                        <div class="arrival-photos">
+                                            {% for photo in arrivalphotos %}
+                                                <div class="image-container">
+                                                    <a href="#" data-toggle="modal" data-target="#imageModal" data-imageurl="{{ photo.photo.url }}" title="Click to view actual size">
+                                                        <img src="{{ photo.photo.url }}" class="img-fluid" alt="Arrival Photo">
+                                                    </a>
+                                                    <a href="{% url 'delete_photo' 'arrival' photo.pk %}" class="delete-link" title="Delete">×</a>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                        {% else %}
+                                        <p class="card-text">No arrival photos available.</p>
+                                        {% endif %}
                                     </div>
-                                {% endfor %}
+                                    <div class="card-footer">
+                                        <a href="{% url 'jo_documentation_add' joborder.pk %}?type=arrival" class="btn btn-outline-secondary card-link">Add Photo</a>
+                                    </div>
+                                </div>
+                                <!-- END OF ARRIVAL PHOTOS -->
                             </div>
-                            {% else %}
-                            <p class="card-text">No release photos available.</p>
-                            {% endif %}
-                        </div>
-                        <div class="card-footer">
-                            <a href="{% url 'jo_documentation_add' joborder.pk %}?type=release" class="btn btn-outline-secondary card-link">Add Photo</a>
+                            <div class="col-lg-6">
+                                <!-- RELEASE PHOTOS -->
+                                <div class="card card-outline card-primary-color-left m-4">
+                                    <div class="card-header">
+                                        <h4>Release Photos</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        {% if releasephotos %}
+                                        <div class="release-photos">
+                                            {% for photo in releasephotos %}
+                                                <div class="image-container">
+                                                    <a href="#" data-toggle="modal" data-target="#imageModal" data-imageurl="{{ photo.photo.url }}" title="Click to view actual size">
+                                                        <img src="{{ photo.photo.url }}" class="img-fluid" style="height: 150px;" alt="Release Photo">
+                                                    </a>
+                                                    <a href="{% url 'delete_photo' 'release' photo.pk %}" class="delete-link" title="Delete">×</a>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                        {% else %}
+                                        <p class="card-text">No release photos available.</p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="card-footer">
+                                        <a href="{% url 'jo_documentation_add' joborder.pk %}?type=release" class="btn btn-outline-secondary card-link">Add Photo</a>
+                                    </div>
+                                </div>
+                                <!-- END OF RELEASE PHOTOS -->
+                            </div>
                         </div>
                     </div>
-                    <!-- END OF RELEASE PHOTOS -->
-                </div>
-
-                <div class="col-lg-3">
-                    <div class="card card-outline card-primary-color mt-4 ml-4">
-                        <div class="card-header">
-                            <h4>Status</h4>
-                        </div>
-                        <form id="update-status-form" method="POST" action="{% url 'update_jo_status' joborder.pk %}">
-                        <div class="card-body">
-                            <div class="mb-4">
-                                <h5 class="text-muted">Current Status:</h5>
-                                    {% csrf_token %}
-                                    <select name="status" class="form-control">
-                                        {% for status in statuses %}
-                                        <option value="{{status.0}}" {% if status.0 == joborder.current_status %}selected{%endif%}>{{ status.1 }}</option>
-                                        {% endfor %}
-                                    </select>
+                    <div class="tab-pane fade" id="estimate" role="tabpanel" aria-labelledby="estimate-tab">
+                        <h5>Job Order Estimate</h5>
+                        <form id="estimate-form" method="POST" action="{% url 'jo_save_estimate' joborder.pk %}">
+                            {% csrf_token %}
+                            <div class="row mt-4">
+                                <div class="col-lg-5">
+                                    <div class="row form-group">
+                                        <div class="col-lg-4"><label for="serviceFee">Service Fee:</label></div>
+                                        <div class="col-lg-8"><input type="number" name="serviceFee" id="serviceFee" class="form-control text-right" value="{{ joborder.estimate_jo.service_fee }}" min="0"></div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col-lg-4"><label for="parts">Parts:</label></div>
+                                        <div class="col-lg-8"><input type="number" name="parts" id="parts" class="form-control text-right" value="{{ joborder.estimate_jo.parts }}" min="0"></div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col-lg-4"><label for="total">Total Estimate:</label></div>
+                                        <div class="col-lg-8"><input type="number" name="total" id="total" class="form-control text-right" disabled></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-4"></div>
+                                        <div class="col-lg-8 text-right">
+                                            <button type="submit" class="btn btn-outline-success">Update</button>
+                                            <a href="{% url 'generate_job_order' joborder.pk 'estimate' %}" class="btn btn-success">Generate Estimate Form</a>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="card-footer">
-                            <button type="submit" class="btn btn-outline-success mt-2">Update</button>
-                        </div>
                         </form>
                     </div>
-                </div>
-            </div>
+                    <div class="tab-pane fade" id="assessments" role="tabpanel" aria-labelledby="assessments-tab">
+                        <h5>Assessments</h5>
+                        {% if assessments %}
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Assessment Date</th>
+                                    <th>Technician</th>
+                                    <th>Assessment</th>
+                                    <th width="10%" class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for assessment in assessments %}
+                                <tr>
+                                    <td>{{ assessment.assessment_date|naturalday }}</td>
+                                    <td>{{ assessment.assessed_by }}</td>
+                                    <td>{{ assessment.assessment }}</td>
+                                    <td class="text-center">
+                                        <a href="{% url 'jo_detail_edit' assessment.pk %}?type=assessment" title="Edit"><i class="far fa-edit"></i></a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <p class="card-text">No assessments available.</p>
+                        {% endif %}
+                        <a href="{% url 'jo_documentation_add' joborder.pk %}?type=assessment" class="btn btn-outline-secondary">Add Assessment</a>
+                    </div>
 
-            <!-- Button card with tabs -->
-
-            <div class="card card-outline card-primary-color mt-4 ml-4">
-                <div class="card-header">
-                    <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" id="estimate-tab" data-toggle="tab" href="#estimate" role="tab" aria-controls="estimate" aria-selected="true">Estimate</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="assessments-tab" data-toggle="tab" href="#assessments" role="tab" aria-controls="assessments" aria-selected="false">Assessments</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="tests-tab" data-toggle="tab" href="#tests" role="tab" aria-controls="tests" aria-selected="false">Test Logs</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="charges-tab" data-toggle="tab" href="#charges" role="tab" aria-controls="charges" aria-selected="false">Charges</a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="card-body">
-                    <div class="tab-content" id="myTabContent">
-                        <div class="tab-pane fade show active" id="estimate" role="tabpanel" aria-labelledby="estimate-tab">
-                            <h5>Job Order Estimate</h5>
-                            <form id="estimate-form" method="POST" action="{% url 'jo_save_estimate' joborder.pk %}">
-                                {% csrf_token %}
-                                <div class="row mt-4">
-                                    <div class="col-lg-5">
-                                        <div class="row form-group">
-                                            <div class="col-lg-4"><label for="serviceFee">Service Fee:</label></div>
-                                            <div class="col-lg-8"><input type="number" name="serviceFee" id="serviceFee" class="form-control text-right" value="{{ joborder.estimate_jo.service_fee }}" min="0"></div>
-                                        </div>
-                                        <div class="row form-group">
-                                            <div class="col-lg-4"><label for="parts">Parts:</label></div>
-                                            <div class="col-lg-8"><input type="number" name="parts" id="parts" class="form-control text-right" value="{{ joborder.estimate_jo.parts }}" min="0"></div>
-                                        </div>
-                                        <div class="row form-group">
-                                            <div class="col-lg-4"><label for="total">Total Estimate:</label></div>
-                                            <div class="col-lg-8"><input type="number" name="total" id="total" class="form-control text-right" disabled></div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-4"></div>
-                                            <div class="col-lg-8 text-right">
-                                                <button type="submit" class="btn btn-outline-success">Update</button>
-                                                <a href="{% url 'generate_job_order' joborder.pk 'estimate' %}" class="btn btn-success">Generate Estimate Form</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
+                    <div class="tab-pane fade" id="tests" role="tabpanel" aria-labelledby="tests-tab">
+                        <h5>Test Logs</h5>
+                        {% if tests %}
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Tested On</th>
+                                    <th>Amplitude</th>
+                                    <th>Comments</th>
+                                    <th>Tested By</th>
+                                    <th width="10%" class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for test in tests %}
+                                <tr>
+                                    <td>{{ test.tested_on|naturaltime }}</td>
+                                    <td>{{ test.amplitude }}</td>
+                                    <td>{{ test.comments }}</td>
+                                    <td>{{ test.tested_by }}</td>
+                                    <td class="text-center">
+                                        <a href="{% url 'jo_detail_edit' test.pk %}?type=test" title="Edit"><i class="far fa-edit"></i></a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <p class="card-text">No test logs available.</p>
+                        {% endif %}
+                        <a href="{% url 'jo_documentation_add' joborder.pk %}?type=test" class="btn btn-outline-secondary">Add Test Log</a>
+                    </div>
+                    <div class="tab-pane fade" id="charges" role="tabpanel" aria-labelledby="charges-tab">
+                        <h5>Charges</h5>
+                        {% if charges %}
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Particular</th>
+                                    <th class="text-right">Unit Price</th>
+                                    <th class="text-center">Quantity</th>
+                                    <th class="text-right">Total</th>
+                                    <th width="10%" class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for charge in charges %}
+                                <tr>
+                                    <td>{{ charge.particular }}</td>
+                                    <td class="text-right">{{ charge.unit_price|peso }}</td>
+                                    <td class="text-center">{{ charge.quantity }}</td>
+                                    <td class="text-right">{{ charge.total_amount|peso }}</td>
+                                    <td class="text-center">
+                                        <a href="{% url 'jo_detail_edit' charge.pk %}?type=charge" title="Edit"><i class="far fa-edit"></i></a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                <tr style="font-weight: bold; font-size: large;">
+                                    <td colspan="3">Total</td>
+                                    <td class="text-right">{{ joborder.total_charges|floatformat:2|intcomma }}</td>
+                                    <td></td>
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <p class="card-text">No charges yet.</p>
+                        {% endif %}
+                        <a href="{% url 'jo_documentation_add' joborder.pk %}?type=charge" class="btn btn-outline-secondary">Add Charge</a>
+                        {% if charges %}
+                        <a href="{% url 'generate_job_order' joborder.pk 'invoice' %}" class="btn btn-success">Generate Invoice</a>
+                        {% endif %}
+                    </div>
+                    <div class="tab-pane fade" id="payments" role="tabpanel" aria-labelledby="payments-tab">
+                        <div class="row m-4" style="color: blue;">
+                            <div class="col-sm-6">Total Charges</div>
+                            <div class="col-sm-6 text-right">{{ joborder.total_charges|peso }}</div>
                         </div>
-                        <div class="tab-pane fade" id="assessments" role="tabpanel" aria-labelledby="assessments-tab">
-                            <h5>Assessments</h5>
-                            {% if assessments %}
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Assessment Date</th>
-                                        <th>Technician</th>
-                                        <th>Assessment</th>
-                                        <th width="10%" class="text-center">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for assessment in assessments %}
-                                    <tr>
-                                        <td>{{ assessment.assessment_date|naturalday }}</td>
-                                        <td>{{ assessment.assessed_by }}</td>
-                                        <td>{{ assessment.assessment }}</td>
-                                        <td class="text-center">
-                                            <a href="{% url 'jo_detail_edit' assessment.pk %}?type=assessment"><i class="far fa-edit"></i></a>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                            {% else %}
-                            <p class="card-text">No assessments available.</p>
-                            {% endif %}
-                            <a href="{% url 'jo_documentation_add' joborder.pk %}?type=assessment" class="btn btn-outline-secondary">Add Assessment</a>
-                        </div>
-
-                        <div class="tab-pane fade" id="tests" role="tabpanel" aria-labelledby="tests-tab">
-                            <h5>Test Logs</h5>
-                            {% if tests %}
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Tested On</th>
-                                        <th>Amplitude</th>
-                                        <th>Comments</th>
-                                        <th>Tested By</th>
-                                        <th width="10%" class="text-center">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for test in tests %}
-                                    <tr>
-                                        <td>{{ test.tested_on|naturaltime }}</td>
-                                        <td>{{ test.amplitude }}</td>
-                                        <td>{{ test.comments }}</td>
-                                        <td>{{ test.tested_by }}</td>
-                                        <td class="text-center">
-                                            <a href="{% url 'jo_detail_edit' test.pk %}?type=test"><i class="far fa-edit"></i></a>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                            {% else %}
-                            <p class="card-text">No test logs available.</p>
-                            {% endif %}
-                            <a href="{% url 'jo_documentation_add' joborder.pk %}?type=test" class="btn btn-outline-secondary">Add Test Log</a>
-                        </div>
-                        <div class="tab-pane fade" id="charges" role="tabpanel" aria-labelledby="charges-tab">
-                            <h5>Charges</h5>
-                            {% if charges %}
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Particular</th>
-                                        <th class="text-right">Unit Price</th>
-                                        <th class="text-center">Quantity</th>
-                                        <th class="text-right">Total</th>
-                                        <th width="10%" class="text-center">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for charge in charges %}
-                                    <tr>
-                                        <td>{{ charge.particular }}</td>
-                                        <td class="text-right">{{ charge.unit_price|floatformat:2|intcomma }}</td>
-                                        <td class="text-center">{{ charge.quantity }}</td>
-                                        <td class="text-right">{{ charge.total_amount|floatformat:2|intcomma }}</td>
-                                        <td class="text-center">
-                                            <a href="{% url 'jo_detail_edit' charge.pk %}?type=charge"><i class="far fa-edit"></i></a>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                    <tr style="font-weight: bold; font-size: large;">
-                                        <td colspan="3">Total</td>
-                                        <td class="text-right">{{ joborder.total_charges|floatformat:2|intcomma }}</td>
-                                        <td></td>
-                                </tbody>
-                            </table>
-                            {% else %}
-                            <p class="card-text">No charges yet.</p>
-                            {% endif %}
-                            <a href="{% url 'jo_documentation_add' joborder.pk %}?type=charge" class="btn btn-outline-secondary">Add Charge</a>
-                            {% if charges %}
-                            <a href="{% url 'generate_job_order' joborder.pk 'invoice' %}" class="btn btn-success">Generate Invoice</a>
-                            {% endif %}
-                        </div>
+                        <h5>Payments</h5>
+                        {% if payments %}
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Date Paid</th>
+                                    <th>Details</th>
+                                    <th class="text-right">Amount Paid</th>
+                                    <th class="text-right">Balance</th>
+                                    <th width="10%" class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for payment in payments %}
+                                <tr>
+                                    <td>{{ payment.date_paid|date:"Y-m-d"|naturaltime }}</td>
+                                    <td>
+                                        {{ payment.mode_of_payment }}<br />
+                                        <span class="text-muted smaller">OR: {{ payment.or_number }}</span><br />
+                                        <span class="text-muted smaller">BY: {{ payment.received_by }}</span>
+                                    </td>
+                                    <td class="text-right">{{ payment.amount_paid|peso }}</td>
+                                    <td class="text-right">{{ payment.balance|peso }}</td>
+                                    <td class="text-center">
+                                        <a href="{% url 'jo_detail_edit' payment.pk %}?type=payment" title="Edit"><i class="far fa-edit"></i></a>
+                                        <a href="#" title="Receipt"><i class="fas fa-receipt"></i></a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                <tr style="font-weight: bold; font-size: large;">
+                                    <td colspan="2">Total</td>
+                                    <td class="text-right">{{ joborder.total_paid|peso }}</td>
+                                    <td colspan="2"></td>
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <p class="card-text">No payments yet.</p>
+                        {% endif %}
+                        <a href="{% url 'jo_documentation_add' joborder.pk %}?type=payment" class="btn btn-outline-secondary">Add Payment</a>
+                    </div>
+                    <div class="tab-pane fade" id="receiving" role="tabpanel" aria-labelledby="receiving-tab">
+                        <p>Receiving tab.</p>
+                    </div>
+                    <div class="tab-pane fade" id="releasing" role="tabpanel" aria-labelledby="releasing-tab">
+                        <p>Releasing tab.</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-{% endblock main_content %}
+{% endblock jo_body %}
 
 
 {% block js %}
@@ -516,7 +310,17 @@
                 slidesToShow: 3,
                 slidesToScroll: 3,
             });
-            console.log("Job Order JS Loaded!");
+            
+            function selectTab(selectedIndex) {
+                console.log('selectedIndex', selectedIndex);
+                if (isNaN(selectedIndex) || selectedIndex == -1) 
+                    selectedIndex = 0;
+                const tabLinks = document.querySelectorAll('.submenu .nav-link');
+                tabLinks[selectedIndex].click();
+                console.log('tabLinks[selectedIndex]', tabLinks[selectedIndex]);
+            }
+            console.log('{{ selected }}')
+            selectTab(parseInt('{{ selected }}'));
         })
     </script>
 {% endblock js %}

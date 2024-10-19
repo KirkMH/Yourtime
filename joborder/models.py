@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.db.models import F
+from dateutil.relativedelta import relativedelta
 
 from client.models import Client
 from customization.models import (
@@ -189,6 +190,13 @@ class ClosedLate(models.Manager):
             closed_at__gt=F('promise_date')).order_by('-pk')
 
 
+class WithReceivables(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(
+            current_status__in=OPEN_STATUSES).filter(
+            due_date__lte=timezone.localdate()).order_by('due_date')
+
+
 class JobOrder(models.Model):
     client = models.ForeignKey(
         Client,
@@ -297,7 +305,14 @@ class JobOrder(models.Model):
         return Payment.objects.filter(job_order=self).aggregate(total=models.Sum('amount_paid'))['total']
 
     def balance(self):
-        return self.total_charges() - self.total_paid()
+        charges = self.total_charges() or 0
+        payments = self.total_paid() or 0
+        return charges - payments
+
+    def months_since_finished(self):
+        if self.current_status != 'FINISHED' and self.closed_at is None:
+            return 0
+        return relativedelta(timezone.localdate(), self.closed_at).months
 
     def isClosed(self):
         return self.current_status in CLOSE_STATUSES
@@ -464,6 +479,7 @@ class Estimate(models.Model):
 
 
 class Payment(models.Model):
+    created_on = models.DateTimeField(auto_now_add=True)
     job_order = models.ForeignKey(
         JobOrder,
         verbose_name=_("Job Order"),
@@ -497,6 +513,15 @@ class Payment(models.Model):
         related_name="received_by",
         on_delete=models.CASCADE
     )
+
+    class Meta:
+        ordering = ['-pk']
+
+    @property
+    def balance(self):
+        total_paid = Payment.objects.filter(job_order=self.job_order).aggregate(
+            total=models.Sum('amount_paid'))['total']
+        return self.job_order.total_charges() - total_paid
 
 
 class ArrivalPhoto(models.Model):

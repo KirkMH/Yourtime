@@ -18,8 +18,9 @@
 
 {% block main_content %}
     <div class="card m-4">
-        <form method="post" enctype="multipart/form-data" novalidate>
+        <form id="jo-form" method="post" enctype="multipart/form-data" novalidate>
             {% csrf_token %}
+            <input type="hidden" name="other_detail" id="other_detail" value="">
 
             <div class="card-header">
                 <h3>{{ jo.client }}'s {{ type_name }} for JO # {{ jo.pk|stringformat:"05d" }}</h3>
@@ -28,6 +29,15 @@
             <div class="card-body">
                 <span>Please fill in all the fields marked with an <label class="required">asterisk</label>.</h3><br />
                 <div class="col-12">
+                    {% if type_name == 'Payment details' %}
+                    <div class="row text-primary">
+                        <div class="col-md-3">
+                            <label for="balance">Balance:</label>
+                        </div>
+                        <div class="col-md-3 text-right">{{ jo.balance|peso }}</div>
+                    </div>
+
+                    {% endif %}
                     {% include '../includes/form_one_col.html' %}
                 </div>
             </div>
@@ -47,11 +57,17 @@
     <script>
         $(document).ready(function() {
             const type = "{{ type_name }}";
+            const amount_due = parseFloat("{{ jo.balance }}") || 0;
             let particular_desc = [];
             let particular_price = [];
 
             if (type === 'Assessment details')
                 $('#id_assessment_date').attr('type', 'date');
+            else if (type === 'Payment details') {
+                $('#id_date_paid').attr('type', 'date');
+                $('#id_date_paid').val(new Date().toISOString().split('T')[0]);
+                $('#other_detail').val(amount_due);
+            }
             else if (type === 'Job Order details') {
                 const conditions = "{{conditions}}".split(',');
                 $('#id_condition').typeahead({source: conditions});
@@ -113,6 +129,21 @@
                     $('#id_unit_price').val(particular_price[index]);
                 });
             }
+
+            // on form submit
+            $('#jo-form').on('submit', function(e) {
+                e.preventDefault();
+                if (type === 'Payment details') {
+                    const balance = parseFloat($('#other_detail').val()) || 0;
+                    const paid = parseFloat($('#id_amount_paid').val()) || 0;
+                    console.log(`balance: ${balance} paid: ${paid}`);
+                    if (paid > balance) {
+                        alert('Amount paid cannot be greater than balance');
+                        return false;
+                    }
+                }
+                $(this).unbind('submit').submit(); // submit the form
+            });
 
             $("#menu-jo").addClass("active");
         })
