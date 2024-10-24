@@ -500,7 +500,7 @@ class Payment(models.Model):
         default=0
     )
     or_number = models.PositiveIntegerField(
-        _("OR Number"),
+        _("Service Invoice"),
         null=True, blank=True
     )
     date_paid = models.DateField(

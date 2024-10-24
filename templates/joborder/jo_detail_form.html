@@ -138,7 +138,7 @@
                     const paid = parseFloat($('#id_amount_paid').val()) || 0;
                     console.log(`balance: ${balance} paid: ${paid}`);
                     if (paid > balance) {
-                        alert('Amount paid cannot be greater than balance');
+                        bootbox.alert('Amount paid cannot be greater than balance.');
                         return false;
                     }
                 }
