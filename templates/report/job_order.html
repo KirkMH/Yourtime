@@ -241,12 +241,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Service Fee</td>
-                                <td class="text-right">{{ joborder.service_fee|floatformat:2|intcomma }}</td>
-                                <td class="text-center">1</td>
-                                <td class="text-right">{{ joborder.service_fee|floatformat:2|intcomma }}</td>
-                            </tr>
                             {% for charge in joborder.charge_jo.all %}
                             <tr>
                                 <td>{{ charge.particular }}</td>
@@ -257,7 +251,7 @@
                             {% endfor %}
                             <tr style="font-weight: bold; font-size: large;">
                                 <td colspan="3">Total</td>
-                                <td class="text-right text-bold" style="font-size: larger;">{{ joborder.grand_total|peso }}</td>
+                                <td class="text-right text-bold" style="font-size: larger;">{{ joborder.total_charges|peso }}</td>
                         </tbody>
                     </table>
                 </div>

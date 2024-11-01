@@ -295,12 +295,6 @@ class JobOrder(models.Model):
         return Charge.objects.filter(job_order=self).aggregate(
             total=models.Sum(F('unit_price') * F('quantity')))['total']
 
-    def service_fee(self):
-        return self.estimate_jo.service_fee
-
-    def grand_total(self):
-        return self.total_charges() + self.service_fee()
-
     def total_paid(self):
         return Payment.objects.filter(job_order=self).aggregate(total=models.Sum('amount_paid'))['total']
 
