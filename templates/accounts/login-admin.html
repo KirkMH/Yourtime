@@ -18,10 +18,10 @@
   <form method="post" novalidate>
     {% csrf_token %}
     <input type="hidden" name="next" value="{{ next }}">
-    <i class="far fa-eye" id="togglepassword" style="margin-left: -30; cursor: pointer;"></i>
     {% include '../includes/form_one_col_full.html' %}
     <div class="row">
       <div class="col-8">
+        <i class="far fa-eye" id="togglepassword" style="margin-left: -30; cursor: pointer;"></i>
       </div>
       <!-- /.col -->
       <div class="col-4">
