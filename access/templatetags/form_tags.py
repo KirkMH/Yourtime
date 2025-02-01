@@ -57,3 +57,8 @@ def accounting(amount):
         return "%s%s" % (intcomma(int(amount)), ("%0.2f" % amount)[-3:])
     else:
         return "-"
+
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key, '')

@@ -102,9 +102,9 @@ def collections_summary(request):
             fmode = ModeOfPayment.objects.filter(id=t['mode_of_payment'])
             if fmode.exists():
                 mode = fmode.first()
-                mode_desc = mode.description.lower()
+                mode_desc = mode.pk  # mode.description.lower()
                 # remove non-letter characters from mode_desc
-                mode_desc = ''.join(filter(str.isalpha, mode_desc))
+                # mode_desc = ''.join(filter(str.isalpha, mode_desc))
                 total[mode_desc] = (total.get(mode_desc, 0)) + t['totals']
                 total['subtotal'] = total.get('subtotal', 0) + t['totals']
 
@@ -122,12 +122,20 @@ def collections_summary(request):
                     collections.append(item)
 
     print(f"collections: {collections}, totals: {totals}")
+    modes = ModeOfPayment.objects.all().order_by('pk')
+    # assign all pk of modes to indices variable
+    indices = []
+    for mode in modes:
+        indices.append(mode.pk)
+    print(f"modes: {modes}, indices: {indices}")
 
     context = {
         'sel_from': sel_from,
         'sel_to': sel_to,
         'collections': collections,
         'total': total,
+        'modes': modes,
+        'indices': indices
     }
     return render(request, 'report/collections_summary.html', context=context)
 
