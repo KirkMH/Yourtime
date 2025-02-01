@@ -8,11 +8,11 @@
   <title>{% block title %}{% endblock %} | Yourtime</title>
   <link rel="icon" href="{% static 'img/logo-purple.jpg' %}">
 
-  
+
   <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
   <!-- Google Font: Source Sans Pro -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Times+New+Roman:300,400,400i,700&display=fallback">
   <!-- Bootstrap 4 -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
   <!-- Font Awesome -->
@@ -28,15 +28,15 @@
   <!-- other styles -->
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
   {% block css %}{% endblock css %}
-  {% block extra_header %}{% endblock extra_header %}  
-    
+  {% block extra_header %}{% endblock extra_header %}
+
 </head>
 <body class="hold-transition layout-top-nav">
 <div class="wrapper">
-  
+
   {% block wrapper %}
   {% endblock wrapper %}
-    
+
 
   <!-- Navbar -->
   <nav class="main-header navbar navbar-expand-lg navbar-dark fixed-top bg-theme">
@@ -51,14 +51,14 @@
         <!-- top navigation menu -->
         {% include 'includes/topmenu.html' %}
         <!-- full screen -->
-        <li class="nav-item"> 
-          <a class="nav-link" data-widget="fullscreen" href="#" role="button"> <i class="fas fa-expand-arrows-alt"></i> </a> 
+        <li class="nav-item">
+          <a class="nav-link" data-widget="fullscreen" href="#" role="button"> <i class="fas fa-expand-arrows-alt"></i> </a>
         </li>
-      </ul> 
+      </ul>
     </nav>
   </div>
   <!-- /.navbar -->
-  
+
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper" style="margin-top: 80px;">
     <!-- Content Header (Page header) -->
@@ -71,7 +71,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               {% block breadcrumb %}
-              {% endblock breadcrumb %}                  
+              {% endblock breadcrumb %}
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -81,13 +81,13 @@
 
     {% block main_content %}
     {% endblock main_content %}
-        
+
   </div>
   <!-- /.content-wrapper -->
   <footer class="main-footer no-print pb-2">
     <div class="float-left">
       <strong>Copyright &copy; 2024 <a href="#">Yourtime Center OPC</a>.</strong><br>
-      <strong>All rights reserved.</strong> 
+      <strong>All rights reserved.</strong>
       <br>&nbsp;
     </div>
   </footer>
@@ -102,13 +102,13 @@
 <!-- ./wrapper -->
 
 <!-- Bootstrap -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>  
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
 <!-- AdminLTE App -->
 <script src="{% static 'dist/js/adminlte.js' %}"></script>
 <!-- Toastr -->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 <!-- ChartJS -->
-<script src="https://www.jsdelivr.com/package/npm/chart.js?path=dist" crossorigin="anonymous"></script>  
+<script src="https://www.jsdelivr.com/package/npm/chart.js?path=dist" crossorigin="anonymous"></script>
 <!-- Bootbox-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/6.0.0/bootbox.min.js"></script>
 <script type="text/javascript" src="https://momentjs.com/downloads/moment.min.js"></script>
