@@ -6,6 +6,7 @@ from joborder.models import JobOrder, Payment
 from client.models import Client
 from access.models import Employee
 from customization.models import ModeOfPayment
+from datetime import datetime
 
 
 @login_required
@@ -130,8 +131,8 @@ def collections_summary(request):
     print(f"modes: {modes}, indices: {indices}")
 
     context = {
-        'sel_from': sel_from,
-        'sel_to': sel_to,
+        'sel_from': datetime.strptime(sel_from, '%Y-%m-%d').date() if sel_from else None,
+        'sel_to': datetime.strptime(sel_to, '%Y-%m-%d').date() if sel_to else None,
         'collections': collections,
         'total': total,
         'modes': modes,
