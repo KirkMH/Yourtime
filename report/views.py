@@ -99,25 +99,27 @@ def collections_summary(request):
     total = {}
     if totals:
         for t in totals:
-            mode = ModeOfPayment.objects.get(id=t['mode_of_payment'])
-            mode_desc = mode.description.lower()
-            # remove non-letter characters from mode_desc
-            mode_desc = ''.join(filter(str.isalpha, mode_desc))
-            total[mode_desc] = (total.get(mode_desc, 0)) + t['totals']
-            total['subtotal'] = total.get('subtotal', 0) + t['totals']
+            fmode = ModeOfPayment.objects.filter(id=t['mode_of_payment'])
+            if fmode.exists():
+                mode = fmode.first()
+                mode_desc = mode.description.lower()
+                # remove non-letter characters from mode_desc
+                mode_desc = ''.join(filter(str.isalpha, mode_desc))
+                total[mode_desc] = (total.get(mode_desc, 0)) + t['totals']
+                total['subtotal'] = total.get('subtotal', 0) + t['totals']
 
-            # check if the date exists in collections
-            item = next(
-                (item for item in collections if item['date'] == t['date_paid']), None)
-            if item:
-                item[mode_desc] = item.get(mode_desc, 0) + t['totals']
-                item['subtotal'] = item.get('subtotal', 0) + t['totals']
-            else:
-                item = {}
-                item["date"] = t['date_paid']
-                item[mode_desc] = t['totals']
-                item['subtotal'] = t['totals']
-                collections.append(item)
+                # check if the date exists in collections
+                item = next(
+                    (item for item in collections if item['date'] == t['date_paid']), None)
+                if item:
+                    item[mode_desc] = item.get(mode_desc, 0) + t['totals']
+                    item['subtotal'] = item.get('subtotal', 0) + t['totals']
+                else:
+                    item = {}
+                    item["date"] = t['date_paid']
+                    item[mode_desc] = t['totals']
+                    item['subtotal'] = t['totals']
+                    collections.append(item)
 
     print(f"collections: {collections}, totals: {totals}")
 
