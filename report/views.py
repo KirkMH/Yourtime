@@ -70,8 +70,8 @@ def collections_detailed(request):
     print(f"collections: {collections}, total: {total}")
 
     context = {
-        'sel_from': sel_from,
-        'sel_to': sel_to,
+        'sel_from': datetime.strptime(sel_from, '%Y-%m-%d').date() if sel_from else None,
+        'sel_to': datetime.strptime(sel_to, '%Y-%m-%d').date() if sel_to else None,
         'collections': collections,
         'total': total
     }
