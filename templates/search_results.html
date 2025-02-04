@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load static %}
+
+{% block title %}Search Results{% endblock title %}
+
+{% block wrapper %}
+
+{% endblock wrapper %}
+  
+{% block page_title %}Search Results{% endblock page_title %}    
+
+{% block main_content %}   
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <section class="col-lg-12 connectedSortable">
+            <!-- JO Completion -->
+            <div class="card card-primary-color">
+              <div class="card-header">
+                <div class="card-text">
+                  <h5>Search parameters</h5>
+                  <span class="text-muted">Contact Number: </span> {{ contact_no|default:'-None-' }}<br />
+                  <span class="text-muted">JO Number: </span> {{ jo_no|default:'-None-' }}<br />
+                  <span class="text-muted">Client Name: </span> {{ client_name|default:'-None-' }}<br />
+                </div>
+                <a href="{% url 'search' %}" class="btn btn-sm btn-outline-primary">Change Filter</a>
+              </div>
+              <div class="card-body table table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Client Name</th>
+                      <th>Contact Info</th>
+                      <th>JO #</th>
+                      <th>Item</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% if results %}
+                      {% for client in results %}
+                      <tr>
+                        <td><a href="{% url 'client_detail' client.pk %}">{{ client.name }}</a></td>
+                        <td>{{ client.get_contact_info }}</td>
+                        <td>{{ client.pk|stringformat:"05d" }}</td>
+                        <td></td>
+                      </tr>
+                      {% endfor %}
+                    {% else %}
+                    <tr>
+                      <td colspan="4" class="text-center">No records matching query.</td>
+                    </tr>
+                    {% endif %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+        </div>
+        <!-- /.row (main row) -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+    
+{% endblock main_content %}
+
+
+{% block js %}
+<!-- bootboxjs -->
+<script src="{% static 'js/bootbox.all.min.js' %}"></script>
+<!-- chartjs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script>
+  $(document).ready(function() {
+    $("#menu_dashboard").addClass("active");
+
+    $(".bulletin-title").click(function() {
+      bootbox.dialog({
+          title: $(this).text(),
+          message: $(this).data('details')
+      });
+    });
+
+    const jo_completion = "{{ jo_completion|safe }}".split(",")
+    const jo_ontime = "{{ jo_ontime|safe }}".split(",")
+    const labels = "{{ labels|safe }}".split(",")
+    const revenue = "{{ revenue|safe }}".split(",")
+      
+    //---------------------
+    //- STACKED BAR CHART -
+    //---------------------
+    var barChartData = {
+      labels  : labels,
+      datasets: [
+        {
+          label               : 'Completed JOs',
+          backgroundColor     : 'rgba(60,141,188,0.9)',
+          borderColor         : 'rgba(60,141,188,0.8)',
+          pointRadius          : false,
+          pointColor          : '#3b8bba',
+          pointStrokeColor    : 'rgba(60,141,188,1)',
+          pointHighlightFill  : '#fff',
+          pointHighlightStroke: 'rgba(60,141,188,1)',
+          data                : jo_completion
+        },
+        {
+          label               : 'Completed On-Time',
+          backgroundColor     : 'rgba(210, 214, 222, 1)',
+          borderColor         : 'rgba(210, 214, 222, 1)',
+          pointRadius         : false,
+          pointColor          : 'rgba(210, 214, 222, 1)',
+          pointStrokeColor    : '#c1c7d1',
+          pointHighlightFill  : '#fff',
+          pointHighlightStroke: 'rgba(220,220,220,1)',
+          data                : jo_ontime
+        },
+      ]
+    }
+    var stackedBarChartCanvas = $('#stackedBarChart').get(0).getContext('2d')
+    var stackedBarChartData = $.extend(true, {}, barChartData)
+
+    var stackedBarChartOptions = {
+      responsive              : true,
+      maintainAspectRatio     : false,
+      scales: {
+        xAxes: [{
+          stacked: true,
+        }],
+        yAxes: [{
+          stacked: true
+        }]
+      }
+    }
+
+    new Chart(stackedBarChartCanvas, {
+      type: 'bar',
+      data: stackedBarChartData,
+      options: stackedBarChartOptions
+    })
+
+    //-------------
+    //- LINE CHART -
+    //--------------
+
+    var lineChartData = {
+      labels  : labels,
+      datasets: [
+        {
+          label               : 'Revenue, in thousands of pesos',
+          backgroundColor     : 'rgba(38,157,66,0.9)',
+          borderColor         : 'rgba(38,157,66,0.8)',
+          pointRadius          : false,
+          pointColor          : '#34CE57',
+          pointStrokeColor    : 'rgba(38,157,66,1)',
+          pointHighlightFill  : '#fff',
+          pointHighlightStroke: 'rgba(38,157,66,1)',
+          data                : revenue
+        }
+      ]
+    }
+    var lineChartOptions = {
+      maintainAspectRatio : false,
+      responsive : true,
+      legend: {
+        display: true
+      },
+      scales: {
+        xAxes: [{
+          gridLines : {
+            display : false,
+          }
+        }],
+        yAxes: [{
+          gridLines : {
+            display : false,
+          },
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+    var lineChartCanvas = $('#lineChart').get(0).getContext('2d')
+    var lineChartOptions = $.extend(true, {}, lineChartOptions)
+    var lineChartData = $.extend(true, {}, lineChartData)
+    lineChartData.datasets[0].fill = false;
+    lineChartOptions.datasetFill = false
+
+    var lineChart = new Chart(lineChartCanvas, {
+      type: 'line',
+      data: lineChartData,
+      options: lineChartOptions
+    })
+  })
+</script>
+{% endblock js %}
+  

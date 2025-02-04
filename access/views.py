@@ -3,7 +3,7 @@ from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from django.db.models import F, Sum
+from django.db.models import F, Sum, Q
 from django.views.generic import ListView
 from django.contrib import messages
 from django.http import JsonResponse
@@ -13,6 +13,46 @@ from joborder.models import JobOrder, Payment
 from django.contrib.auth.models import User
 from .models import Employee
 from .forms import *
+
+
+@login_required
+def search_page(request):
+    err = None
+
+    if request.method == 'POST':
+        contact_no = request.POST.get('contact_no')
+        jo_no = request.POST.get('jo_no')
+        client_name = request.POST.get('client_name')
+
+        if jo_no:
+            # validate that jo_no is numeric
+            if not jo_no.isdigit():
+                err = "Job Order number must be numeric."
+            else:
+                query = JobOrder.objects.filter(pk=jo_no)
+                if query:
+                    return redirect('jo_details', pk=jo_no)
+                else:
+                    err = "Job Order number does not exist."
+        else:
+            query = Q()
+            if contact_no:
+                query |= Q(mob_num__contains=contact_no)
+                query |= Q(tel_num__contains=contact_no)
+            if client_name:
+                query |= Q(name__contains=client_name)
+
+            search_query = Client.objects.filter(query)
+            print(search_query)
+            context = {
+                'contact_no': contact_no,
+                'jo_no': jo_no,
+                'client_name': client_name,
+                'results': search_query
+            }
+            return render(request, 'search_results.html', context)
+
+    return render(request, 'search.html', context={'err': err})
 
 
 @login_required

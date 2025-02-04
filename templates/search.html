@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load static %}
+
+{% block title %}Search{% endblock title %}
+
+{% block wrapper %}
+
+{% endblock wrapper %}
+  
+{% block page_title %}Search{% endblock page_title %}    
+
+{% block main_content %}   
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <section class="col-lg-4 connectedSortable"></section>
+          <section class="col-lg-4 connectedSortable">
+            <!-- JO Completion -->
+            <div class="card" style="border: 1pt solid #800080; border-radius: 1%;">
+              <div class="card-header bg-theme">
+                <h3 class="card-title text-white">
+                  <i class="fas fa-search mr-1"></i>
+                  Client Record
+                </h3>
+              </div>
+              <div class="card-body">
+                <form id="search-form" method="POST" action="{% url 'search' %}">
+                  {% csrf_token %}
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label for="contact_no">Contact Number:</label>
+                        <input type="text" name="contact_no" id="contact_no" class="form-control" placeholder="09xxxxxxxxx" autocomplete="off">
+                      </div>
+                      <div class="form-group">
+                        <label for="jo_no">JO Number:</label>
+                        <input type="text" name="jo_no" id="jo_no" class="form-control" autocomplete="off">
+                      </div>
+                      <div class="form-group">
+                        <label for="client_name">Client's Name:</label>
+                        <input type="text" name="client_name" id="client_name" class="form-control" autocomplete="off">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12 text-right">
+                      <a href="#" class="btn btn-outline-danger">New Job Order</a>&nbsp;
+                      <button type="submit" class="btn btn-primary-color" name="search">Search</button>
+                    </div>
+                </form>
+              </div>
+            </div>
+
+          </section>
+          <section class="col-lg-4 connectedSortable"></section>
+          
+        </div>
+        <!-- /.row (main row) -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+    
+{% endblock main_content %}
+
+
+{% block js %}
+<!-- bootboxjs -->
+<script src="{% static 'js/bootbox.all.min.js' %}"></script>
+<!-- chartjs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script>
+  $(document).ready(function() {
+    $("#menu_dashboard").addClass("active");
+    const error = "{{err}}";
+    if (error && error != "None") {
+      bootbox.dialog({
+          title: "Search Result",
+          message: error,
+          className: "bg-error"
+      });
+    }
+  });
+</script>
+{% endblock js %}
