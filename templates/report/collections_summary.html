@@ -11,6 +11,20 @@
     <li class="breadcrumb-item active">Collections Summary</li>
 {% endblock breadcrumb %}
 
+{% block css %}
+<style>
+    @media print {
+        .no-print,   /* Hides export buttons */
+        .dataTables_filter, /* Hides search box */
+        .dataTables_length, /* Hides "Show X entries" dropdown */
+        .dataTables_paginate, /* Hides pagination controls */
+        .dataTables_info { /* Hides "Showing X of Y entries" */
+            display: none !important;
+        }
+    }
+</style>
+{% endblock css %}
+
 {% block main_content %}
 
     <div class="card m-4 no-print">
@@ -104,6 +118,10 @@
                 var from = $("#from").val();
                 var to = $("#to").val();
                 window.location.href = "{% url 'collections_summary' %}?from="+from+"&to="+to;
+            })
+            $("table").DataTable({
+                dom: '<"no-print"B>frtip',
+                paging: false
             })
             $("#menu-reports").addClass("active")
         })

@@ -79,7 +79,8 @@
         $(document).ready(function() {
             $("#table").DataTable({
                 serverSide: true,
-                sAjaxSource: "{% url 'jo_dtlist' %}", 
+                sAjaxSource: "{% url 'jo_dtlist' %}",
+                dom: 'Bfrtip',
                 columns: [
                     {   
                         data: 0,

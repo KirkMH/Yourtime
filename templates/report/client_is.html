@@ -12,6 +12,20 @@
     <li class="breadcrumb-item active">Information Sheet</li>
 {% endblock breadcrumb %}
 
+{% block css %}
+<style>
+    @media print {
+        .no-print,   /* Hides export buttons */
+        .dataTables_filter, /* Hides search box */
+        .dataTables_length, /* Hides "Show X entries" dropdown */
+        .dataTables_paginate, /* Hides pagination controls */
+        .dataTables_info { /* Hides "Showing X of Y entries" */
+            display: none !important;
+        }
+    }
+</style>
+{% endblock css %}
+
 {% block main_content %}
     <div class="card m-4">
         <div class="card-header text-center">
@@ -70,6 +84,10 @@
 {% block js %}
     <script>
         $(document).ready(function() {
+            $("table").DataTable({
+                dom: '<"no-print"B>frtip',
+                paging: false
+            })
             $("#menu-reports").addClass("active")
         })
     </script>
