@@ -143,7 +143,8 @@
                                     <td>{{ assessment.assessed_by }}</td>
                                     <td>{{ assessment.assessment }}</td>
                                     <td class="text-center">
-                                        <a href="{% url 'jo_detail_edit' assessment.pk %}?type=assessment" title="Edit"><i class="far fa-edit"></i></a>
+                                        <a href="{% url 'jo_detail_edit' assessment.pk %}?type=assessment" title="Edit"><i class="far fa-edit"></i></a> | 
+                                        <a href="#" title="Delete" data-url="{% url 'jo_detail_delete' 'assessment' assessment.pk %}" onclick="confirmation('assessment');"><i class="far fa-trash-alt"></i></a>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -176,7 +177,8 @@
                                     <td>{{ test.comments }}</td>
                                     <td>{{ test.tested_by }}</td>
                                     <td class="text-center">
-                                        <a href="{% url 'jo_detail_edit' test.pk %}?type=test" title="Edit"><i class="far fa-edit"></i></a>
+                                        <a href="{% url 'jo_detail_edit' test.pk %}?type=test" title="Edit"><i class="far fa-edit"></i></a> | 
+                                        <a href="#" title="Delete" data-url="{% url 'jo_detail_delete' 'test' test.pk %}" onclick="confirmation('test');"><i class="far fa-trash-alt"></i></a>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -208,7 +210,8 @@
                                     <td class="text-center">{{ charge.quantity }}</td>
                                     <td class="text-right">{{ charge.total_amount|peso }}</td>
                                     <td class="text-center">
-                                        <a href="{% url 'jo_detail_edit' charge.pk %}?type=charge" title="Edit"><i class="far fa-edit"></i></a>
+                                        <a href="{% url 'jo_detail_edit' charge.pk %}?type=charge" title="Edit"><i class="far fa-edit"></i></a> | 
+                                        <a href="#" title="Delete" data-url="{% url 'jo_detail_delete' 'charge' charge.pk %}" onclick="confirmation('charge');"><i class="far fa-trash-alt"></i></a>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -255,8 +258,9 @@
                                     <td class="text-right">{{ payment.amount_paid|peso }}</td>
                                     <td class="text-right">{{ payment.balance|peso }}</td>
                                     <td class="text-center">
-                                        <a href="{% url 'jo_detail_edit' payment.pk %}?type=payment" title="Edit"><i class="far fa-edit"></i></a>
-                                        <a href="#" title="Receipt"><i class="fas fa-receipt"></i></a>
+                                        <a href="{% url 'jo_detail_edit' payment.pk %}?type=payment" title="Edit"><i class="far fa-edit"></i></a> | 
+                                        <a href="#" title="Receipt"><i class="fas fa-receipt"></i></a> | 
+                                        <a href="#" title="Delete" data-url="{% url 'jo_detail_delete' 'payment' payment.pk %}" onclick="confirmation('payment');"><i class="far fa-trash-alt"></i></a>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -289,6 +293,20 @@
     <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
     <script src="{% static 'js/joborder.js' %}?v=0"></script>
     <script>
+        function confirmation(type) {
+            const link = event.currentTarget;
+            const url = link.getAttribute("data-url");
+            bootbox.confirm({
+                title: "Confirm Action",
+                message: `Are you sure you want to delete this ${type}?`,
+                callback: function(result){ 
+                    if (result) {
+                        location.href = url;
+                    }
+                }
+            });
+        }
+
         $(document).ready(function() {
             $("#menu-jo").addClass("active")
 

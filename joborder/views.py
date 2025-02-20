@@ -5,7 +5,7 @@ from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django_serverside_datatable.views import ServerSideDatatableView
-from django.views.generic import CreateView, UpdateView, DetailView
+from django.views.generic import CreateView, UpdateView, DetailView, DeleteView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 
@@ -361,6 +361,22 @@ class JobOrderDocumentationCreateView(CreateView):
         messages.success(self.request, getDescription(
             type) + ' was added successfully.')
         return super().form_valid(form)
+
+
+@login_required()
+def delete_jo_detail(request, type, pk):
+    model = getModel(type)
+    jo = None
+    try:
+        object = model.objects.get(pk=pk)
+        jo = object.job_order
+        object.delete()
+        messages.success(request, getDescription(
+            type) + ' was deleted successfully.')
+    except:
+        messages.error(request, getDescription(
+            type) + ' could not be deleted.')
+    return redirect(reverse('jo_details', kwargs={'pk': jo.pk}) + f"?type={type}")
 
 
 def update_jo_status(request, pk):

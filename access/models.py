@@ -8,10 +8,14 @@ from django.utils import timezone
 # lists
 userTypes = [
     (1, 'Technician'),
-    (2, 'Asst. Head Technician'),
-    (3, 'Head Technician'),
-    (4, 'Manager'),
-    (5, 'Administrator'),
+    (2, 'Encoders / Customer Service / Aftersales & Telemarketing'),
+    (3, 'Parts Department'),
+    (4, 'Inventory & Purchasing Department'),
+    (5, 'HR Department'),
+    (6, 'Watch Security & Repair Coordinator'),
+    (7, 'Finance/Accounting'),
+    (8, 'Operations Manager'),
+    (9, 'Administrator')
 ]
 
 
