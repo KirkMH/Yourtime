@@ -141,7 +141,8 @@ def jo_list(request):
 
 @method_decorator(login_required, name='dispatch')
 class JoDtListView(ServerSideDatatableView):
-    queryset = JobOrder.objects.all()
+    queryset = JobOrder.objects.filter(
+        current_status__in=OPEN_STATUSES).order_by('pk')
     columns = ['pk', 'watch__serial_number', 'client__name', 'client__mob_num',
                'client__tel_num', 'current_status', 'created_at', 'promise_date', 'watch__article']
 
