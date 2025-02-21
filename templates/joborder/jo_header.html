@@ -76,7 +76,9 @@
                     <h2>{{ joborder.client.name }}</h2>
                 </div>
                 <div class="col-lg-2">
+                    {% if request.user.employee.can_delete_jo %}
                     <span class="float-right"><a href="#" data-url="{% url 'jo_detail_delete' 'joborder' joborder.pk %}" onclick="confirmation('job order');" class="btn btn-danger">Delete Job Order</a></span>
+                    {% endif %}
                 </div>
             </div>
             <div class="row">
@@ -98,7 +100,7 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-lg-6 col-md-12" style="border-right: 1px solid lightgray;">
-                    <h5 class="card-text"><a href="{% url 'jo_detail_edit' joborder.pk %}?type=joborder" title="Edit">JO# {{ joborder.pk|stringformat:'05d' }} Details</a></h5>
+                    <h5 class="card-text"><a href="{% if request.user.employee.can_add_edit_jo %}{% url 'jo_detail_edit' joborder.pk %}?type=joborder{% else %}#{% endif %}" title="Edit">JO# {{ joborder.pk|stringformat:'05d' }} Details</a></h5>
                     <div class="row smaller">
                         <div class="col-sm-6">
                             <div class="card-text"><span class="text-muted">Repair Work: </span>{{ joborder.repair_work }}</div>
@@ -121,13 +123,21 @@
                                     | <a href="{{ joborder.warranty_file_3.url }}" class="text-primary" target="_blank">File 3</a>
                                 {% endif %}
                             </div>
-                            <div class="card-text"><span class="text-muted">Status: </span><a href="#" title="Update" data-toggle="modal" data-target="#statusModal">{{ joborder.current_status }}</a></div>
+                            <div class="card-text"><span class="text-muted">Status: </span>
+                                {% if request.user.employee.can_update_jo_status %}
+                                <a href="#" title="Update" data-toggle="modal" data-target="#statusModal">{{ joborder.current_status }}</a>
+                                {% else %}
+                                {{ joborder.current_status }}
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-12">
                     <h5 class="card-text">
-                        {% if joborder.watch %}
+                        {% if not request.user.employee.can_add_edit_jo %}
+                            <a href="#">Watch Details</a>
+                        {% elif joborder.watch %}
                             <a href="{% url 'jo_detail_edit' joborder.watch.pk %}?type=watch" title="Edit">Watch Details</a>
                         {% else %}
                             <a href="{% url 'jo_watch_add' joborder.pk %}" title="Add">Watch Details</a>

@@ -11,8 +11,8 @@ userTypes = [
     (2, 'Encoders / Customer Service / Aftersales & Telemarketing'),
     (3, 'Parts Department'),
     (4, 'Inventory & Purchasing Department'),
-    (5, 'HR Department'),
-    (6, 'Watch Security & Repair Coordinator'),
+    (5, 'Watch Security & Repair Coordinator'),
+    (6, 'HR Department'),
     (7, 'Finance/Accounting'),
     (8, 'Operations Manager'),
     (9, 'Administrator')
@@ -61,6 +61,68 @@ class Employee(models.Model):
 
     def active_overdue(self):
         return JobOrder.objects.filter(assigned_technician=self, closed_at=None, promise_date__lt=timezone.localdate())
+
+    def can_see_jo_completion(self):
+        print(f"can_see_jo_completion user_type: {self.user_type}")
+        return self.user_type >= 6
+
+    def can_see_revenue(self):
+        print(f"can_see_revenue user_type: {self.user_type}")
+        return self.user_type >= 7
+
+    def can_add_edit_jo(self):
+        return self.user_type not in [2, 3, 6]
+
+    def can_delete_jo(self):
+        return self.user_type in [5, 9]
+
+    def can_upload_photos(self):
+        return self.user_type in [1, 2, 5, 8, 9]
+
+    def can_assess_and_test(self):
+        return self.user_type in [1, 5, 7, 8, 9]
+
+    def can_charge_and_invoice(self):
+        return self.user_type in [2, 3, 5, 7, 8, 9]
+
+    def can_update_jo_status(self):
+        return self.user_type in [1, 2, 5, 7, 8, 9]
+
+    def can_manage_clients(self):
+        return self.user_type in [2, 5, 7, 8, 9]
+
+    def read_only_clients(self):
+        return self.user_type in [7]
+
+    def can_view_employees(self):
+        return self.user_type in [6, 8, 9]
+
+    def can_manage_users(self):
+        return self.user_type in [9]
+
+    def can_access_repair_works(self):
+        return self.user_type not in [2, 6]
+
+    def can_manage_repair_works(self):
+        return self.user_type not in [2, 6, 7]
+
+    def can_manage_parts_inventory(self):
+        return self.user_type in [3, 4, 5, 8, 9]
+
+    def can_access_payment_modes(self):
+        return self.user_type in [2, 3, 5, 8, 9]
+
+    def can_manage_payment_modes(self):
+        return self.user_type in [3, 5, 8, 9]
+
+    def can_access_warranties(self):
+        return self.user_type in [2, 3, 5, 8, 9]
+
+    def can_manage_warranties(self):
+        return self.user_type in [3, 5, 8, 9]
+
+    def can_print(self):
+        return self.user_type in [3, 4, 5, 6, 7, 8, 9]
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'

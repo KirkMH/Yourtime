@@ -8,7 +8,7 @@
             <div class="card-header submenu">
                 <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link {{active.0}}" id="photos-tab" data-toggle="tab" href="#photos" role="tab" aria-controls="photos" aria-selected="{{selected.0}}">Photos:</a>
+                        <a class="nav-link {{active.0}}" id="photos-tab" data-toggle="tab" href="#photos" role="tab" aria-controls="photos" aria-selected="{{selected.0}}">Photos</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{active.1}}" id="estimate-tab" data-toggle="tab" href="#estimate" role="tab" aria-controls="estimate" aria-selected="{{selected.1}}">Estimate</a>
@@ -51,7 +51,9 @@
                                                     <a href="#" data-toggle="modal" data-target="#imageModal" data-imageurl="{{ photo.photo.url }}" title="Click to view actual size">
                                                         <img src="{{ photo.photo.url }}" class="img-fluid" alt="Arrival Photo">
                                                     </a>
+                                                    {% if request.user.employee.can_upload_photos %}
                                                     <a href="{% url 'delete_photo' 'arrival' photo.pk %}" class="delete-link" title="Delete">×</a>
+                                                    {% endif %}
                                                 </div>
                                             {% endfor %}
                                         </div>
@@ -59,9 +61,11 @@
                                         <p class="card-text">No arrival photos available.</p>
                                         {% endif %}
                                     </div>
+                                    {% if request.user.employee.can_upload_photos %}
                                     <div class="card-footer">
                                         <a href="{% url 'jo_documentation_add' joborder.pk %}?type=arrival" class="btn btn-outline-secondary card-link">Add Photo</a>
                                     </div>
+                                    {% endif %}
                                 </div>
                                 <!-- END OF ARRIVAL PHOTOS -->
                             </div>
@@ -79,7 +83,9 @@
                                                     <a href="#" data-toggle="modal" data-target="#imageModal" data-imageurl="{{ photo.photo.url }}" title="Click to view actual size">
                                                         <img src="{{ photo.photo.url }}" class="img-fluid" style="height: 150px;" alt="Release Photo">
                                                     </a>
+                                                    {% if request.user.employee.can_upload_photos %}
                                                     <a href="{% url 'delete_photo' 'release' photo.pk %}" class="delete-link" title="Delete">×</a>
+                                                    {% endif %}
                                                 </div>
                                             {% endfor %}
                                         </div>
@@ -87,9 +93,11 @@
                                         <p class="card-text">No release photos available.</p>
                                         {% endif %}
                                     </div>
+                                    {% if request.user.employee.can_upload_photos %}
                                     <div class="card-footer">
                                         <a href="{% url 'jo_documentation_add' joborder.pk %}?type=release" class="btn btn-outline-secondary card-link">Add Photo</a>
                                     </div>
+                                    {% endif %}
                                 </div>
                                 <!-- END OF RELEASE PHOTOS -->
                             </div>
@@ -133,7 +141,9 @@
                                     <th>Assessment Date</th>
                                     <th>Technician</th>
                                     <th>Assessment</th>
+                                    {% if request.user.employee.can_assess_and_test %}
                                     <th width="10%" class="text-center">Actions</th>
+                                    {% endif %}
                                 </tr>
                             </thead>
                             <tbody>
@@ -142,10 +152,12 @@
                                     <td>{{ assessment.assessment_date|naturalday }}</td>
                                     <td>{{ assessment.assessed_by }}</td>
                                     <td>{{ assessment.assessment }}</td>
+                                    {% if request.user.employee.can_assess_and_test %}
                                     <td class="text-center">
                                         <a href="{% url 'jo_detail_edit' assessment.pk %}?type=assessment" title="Edit"><i class="far fa-edit"></i></a> | 
                                         <a href="#" title="Delete" data-url="{% url 'jo_detail_delete' 'assessment' assessment.pk %}" onclick="confirmation('assessment');"><i class="far fa-trash-alt"></i></a>
                                     </td>
+                                    {% endif %}
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -153,7 +165,9 @@
                         {% else %}
                         <p class="card-text">No assessments available.</p>
                         {% endif %}
+                        {% if request.user.employee.can_assess_and_test %}
                         <a href="{% url 'jo_documentation_add' joborder.pk %}?type=assessment" class="btn btn-outline-secondary">Add Assessment</a>
+                        {% endif %}
                     </div>
 
                     <div class="tab-pane fade" id="tests" role="tabpanel" aria-labelledby="tests-tab">
@@ -166,7 +180,9 @@
                                     <th>Amplitude</th>
                                     <th>Comments</th>
                                     <th>Tested By</th>
+                                    {% if request.user.employee.can_assess_and_test %}
                                     <th width="10%" class="text-center">Actions</th>
+                                    {% endif %}
                                 </tr>
                             </thead>
                             <tbody>
@@ -176,10 +192,12 @@
                                     <td>{{ test.amplitude }}</td>
                                     <td>{{ test.comments }}</td>
                                     <td>{{ test.tested_by }}</td>
+                                    {% if request.user.employee.can_assess_and_test %}
                                     <td class="text-center">
                                         <a href="{% url 'jo_detail_edit' test.pk %}?type=test" title="Edit"><i class="far fa-edit"></i></a> | 
                                         <a href="#" title="Delete" data-url="{% url 'jo_detail_delete' 'test' test.pk %}" onclick="confirmation('test');"><i class="far fa-trash-alt"></i></a>
                                     </td>
+                                    {% endif %}
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -187,7 +205,9 @@
                         {% else %}
                         <p class="card-text">No test logs available.</p>
                         {% endif %}
+                        {% if request.user.employee.can_assess_and_test %}
                         <a href="{% url 'jo_documentation_add' joborder.pk %}?type=test" class="btn btn-outline-secondary">Add Test Log</a>
+                        {% endif %}
                     </div>
                     <div class="tab-pane fade" id="charges" role="tabpanel" aria-labelledby="charges-tab">
                         <h5>Charges</h5>
@@ -199,7 +219,9 @@
                                     <th class="text-right">Unit Price</th>
                                     <th class="text-center">Quantity</th>
                                     <th class="text-right">Total</th>
+                                    {% if request.user.employee.can_charge_and_invoice %}
                                     <th width="10%" class="text-center">Actions</th>
+                                    {% endif %}
                                 </tr>
                             </thead>
                             <tbody>
@@ -209,10 +231,12 @@
                                     <td class="text-right">{{ charge.unit_price|peso }}</td>
                                     <td class="text-center">{{ charge.quantity }}</td>
                                     <td class="text-right">{{ charge.total_amount|peso }}</td>
+                                    {% if request.user.employee.can_charge_and_invoice %}
                                     <td class="text-center">
                                         <a href="{% url 'jo_detail_edit' charge.pk %}?type=charge" title="Edit"><i class="far fa-edit"></i></a> | 
                                         <a href="#" title="Delete" data-url="{% url 'jo_detail_delete' 'charge' charge.pk %}" onclick="confirmation('charge');"><i class="far fa-trash-alt"></i></a>
                                     </td>
+                                    {% endif %}
                                 </tr>
                                 {% endfor %}
                                 <tr style="font-weight: bold; font-size: large;">
@@ -224,9 +248,11 @@
                         {% else %}
                         <p class="card-text">No charges yet.</p>
                         {% endif %}
-                        <a href="{% url 'jo_documentation_add' joborder.pk %}?type=charge" class="btn btn-outline-secondary">Add Charge</a>
-                        {% if charges %}
-                        <a href="{% url 'generate_job_order' joborder.pk 'invoice' %}" class="btn btn-success">Generate Invoice</a>
+                        {% if request.user.employee.can_charge_and_invoice %}
+                            <a href="{% url 'jo_documentation_add' joborder.pk %}?type=charge" class="btn btn-outline-secondary">Add Charge</a>
+                            {% if charges %}
+                            <a href="{% url 'generate_job_order' joborder.pk 'invoice' %}" class="btn btn-success">Generate Invoice</a>
+                            {% endif %}
                         {% endif %}
                     </div>
                     <div class="tab-pane fade" id="payments" role="tabpanel" aria-labelledby="payments-tab">

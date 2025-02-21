@@ -49,9 +49,19 @@ def setting_list(request):
     pair = get_pair(type)
     if not pair:
         raise Http404("Page not found.")
+
+    can_manage = False
+    if pair[0] == 'payments' and request.user.employee.can_manage_payment_modes():
+        can_manage = True
+    elif pair[0] == 'warranties' and request.user.employee.can_manage_warranties():
+        can_manage = True
+    elif pair[0] == 'works' and request.user.employee.can_manage_repair_works():
+        can_manage = True
+
     context = {
         'setting_code': pair[0],
-        'setting_name': pair[1]
+        'setting_name': pair[1],
+        'can_manage': can_manage
     }
     return render(request, 'settings/setting_list.html', context=context)
 

@@ -73,7 +73,9 @@
         </div>
         <div class="card-footer no-print">
             <div class="row">
+                {% if request.user.employee.can_print %}
                 <button type="button" class="btn btn-secondary card-link" onclick="window.print()">Print</button>
+                {% endif %}
                 <a href="{% url 'jo_list' %}" class="btn btn-default card-link">Job Order list</a>
             </div>
         </div>

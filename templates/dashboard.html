@@ -84,7 +84,11 @@
         
         <div class="row">
           <!-- Left col -->
+          {% if not request.user.employee or request.user.employee.can_see_jo_completion  %}
           <section class="col-lg-6 connectedSortable">
+          {% else %}
+          <section class="col-lg-12 connectedSortable">\
+          {% endif %}
             <!-- JO Completion -->
             <div class="card card-outline card-danger" style="min-height: 710px;">
               <div class="card-header border-0">
@@ -135,9 +139,9 @@
             </div>
 
           </section>
-
           <!-- Right col -->
           <section class="col-lg-6 connectedSortable">
+            {% if not request.user.employee or request.user.employee.can_see_jo_completion  %}
             <!-- JO Completion -->
             <div class="card card-outline card-info">
               <div class="card-header border-0">
@@ -161,6 +165,8 @@
               </div>
               <!-- /.card-footer -->
             </div>
+            {% endif %}
+            {% if not request.user.employee or request.user.employee.can_see_revenue  %}
             <!-- Revenue -->
             <div class="card card-outline card-success">
               <div class="card-header border-0">
@@ -184,6 +190,7 @@
               </div>
               <!-- /.card-footer -->
             </div>
+            {% endif %}
             <!-- /.card -->
             
           </section>

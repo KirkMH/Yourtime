@@ -76,7 +76,9 @@
         </div>
         <div class="card-footer">
             <div class="row">
+                {% if not request.user.employee.read_only_clients %}
                 <a href="{% url 'edit_client' client.pk %}" class="btn btn-warning card-link">Edit</a>
+                {% endif %}
                 <a href="{% url 'client_list' %}" class="btn btn-default card-link">Back to list</a>
             </div>
         </div>
