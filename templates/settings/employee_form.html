@@ -47,7 +47,7 @@ New Employee
             
             <div class="card-footer">
                 
-                {% if not setting %}
+                {% if not form.first_name.value %}
                 <button type="submit" class="btn btn-success" name="another">Save and add another</button>
                 {% endif %}
                     

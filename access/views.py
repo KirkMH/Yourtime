@@ -150,6 +150,31 @@ def employeeCreate(request):
 
 
 @login_required
+def employeeUpdate(request, pk):
+    employee = Employee.objects.get(pk=pk)
+    if request.method == 'POST':
+        form = NewEmployeeForm(request.POST)
+        if form.is_valid():
+            employee.first_name = form.cleaned_data['first_name']
+            employee.last_name = form.cleaned_data['last_name']
+            employee.user_type = form.cleaned_data['user_type']
+            employee.save()
+            if form.cleaned_data['username'] != "":
+                setup_username(employee.pk, form.cleaned_data['username'])
+            messages.success(request, "Employee was successfully updated.")
+            return redirect('employee_list')
+    else:
+        employee_data = {
+            "username": employee.user.username if employee.user.username else "",
+            "first_name": employee.first_name,
+            "last_name": employee.last_name,
+            "user_type": employee.user_type,  # Ensure user_type exists in userTypes
+        }
+        form = NewEmployeeForm(initial=employee_data)
+        return render(request, 'settings/employee_form.html', {'form': form})
+
+
+@login_required
 def resetPassword(request, pk):
     employee = Employee.objects.get(pk=pk)
     employee.user.set_password('YTOPCpassword123!')
@@ -174,16 +199,34 @@ def removeAsUser(request, pk):
 def addAsUser(request, pk):
     username = request.GET.get('username')
     print(f"Username: {username}")
-    user = User.objects.create_user(
-        username=username,
-        password='YTOPCpassword123!'
-    )
+    result = setup_username(pk, username)
+
+    if result:
+        messages.success(request, "Request was successful.")
+    else:
+        messages.error(request, "Selected username is already taken.")
+    return JsonResponse({'success': result})
+
+
+def setup_username(pk, username):
     employee = Employee.objects.get(pk=pk)
-    employee.user = user
-    employee.is_active = True
-    employee.save()
-    messages.success(request, "Request was successful.")
-    return JsonResponse({'success': True})
+    # check if the employee already has a user
+    if employee.user is None or employee.user.username != username:
+        if employee.user is not None:
+            employee.user.delete()
+
+        # check if the username is already taken
+        if User.objects.filter(username=username).exists():
+            return False
+
+        user = User.objects.create_user(
+            username=username,
+            password='YTOPCpassword123!'
+        )
+        employee.user = user
+        employee.is_active = True
+        employee.save()
+    return True
 
 
 @login_required
@@ -208,3 +251,13 @@ def changeCredentials(request):
         form = UpdateEmployeeForm(
             initial={'first_name': employee.first_name, 'last_name': employee.last_name})
     return render(request, 'settings/change_credentials.html', {'form': form})
+
+
+@login_required
+def employeeDelete(request, pk):
+    employee = Employee.objects.get(pk=pk)
+    if employee.user:
+        employee.user.delete()
+    employee.delete()
+    messages.success(request, "Employee was successfully deleted.")
+    return redirect('employee_list')
