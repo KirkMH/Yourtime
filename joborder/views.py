@@ -110,9 +110,15 @@ def getTabIndex(type):
 
 
 def addContext(context, type):
-    if type == 'jo':
+    if type == 'joborder':
         context['conditions'] = ','.join(str(data['condition'])
                                          for data in JobOrder.conditions.all())
+        context['repair_works'] = ','.join(str(data.description)
+                                           for data in RepairWork.objects.all())
+        context['externals'] = ','.join(str(data.description)
+                                        for data in ExternalCaseAndBracelet.objects.all())
+        context['warranties'] = ','.join(str(data.description)
+                                         for data in Warranty.objects.all())
     elif type == 'watch':
         context['articles'] = ','.join(str(data['article'])
                                        for data in Watch.articles.all())
@@ -142,23 +148,26 @@ def jo_list(request):
 @method_decorator(login_required, name='dispatch')
 class JoDtListView(ServerSideDatatableView):
     queryset = JobOrder.objects.filter(
-        current_status__in=OPEN_STATUSES).order_by('pk')
+        current_status__in=OPEN_STATUSES).order_by('-pk')
     columns = ['pk', 'watch__serial_number', 'client__name', 'client__mob_num',
                'client__tel_num', 'current_status', 'created_at', 'promise_date', 'watch__article']
 
 
 @login_required
 def create_jo(request):
-    if request.method == 'POST':
+    owner_id = request.GET.get('owner', None)
+    if request.method == 'POST' or owner_id:
         owner_id = request.POST.get('owner', None)
-        owner = get_object_or_404(Client, pk=owner_id)
-        if owner:
-            jo = JobOrder.objects.create(
-                client=owner
-            )
-            jo.save()
-            messages.success(request, 'Job Order created successfully!')
-            return redirect(reverse_lazy('jo_details', kwargs={'pk': jo.pk}))
+        print(f"Owner id: {owner_id}")
+        owner = None
+        if owner_id and int(owner_id) > 0:
+            owner = get_object_or_404(Client, pk=owner_id)
+        jo = JobOrder.objects.create(
+            client=owner
+        )
+        jo.save()
+        messages.success(request, 'Job Order created successfully!')
+        return redirect(reverse_lazy('jo_details', kwargs={'pk': jo.pk}))
     return redirect(reverse_lazy('jo_list'))
 
 
@@ -271,6 +280,30 @@ class JobOrderDetailUpdateView(UpdateView, SuccessMessageMixin):
         context = addContext(context, type)
         return context
 
+    def post(self, request, *args, **kwargs):
+        post_data = request.POST.copy()
+        jo = self.get_object()
+
+        repair_work = post_data['repair_work']
+        repair_work = RepairWork.methods.get_or_create(repair_work)
+        jo.repair_work = repair_work
+        post_data['repair_work'] = repair_work
+
+        external_case_and_bracelet = post_data['external_case_and_bracelet']
+        external_case_and_bracelet = ExternalCaseAndBracelet.methods.get_or_create(
+            external_case_and_bracelet)
+        jo.external_case_and_bracelet = external_case_and_bracelet
+        post_data['external_case_and_bracelet'] = external_case_and_bracelet
+
+        warranty = post_data['warranty']
+        warranty = Warranty.methods.get_or_create(warranty)
+        jo.warranty = warranty
+        post_data['warranty'] = warranty
+
+        jo.save()
+        request.POST = post_data
+        return super().post(request, *args, **kwargs)
+
     def form_valid(self, form):
         type = self.request.GET.get('type')
         if type == 'watch':
@@ -369,14 +402,20 @@ def delete_jo_detail(request, type, pk):
     jo = None
     try:
         object = model.objects.get(pk=pk)
-        jo = object.job_order
+        print(f'delete {object}')
+        if type != "joborder":  # if the model is a job order detail
+            jo = object.job_order
         object.delete()
         messages.success(request, getDescription(
             type) + ' was deleted successfully.')
-    except:
+    except Exception as e:
+        print(f"Error: {e}")
         messages.error(request, getDescription(
-            type) + ' could not be deleted.')
-    return redirect(reverse('jo_details', kwargs={'pk': jo.pk}) + f"?type={type}")
+            type) + f' could not be deleted.')
+    if type == "joborder":
+        return redirect('jo_list')
+    else:
+        return redirect('jo_details', kwargs={'pk': jo.pk}) + f"?type={type}"
 
 
 def update_jo_status(request, pk):

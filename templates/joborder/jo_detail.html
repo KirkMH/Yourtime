@@ -48,8 +48,8 @@
                                         <div class="arrival-photos">
                                             {% for photo in arrivalphotos %}
                                                 <div class="image-container">
-                                                    <a href="#" data-toggle="modal" data-target="#imageModal" data-imageurl="{{ photo.photo.url }}" title="Click to view actual size">
-                                                        <img src="{{ photo.photo.url }}" class="img-fluid" alt="Arrival Photo">
+                                                    <a href="#" data-toggle="modal" data-target="#imageModal" data-imageurl="{{ photo.optimized_photo_url }}" title="Click to view actual size">
+                                                        <img src="{{ photo.optimized_photo_url }}" class="img-fluid" alt="Arrival Photo">
                                                     </a>
                                                     {% if request.user.employee.can_upload_photos %}
                                                     <a href="{% url 'delete_photo' 'arrival' photo.pk %}" class="delete-link" title="Delete">×</a>
@@ -80,8 +80,8 @@
                                         <div class="release-photos">
                                             {% for photo in releasephotos %}
                                                 <div class="image-container">
-                                                    <a href="#" data-toggle="modal" data-target="#imageModal" data-imageurl="{{ photo.photo.url }}" title="Click to view actual size">
-                                                        <img src="{{ photo.photo.url }}" class="img-fluid" style="height: 150px;" alt="Release Photo">
+                                                    <a href="#" data-toggle="modal" data-target="#imageModal" data-imageurl="{{ photo.optimized_photo_url }}" title="Click to view actual size">
+                                                        <img src="{{ photo.optimized_photo_url }}" class="img-fluid" style="height: 150px;" alt="Release Photo">
                                                     </a>
                                                     {% if request.user.employee.can_upload_photos %}
                                                     <a href="{% url 'delete_photo' 'release' photo.pk %}" class="delete-link" title="Delete">×</a>

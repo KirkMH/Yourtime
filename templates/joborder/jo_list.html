@@ -23,7 +23,7 @@
                 <div class="form-group">
                     <label for="owner">Select owner:</label>
                     <select class="form-control" id="owner" name="owner">
-                        <option value="" selected>---Select owner---</option>
+                        <option value="0" selected>- None -</option>
                         {% for owner in clients %}
                         <option value="{{ owner.pk }}">{{ owner.name }}</option>
                         {% endfor %}
@@ -99,7 +99,8 @@
                         render: function (data) {
                             return formatJONumber(data);
                         },
-                        className: 'text-center'
+                        className: 'text-center',
+                        orderable: true
                     },
                     {
                         name: "item", 
@@ -119,6 +120,7 @@
                     {name: "created", data: 6, className: 'text-center'},
                     {name: "promised", data: 7, className: 'text-center'}
                 ],
+                ordering: true,
                 order: [[1, 'desc']],
             });
             

@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.db.models import F
 from dateutil.relativedelta import relativedelta
+import cloudinary.models
 
 from client.models import Client
 from customization.models import (
@@ -202,7 +203,8 @@ class JobOrder(models.Model):
         Client,
         verbose_name=_("Client"),
         related_name="client_jo",
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        null=True, blank=True
     )
     watch = models.OneToOneField(
         Watch,
@@ -289,6 +291,18 @@ class JobOrder(models.Model):
 
     class Meta:
         ordering = ['-pk']
+
+    @property
+    def repair_work_description(self):
+        return self.repair_work.description if self.repair_work else ''
+
+    @property
+    def external_case_and_bracelet_description(self):
+        return self.external_case_and_bracelet.description if self.external_case_and_bracelet else ''
+
+    @property
+    def warranty_description(self):
+        return self.warranty.description if self.warranty else ''
 
     def total_charges(self):
         # total_amount = unit price * quantity
@@ -431,7 +445,7 @@ class Charge(models.Model):
         default=1
     )
 
-    @ property
+    @property
     def total_amount(self):
         return self.unit_price * self.quantity
 
@@ -525,10 +539,12 @@ class ArrivalPhoto(models.Model):
         related_name="arrivalphoto_jo",
         on_delete=models.CASCADE
     )
-    photo = models.ImageField(
-        upload_to='photos/arrival/'
-    )
+    photo = cloudinary.models.CloudinaryField('image', folder='photos/arrival')
     uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def optimized_photo_url(self):
+        return self.photo.build_url(fetch_format="auto", quality="auto")
 
 
 class ReleasePhoto(models.Model):
@@ -538,7 +554,9 @@ class ReleasePhoto(models.Model):
         related_name="releasephoto_jo",
         on_delete=models.CASCADE
     )
-    photo = models.ImageField(
-        upload_to='photos/release'
-    )
+    photo = cloudinary.models.CloudinaryField('image', folder='photos/release')
     uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def optimized_photo_url(self):
+        return self.photo.build_url(fetch_format="auto", quality="auto")

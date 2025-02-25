@@ -57,6 +57,12 @@ def setting_list(request):
         can_manage = True
     elif pair[0] == 'works' and request.user.employee.can_manage_repair_works():
         can_manage = True
+    elif pair[0] == 'externals' and request.user.employee.can_manage_externals():
+        can_manage = True
+    elif pair[0] == 'calibers' and request.user.employee.can_manage_calibers():
+        can_manage = True
+    elif pair[0] == 'movements' and request.user.employee.can_manage_movements():
+        can_manage = True
 
     context = {
         'setting_code': pair[0],

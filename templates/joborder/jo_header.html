@@ -71,6 +71,18 @@
 
     <div class="card ml-4 mr-4 mt-4">
         <div class="card-header">
+            {% if not joborder.client %}
+            <div class="row">
+                <div class="col-lg-10">
+                    <h2 class="text-muted">(Unassigned)</h2>
+                </div>
+                <div class="col-lg-2">
+                    {% if request.user.employee.can_delete_jo %}
+                    <span class="float-right"><a href="#" data-url="{% url 'jo_detail_delete' 'joborder' joborder.pk %}" onclick="confirmation('job order');" class="btn btn-danger">Delete Job Order</a></span>
+                    {% endif %}
+                </div>
+            </div>
+            {% else %}
             <div class="row">
                 <div class="col-lg-10">
                     <h2>{{ joborder.client.name }}</h2>
@@ -96,6 +108,7 @@
                     </h6>
                 </div>
             </div>
+            {% endif %}
         </div>
         <div class="card-body">
             <div class="row">

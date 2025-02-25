@@ -59,6 +59,7 @@
             </div>
         </div>
         <div class="card-body">
+            {% if joborder.client %}
             <div class="card">
                 <div class="card-header bg-theme p-2">
                     <h5 class="card-title text-light">CLIENT INFORMATION</h5>
@@ -84,6 +85,7 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
 
             <div class="card">
                 <div class="card-header bg-theme p-2">
@@ -181,7 +183,7 @@
                         <div class="col-sm-12">
                             {% for arrival in joborder.arrivalphoto_jo.all %}
                             <div class="m-1" style="border: solid 1px lightgrey; border-radius: 5px; display: inline-block;">
-                                <img src="{{ arrival.photo.url }}" style="height: 80px;" class="img-fluid m-1" alt="Arrival Photo">
+                                <img src="{{ arrival.optimized_photo_url }}" style="height: 80px;" class="img-fluid m-1" alt="Arrival Photo">
                             </div>
                             {% endfor %}
                         </div>
@@ -193,7 +195,7 @@
                         <div class="col-sm-12">
                             {% for release in joborder.releasephoto_jo.all %}
                             <div class="m-1" style="border: solid 1px lightgrey; border-radius: 5px; display: inline-block;">
-                                <img src="{{ release.photo.url }}" style="height: 80px;" class="img-fluid m-1" alt="Releasing Photo">
+                                <img src="{{ release.optimized_photo_url }}" style="height: 80px;" class="img-fluid m-1" alt="Releasing Photo">
                             </div>
                             {% endfor %}
                         </div>

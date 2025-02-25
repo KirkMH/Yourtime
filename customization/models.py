@@ -8,6 +8,14 @@ customization_status = (
 )
 
 
+class RepairWorkManager(models.Manager):
+    def get_or_create(self, description):
+        try:
+            return self.get(description__icontains=description)
+        except self.model.DoesNotExist:
+            return self.create(description=description)
+
+
 class RepairWork(models.Model):
     description = models.CharField(
         _("Description"),
@@ -22,6 +30,9 @@ class RepairWork(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    objects = models.Manager()
+    methods = RepairWorkManager()
 
     def __str__(self):
         return self.description.title()
@@ -53,6 +64,14 @@ class ModeOfPayment(models.Model):
         ordering = ['description']
 
 
+class WarrantyManager(models.Manager):
+    def get_or_create(self, description):
+        try:
+            return self.get(description__icontains=description)
+        except self.model.DoesNotExist:
+            return self.create(description=description)
+
+
 class Warranty(models.Model):
     description = models.CharField(
         _("Description"),
@@ -68,12 +87,23 @@ class Warranty(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    objects = models.Manager()
+    methods = WarrantyManager()
+
     def __str__(self):
         return self.description.title()
 
     class Meta:
         verbose_name_plural = "Warranties"
         ordering = ['description']
+
+
+class ExternalCaseAndBraceletManager(models.Manager):
+    def get_or_create(self, description):
+        try:
+            return self.get(description__icontains=description)
+        except self.model.DoesNotExist:
+            return self.create(description=description)
 
 
 class ExternalCaseAndBracelet(models.Model):
@@ -90,6 +120,9 @@ class ExternalCaseAndBracelet(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    objects = models.Manager()
+    methods = ExternalCaseAndBraceletManager()
 
     def __str__(self):
         return self.description.title()

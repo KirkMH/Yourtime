@@ -165,7 +165,7 @@ def employeeUpdate(request, pk):
             return redirect('employee_list')
     else:
         employee_data = {
-            "username": employee.user.username if employee.user.username else "",
+            "username": employee.user.username if employee.user else "",
             "first_name": employee.first_name,
             "last_name": employee.last_name,
             "user_type": employee.user_type,  # Ensure user_type exists in userTypes

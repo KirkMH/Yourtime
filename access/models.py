@@ -121,6 +121,15 @@ class Employee(models.Model):
     def can_manage_warranties(self):
         return self.user_type in [3, 5, 8, 9]
 
+    def can_manage_calibers(self):
+        return self.user_type in [3, 5, 8, 9]
+
+    def can_manage_movements(self):
+        return self.user_type in [3, 5, 8, 9]
+
+    def can_manage_externals(self):
+        return self.user_type in [3, 5, 8, 9]
+
     def can_print(self):
         return self.user_type in [3, 4, 5, 6, 7, 8, 9]
 

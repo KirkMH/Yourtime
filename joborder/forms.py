@@ -49,6 +49,9 @@ class JobOrderForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(JobOrderForm, self).__init__(*args, **kwargs)
+        self.fields['repair_work'].widget = forms.TextInput()
+        self.fields['external_case_and_bracelet'].widget = forms.TextInput()
+        self.fields['warranty'].widget = forms.TextInput()
         self.fields['assigned_technician'].queryset = Employee.technicians.filter(
             is_active=True)
 

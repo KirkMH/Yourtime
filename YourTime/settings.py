@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 load_dotenv()
 
@@ -48,6 +51,8 @@ INSTALLED_APPS = [
     'fontawesomefree',  # font-awesome
     'simple_history',   # for tracking changes in models (audit trail)
     'storages',         # django-storages
+    'cloudinary',
+    'cloudinary_storage',
 
     # internally-created apps
     'access',
@@ -99,7 +104,7 @@ WSGI_APPLICATION = 'YourTime.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / 'db_ol.sqlite3',
     }
 }
 
@@ -155,24 +160,51 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-# from https://simpleisbetterthancomplex.com/tutorial/2017/08/01/how-to-setup-amazon-s3-in-a-django-project.html
-AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
-AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
-AWS_S3_FILE_OVERWRITE = False
-AWS_S3_OBJECT_PARAMETERS = {
-    'CacheControl': 'max-age=86400',
+# Cloudinary Configuration
+CLOUDINARY_CLOUD_NAME = os.getenv('CLOUDINARY_CLOUD_NAME')
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': CLOUDINARY_CLOUD_NAME,
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
+    'SECURE': True,
+    'UPLOAD_PRESET': 'optimized',  # Use a Cloudinary Upload Preset
+    'DEFAULT_TRANSFORMATION': [
+        {'fetch_format': 'auto'},  # Automatically choose best format
+        {'quality': 'auto'},  # Automatically adjust quality
+    ],
 }
-AWS_LOCATION = 'static'
 
+# Use Cloudinary for media files (images, videos)
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
+# Store static files locally
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
-STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Use default local storage for static files
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+
+# from https://simpleisbetterthancomplex.com/tutorial/2017/08/01/how-to-setup-amazon-s3-in-a-django-project.html
+# AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+# AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+# AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+# AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+# AWS_S3_FILE_OVERWRITE = False
+# AWS_S3_OBJECT_PARAMETERS = {
+#     'CacheControl': 'max-age=86400',
+# }
+# AWS_LOCATION = 'static'
+
+
+# STATICFILES_DIRS = [
+#     BASE_DIR / 'static',
+# ]
+# STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+# # DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 
 # as per instructions from https://www.codementor.io/@jamesezechukwu/how-to-deploy-django-app-on-heroku-dtsee04d4
@@ -203,3 +235,6 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'dashboard'
 # which route to take after logging out
 LOGOUT_REDIRECT_URL = 'login'
+
+# Google Drive API
+GOOGLE_DRIVE_CREDENTIALS = BASE_DIR / "credentials.json"
