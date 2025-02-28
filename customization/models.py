@@ -11,8 +11,8 @@ customization_status = (
 class RepairWorkManager(models.Manager):
     def get_or_create(self, description):
         try:
-            return self.get(description__icontains=description)
-        except self.model.DoesNotExist:
+            return self.filter(description__icontains=description).first()
+        except:
             return self.create(description=description)
 
 
@@ -67,7 +67,7 @@ class ModeOfPayment(models.Model):
 class WarrantyManager(models.Manager):
     def get_or_create(self, description):
         try:
-            return self.get(description__icontains=description)
+            return self.filter(description__icontains=description).first()
         except self.model.DoesNotExist:
             return self.create(description=description)
 
@@ -101,8 +101,8 @@ class Warranty(models.Model):
 class ExternalCaseAndBraceletManager(models.Manager):
     def get_or_create(self, description):
         try:
-            return self.get(description__icontains=description)
-        except self.model.DoesNotExist:
+            return self.filter(description__icontains=description).first()
+        except:
             return self.create(description=description)
 
 

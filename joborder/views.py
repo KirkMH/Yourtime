@@ -285,20 +285,23 @@ class JobOrderDetailUpdateView(UpdateView, SuccessMessageMixin):
         jo = self.get_object()
 
         repair_work = post_data['repair_work']
-        repair_work = RepairWork.methods.get_or_create(repair_work)
-        jo.repair_work = repair_work
-        post_data['repair_work'] = repair_work
+        if repair_work and repair_work != 'None':
+            repair_work = RepairWork.methods.get_or_create(repair_work)
+            jo.repair_work = repair_work
+            post_data['repair_work'] = repair_work
 
         external_case_and_bracelet = post_data['external_case_and_bracelet']
-        external_case_and_bracelet = ExternalCaseAndBracelet.methods.get_or_create(
-            external_case_and_bracelet)
-        jo.external_case_and_bracelet = external_case_and_bracelet
-        post_data['external_case_and_bracelet'] = external_case_and_bracelet
+        if external_case_and_bracelet and external_case_and_bracelet != 'None':
+            external_case_and_bracelet = ExternalCaseAndBracelet.methods.get_or_create(
+                external_case_and_bracelet)
+            jo.external_case_and_bracelet = external_case_and_bracelet
+            post_data['external_case_and_bracelet'] = external_case_and_bracelet
 
         warranty = post_data['warranty']
-        warranty = Warranty.methods.get_or_create(warranty)
-        jo.warranty = warranty
-        post_data['warranty'] = warranty
+        if warranty and warranty != 'None':
+            warranty = Warranty.methods.get_or_create(warranty)
+            jo.warranty = warranty
+            post_data['warranty'] = warranty
 
         jo.save()
         request.POST = post_data

@@ -123,7 +123,8 @@ class Watch(models.Model):
         Client,
         verbose_name=_("Owner"),
         related_name="watch_owner",
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        null=True, blank=True
     )
     with_card = models.BooleanField(
         _("with Guarantee/Warranty Card?"),
