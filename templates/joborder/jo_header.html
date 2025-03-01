@@ -68,6 +68,30 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th scope="col">Status</th>
+                                <th scope="col">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in joborder.statusupdate_jo.all %}
+                            <tr>
+                                <td>{{ item.status }}</td>
+                                <td>{{ item.updated_on|date:"M d, Y" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="card ml-4 mr-4 mt-4">
         <div class="card-header">
@@ -138,7 +162,7 @@
                             </div>
                             <div class="card-text"><span class="text-muted">Status: </span>
                                 {% if request.user.employee.can_update_jo_status %}
-                                <a href="#" title="Update" data-toggle="modal" data-target="#statusModal">{{ joborder.current_status }}</a>
+                                <a href="#" title="View History" data-toggle="modal" data-target="#statusModal">{{ joborder.current_status }}</a>
                                 {% else %}
                                 {{ joborder.current_status }}
                                 {% endif %}
