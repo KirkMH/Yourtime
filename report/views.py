@@ -1,12 +1,14 @@
 from django.shortcuts import render
 from django.db.models import Sum
 from django.contrib.auth.decorators import login_required
+from django.db.models.expressions import RawSQL
 
-from joborder.models import JobOrder, Payment
+from joborder.models import JobOrder, Payment, JobOrderStatusUpdate
 from client.models import Client
 from access.models import Employee
 from customization.models import ModeOfPayment
 from datetime import datetime
+from django.utils.timezone import make_aware
 
 
 @login_required
@@ -163,3 +165,53 @@ def accounts_receivables(request):
         'total': total
     }
     return render(request, 'report/receivables.html', context)
+
+
+@login_required
+def daily_repair(request):
+    # get sel_from, and sel_type from the GET request
+    sel_from = request.GET.get('from', None)
+    sel_type = request.GET.get('type', None)
+    print(f"sel_from: {type(sel_from)}, type: {sel_type}")
+
+    repairs = None
+    total_charges = 0
+    total_payments = 0
+    if sel_from and sel_type:
+        sel_from = datetime.strptime(sel_from, '%Y-%m-%d').date()
+        jo_status = sel_type
+        if sel_type == 'Inflow':
+            jo_status = 'SORTING'
+        elif sel_type == 'Outflow':
+            jo_status = 'CLAIMED'
+        print(
+            f'sel_from: {sel_from}, sel_type: {sel_type}, jo_status: {jo_status}')
+        # from JobOrder record
+        repairs_jo = JobOrder.objects.filter(
+            created_at=sel_from,
+            current_status=jo_status
+        )
+        print(f"repairs_jo: {repairs_jo}")
+        repairs = repairs_jo.values_list('pk', flat=True)
+        repairs_josu = JobOrderStatusUpdate.objects.extra(
+            where=["DATE(updated_on) = %s"], params=[sel_from]).filter(status=jo_status)
+        print(f"repairs_josu: {repairs_josu}")
+        repairs = repairs.union(
+            repairs_josu.values_list('job_order_id', flat=True))
+        repairs = JobOrder.objects.filter(pk__in=repairs)
+        # calculate total charges and total payments using the functions (not fields) total_charges and total_paid in JobOrder model
+        total_payments = sum([r.total_paid() for r in repairs])
+        total_charges = sum([r.total_charges() for r in repairs])
+        if repairs.count() == 0:
+            repairs = 0
+    print(f"repairs: {repairs}, total_payments: {total_payments}")
+
+    context = {
+        'sel_from': sel_from if sel_from else None,
+        'sel_type': sel_type,
+        'repairs': repairs,
+        'total_payments': total_payments,
+        'total_charges': total_charges
+    }
+    print(f"context: {context}")
+    return render(request, 'report/daily_repair.html', context=context)

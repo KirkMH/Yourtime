@@ -308,10 +308,10 @@ class JobOrder(models.Model):
     def total_charges(self):
         # total_amount = unit price * quantity
         return Charge.objects.filter(job_order=self).aggregate(
-            total=models.Sum(F('unit_price') * F('quantity')))['total']
+            total=models.Sum(F('unit_price') * F('quantity')))['total'] or 0
 
     def total_paid(self):
-        return Payment.objects.filter(job_order=self).aggregate(total=models.Sum('amount_paid'))['total']
+        return Payment.objects.filter(job_order=self).aggregate(total=models.Sum('amount_paid'))['total'] or 0
 
     def balance(self):
         charges = self.total_charges() or 0
@@ -342,6 +342,10 @@ class JobOrder(models.Model):
         return self.isClosed() and self.closed_at > self.promise_date
 
     def save(self, *args, **kwargs):
+        previous_status = self.__class__.objects.get(id=self.id).current_status
+        if previous_status != self.current_status:
+            JobOrderStatusUpdate.objects.create(
+                job_order=self, status=self.current_status)
         if self.current_status in CLOSE_STATUSES:
             self.closed_at = timezone.now().date()
         super().save(*args, **kwargs)
@@ -561,3 +565,18 @@ class ReleasePhoto(models.Model):
     @property
     def optimized_photo_url(self):
         return self.photo.build_url(fetch_format="auto", quality="auto")
+
+
+class JobOrderStatusUpdate(models.Model):
+    job_order = models.ForeignKey(
+        JobOrder,
+        verbose_name=_("Job Order"),
+        related_name="statusupdate_jo",
+        on_delete=models.CASCADE
+    )
+    status = models.CharField(
+        _("Status"),
+        max_length=25,
+        choices=JO_STATUS
+    )
+    updated_on = models.DateTimeField(auto_now_add=True)

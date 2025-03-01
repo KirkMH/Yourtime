@@ -19,8 +19,13 @@
                     <a class="dropdown-item" href="{% url 'jo_due_report' %}?type=past">Past Due Job Orders</a>
                 </li>
                 <li id="menu-within-week">
-                    <a class="dropdown-item" href="{% url 'jo_due_report' %}?type=week">Job Orders within the Week</a>
+                    <a class="dropdown-item" href="{% url 'jo_due_report' %}?type=week">Job Orders within the Week {{request.user.employee.can_view_daily_repairs}}</a>
                 </li>
+                {% if request.user.employee.can_view_daily_repairs %}
+                <li id="menu-daily-repair">
+                    <a class="dropdown-item" href="{% url 'daily_repair' %}">Daily Repair Report</a>
+                </li>
+                {% endif %}
                 <li id="menu-client-info">
                     <a class="dropdown-item" href="{% url 'client_report' %}">Client Information Sheet</a>
                 </li>

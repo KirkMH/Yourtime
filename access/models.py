@@ -133,5 +133,8 @@ class Employee(models.Model):
     def can_print(self):
         return self.user_type in [3, 4, 5, 6, 7, 8, 9]
 
+    def can_view_daily_repairs(self):
+        return self.user_type in [9]
+
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
