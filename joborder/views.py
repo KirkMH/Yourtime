@@ -423,10 +423,10 @@ def delete_jo_detail(request, type, pk):
         print(f"Error: {e}")
         messages.error(request, getDescription(
             type) + f' could not be deleted.')
-    if type == "joborder":
+    if type == "joborder" or jo is None:
         return redirect('jo_list')
     else:
-        return redirect('jo_details', kwargs={'pk': jo.pk}) + f"?type={type}"
+        return redirect(reverse('jo_details', kwargs={'pk': jo.pk}) + f"?type={type}")
 
 
 def update_jo_status(request, pk):

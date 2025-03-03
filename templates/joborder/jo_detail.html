@@ -285,7 +285,7 @@
                                     <td class="text-right">{{ payment.balance|peso }}</td>
                                     <td class="text-center">
                                         <a href="{% url 'jo_detail_edit' payment.pk %}?type=payment" title="Edit"><i class="far fa-edit"></i></a> | 
-                                        <a href="#" title="Receipt"><i class="fas fa-receipt"></i></a> | 
+                                        <!--<a href="#" title="Receipt"><i class="fas fa-receipt"></i></a> |  -->
                                         <a href="#" title="Delete" data-url="{% url 'jo_detail_delete' 'payment' payment.pk %}" onclick="confirmation('payment');"><i class="far fa-trash-alt"></i></a>
                                     </td>
                                 </tr>

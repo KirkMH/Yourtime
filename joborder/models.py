@@ -455,8 +455,10 @@ class Charge(models.Model):
         return self.unit_price * self.quantity
 
     def addParticular(self):
-        particular, _ = Particular.objects.get_or_create(
-            description=self.particular)
+        particular = Particular.objects.filter(
+            description__icontains=self.particular).first()
+        if particular is None:
+            particular = Particular.objects.create(description=self.particular)
         particular.unit_price = self.unit_price
         particular.save()
 
