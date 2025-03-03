@@ -40,7 +40,7 @@ def search_page(request):
                 query |= Q(mob_num__contains=contact_no)
                 query |= Q(tel_num__contains=contact_no)
             if client_name:
-                query |= Q(name__contains=client_name)
+                query |= Q(name__icontains=client_name)
 
             search_query = Client.objects.filter(query)
             print(search_query)
