@@ -268,22 +268,28 @@ class JobOrderDetailUpdateView(UpdateView, SuccessMessageMixin):
         model = self.get_model()
         return model.objects.all()
 
+    def get_jo(self, obj, type):
+        jo = obj
+        if type == 'watch':
+            jo = jo.watch_jo
+        elif type in ['assessment', 'test', 'charge', 'payment']:
+            jo = jo.job_order
+        return jo
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         type = self.request.GET.get('type')
         context['type_name'] = getDescription(type)
-        jo = self.get_object()
-        if type == 'watch':
-            jo = jo.watch_jo
-        elif type in ['assessment', 'test', 'charge']:
-            jo = jo.job_order
-        context['jo'] = jo
+        obj = self.get_object()
+        context['jo'] = self.get_jo(obj, type)
         context = addContext(context, type)
         return context
 
     def post(self, request, *args, **kwargs):
         post_data = request.POST.copy()
-        jo = self.get_object()
+        type = self.request.GET.get('type')
+        obj = self.get_object()
+        jo = self.get_jo(obj, type)
 
         repair_work = post_data.get('repair_work', None)
         if repair_work and repair_work != '':
