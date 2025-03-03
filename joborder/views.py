@@ -209,6 +209,7 @@ class JobOrderDetailView(DetailView):
             job_order=self.object).order_by('id')
         context['payments'] = Payment.objects.filter(
             job_order=self.object).order_by('id')
+        context['clients'] = Client.objects.all()
         return context
 
 
@@ -446,3 +447,14 @@ def delete_photo(request, type, pk):
     photo.delete()
     messages.success(request, 'Photo deleted successfully!')
     return redirect(reverse('jo_details', kwargs={'pk': jo.pk}))
+
+
+def assign_to_client(request, pk):
+    jo = get_object_or_404(JobOrder, pk=pk)
+    client_id = request.POST.get('owner', None)
+    if client_id:
+        client = get_object_or_404(Client, pk=client_id)
+        jo.client = client
+        jo.save()
+        messages.success(request, f'JO # {pk} was assigned to {client}.')
+    return redirect(reverse('jo_details', kwargs={'pk': pk}))

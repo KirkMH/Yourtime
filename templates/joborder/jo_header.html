@@ -58,7 +58,34 @@
 
 {% block main_content %}
 
-    <!-- Modal -->
+    <!-- Modals -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="assignClientModal">
+        <div class="modal-dialog" role="document">
+        <form method="post" action="{% url 'assign_to_client' joborder.pk %}">
+            {% csrf_token %}
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Assign Client</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="owner">Select client:</label>
+                        <select class="form-control" id="owner" name="owner">
+                            <option value="" selected>- Please select -</option>
+                            {% for owner in clients %}
+                            <option value="{{ owner.pk }}">{{ owner.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success" type="submit" id="submit-owner" name="submit-owner">Submit</button>
+                    <button class="btn btn-default" type="button" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </form>
+        </div>
+    </div>
     <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -98,7 +125,7 @@
             {% if not joborder.client %}
             <div class="row">
                 <div class="col-lg-10">
-                    <h2 class="text-muted">(Unassigned)</h2>
+                    <h2 class="text-muted"><a href="#" class="text-muted" data-toggle="modal" data-target="#assignClientModal" title="Assign Now">(Unassigned)</a></h2>
                 </div>
                 <div class="col-lg-2">
                     {% if request.user.employee.can_delete_jo %}
@@ -109,7 +136,7 @@
             {% else %}
             <div class="row">
                 <div class="col-lg-10">
-                    <h2>{{ joborder.client.name }}</h2>
+                    <h2><a href="#" data-toggle="modal" data-target="#assignClientModal" title="Reassign">{{ joborder.client.name }}</a></h2>
                 </div>
                 <div class="col-lg-2">
                     {% if request.user.employee.can_delete_jo %}

@@ -22,4 +22,6 @@ urlpatterns = [
     # pk is photo id, type is either arrival or release
     path('photos/<str:type>/<int:pk>/delete',
          views.delete_photo, name='delete_photo'),
+    path('<int:pk>/assign', views.assign_to_client,
+         name='assign_to_client'),  # pk is job order id
 ]
