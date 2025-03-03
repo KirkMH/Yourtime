@@ -8,6 +8,7 @@ from django_serverside_datatable.views import ServerSideDatatableView
 from django.views.generic import CreateView, UpdateView, DetailView, DeleteView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
+import cloudinary
 
 from .models import *
 from .forms import *
@@ -434,6 +435,8 @@ def update_jo_status(request, pk):
 def delete_photo(request, type, pk):
     photo = get_object_or_404(getModel(type), pk=pk)
     jo = photo.job_order
+    # delete photo from Cloudinary
+    cloudinary.uploader.destroy(photo.photo.public_id)
     photo.delete()
     messages.success(request, 'Photo deleted successfully!')
     return redirect(reverse('jo_details', kwargs={'pk': jo.pk}))
