@@ -102,6 +102,7 @@
                         <th class="text-center">Repair Work</th>
                         <th class="text-center">Date Created</th>
                         <th class="text-center">Date Promised</th>
+                        <th class="text-center">Date Completed</th>
                         <th class="text-center">Status</th>
                     </tr>
                 </thead>
@@ -115,6 +116,7 @@
                             <td>{{ jo.repair_work }}</td>
                             <td class="text-center">{{ jo.created_at|date:"M d, Y" }}</td>
                             <td class="text-center">{{ jo.promise_date|date:"M d, Y" }}</td>
+                            <td class="text-center">{{ jo.closed_at|date:"M d, Y" }}</td>
                             <td class="text-center">{{ jo.current_status }}</td>
                         </tr>
                     {% endfor %}
@@ -134,9 +136,6 @@
 {% block js %}
     <script>
         $(document).ready(function() {
-            $("#table").DataTable({
-                order: [[0, 'desc']],
-            });
             $("#menu-clients").addClass("active")
         })
     </script>

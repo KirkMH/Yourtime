@@ -15,4 +15,5 @@ urlpatterns = [
     path('receivables', views.accounts_receivables,
          name='receivables'),
     path('repairs', views.daily_repair, name='daily_repair'),
+    path('technicians/<int:pk>/jo', views.tech_job_order, name='tech_job_order'),
 ]

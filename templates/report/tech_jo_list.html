@@ -1,0 +1,71 @@
+{% extends '../base.html' %}
+{% load static %}
+{% load humanize %}
+{% load form_tags %}
+
+{% block title %}Technicians{% endblock title %}
+{% block page_title %}Assigned Job Orders{% endblock page_title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'tech_metrics' %}">Technicians</a></li>
+    <li class="breadcrumb-item active">Assigned Job Orders</li>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+    <div class="card m-4">
+        <div class="card-header">
+            <h3>{{ tech }}</h3>
+            <h5 class="card-subtitle mb-2 text-muted">{{ tech.get_type_description }}</h5>
+        </div>
+        <div class="card-body">
+            <table id="table" class="table table-hover table-head-fixed table-sm">
+                <thead>
+                    <tr>
+                        <th class="text-center">JO #</th>
+                        <th class="text-center">Article</th>
+                        <th class="text-center">Repair Work</th>
+                        <th class="text-center">Date Created</th>
+                        <th class="text-center">Date Promised</th>
+                        <th class="text-center">Date Completed</th>
+                        <th class="text-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for jo in tech.assigned_technician_jo.all %}
+                        <tr>
+                            <td class="text-center">
+                                <a href="{% url 'jo_details' jo.pk %}">{{ jo.pk|stringformat:"05d" }}</a>
+                            </td>
+                            <td>{{ jo.watch.article }}</td>
+                            <td>{{ jo.repair_work }}</td>
+                            <td class="text-center">{{ jo.created_at|date:"M d, Y" }}</td>
+                            <td class="text-center">{{ jo.promise_date|date:"M d, Y" }}</td>
+                            <td class="text-center">{{ jo.closed_at|date:"M d, Y" }}</td>
+                            <td class="text-center">{{ jo.current_status }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer">
+            <div class="row">
+                <button type="button" class="btn btn-default card-link" onclick="window.history.back()">Back</button>
+            </div>
+        </div>
+    </div>
+
+{% endblock main_content %}
+
+
+{% block js %}
+    <script>
+        $(document).ready(function() {
+            $("table").DataTable({
+                dom: '<"no-print"B>frtip',
+                paging: false
+            })
+            $("#menu-reports").addClass("active")
+        })
+    </script>
+{% endblock js %}

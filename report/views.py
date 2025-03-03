@@ -1,13 +1,13 @@
 from django.shortcuts import render
 from django.db.models import Sum
 from django.contrib.auth.decorators import login_required
-from django.db.models.expressions import RawSQL
 
 from joborder.models import JobOrder, Payment, JobOrderStatusUpdate
 from client.models import Client
 from access.models import Employee
 from customization.models import ModeOfPayment
-from datetime import datetime
+from datetime import datetime, date, timedelta
+import calendar
 from django.utils.timezone import make_aware
 
 
@@ -46,10 +46,22 @@ def job_order(request, pk, type):
 @login_required
 def technician_metrics(request):
     technicians = Employee.technicians.all()
+    last_month = date.today().replace(day=1) - timedelta(days=1)
+    this_month = date.today().replace(day=1)
     context = {
         'technicians': technicians,
+        'last_month': calendar.month_name[last_month.month],
+        'this_month': calendar.month_name[this_month.month]
     }
     return render(request, 'report/tech_metrics.html', context=context)
+
+
+def tech_job_order(request, pk):
+    tech = Employee.objects.get(pk=pk)
+    context = {
+        'tech': tech
+    }
+    return render(request, 'report/tech_jo_list.html', context=context)
 
 
 @login_required

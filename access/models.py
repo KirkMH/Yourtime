@@ -56,6 +56,9 @@ class Employee(models.Model):
     def jo_completed_within_the_month(self):
         return JobOrder.objects.filter(assigned_technician=self, closed_at__month=timezone.localdate().month)
 
+    def jo_completed_last_month(self):
+        return JobOrder.objects.filter(assigned_technician=self, closed_at__month=timezone.localdate().month - 1)
+
     def active_jo(self):
         return JobOrder.objects.filter(assigned_technician=self, closed_at=None)
 

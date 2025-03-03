@@ -44,9 +44,10 @@
                         <th class="text-center">On-time</th>
                         <th class="text-center">Late</th>
                         <th class="text-center">Performance Rating</th>
-                        <th class="text-center">Current</th>
+                        <th class="text-center">Ongoing</th>
                         <th class="text-center">Overdues</th>
-                        <th class="text-center">Completed this Month</th>
+                        <th class="text-center">Completed {{ last_month }}</th>
+                        <th class="text-center">Completed This Month ({{ this_month }})</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -54,13 +55,14 @@
                         {% for tech in technicians %}
                             <tr>
                                 <td>
-                                    <a href="#">{{ tech }}</a>
+                                    <a href="{% url 'tech_job_order' tech.pk %}">{{ tech }}</a>
                                 </td>
                                 <td class="text-center">{{ tech.ontime_job_orders.count }}</td>
                                 <td class="text-center">{{ tech.overdue_job_orders.count }}</td>
                                 <td class="text-center">{{ tech.get_delivery_performance_rating }}%</td>
                                 <td class="text-center">{{ tech.active_jo.count }}</td>
                                 <td class="text-center">{{ tech.active_overdue.count }}</td>
+                                <td class="text-center">{{ tech.jo_completed_last_month.count }}</td>
                                 <td class="text-center">{{ tech.jo_completed_within_the_month.count }}</td>
                             </tr>
                         {% endfor %}
