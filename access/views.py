@@ -9,7 +9,7 @@ from django.contrib import messages
 from django.http import JsonResponse
 
 from client.models import Client
-from joborder.models import JobOrder, Payment
+from joborder.models import JobOrder, Payment, Watch
 from django.contrib.auth.models import User
 from .models import Employee
 from .forms import *
@@ -24,26 +24,34 @@ def search_page(request):
         jo_no = request.POST.get('jo_no')
         client_name = request.POST.get('client_name')
 
-        if jo_no:
-            # validate that jo_no is numeric
-            if not jo_no.isdigit():
-                err = "Job Order number must be numeric."
+        if jo_no and jo_no.isdigit():
+            query = JobOrder.objects.filter(pk=jo_no)
+            if query:
+                return redirect('jo_details', pk=jo_no)
             else:
-                query = JobOrder.objects.filter(pk=jo_no)
-                if query:
-                    return redirect('jo_details', pk=jo_no)
-                else:
-                    err = "Job Order number does not exist."
+                err = "Job Order number does not exist."
         else:
-            query = Q()
-            if contact_no:
-                query |= Q(mob_num__contains=contact_no)
-                query |= Q(tel_num__contains=contact_no)
-            if client_name:
-                query |= Q(name__icontains=client_name)
-
-            search_query = Client.objects.filter(query)
+            search_query = JobOrder.objects.all()
+            if jo_no:
+                watches = Watch.objects.filter(
+                    Q(article__icontains=jo_no) |
+                    Q(serial_number__icontains=jo_no) |
+                    Q(case_number__icontains=jo_no)
+                )
+                if watches:
+                    search_query = search_query.filter(watch__in=watches)
+            if contact_no or client_name:
+                query = Q()
+                if contact_no:
+                    query |= Q(mob_num__contains=contact_no)
+                    query |= Q(tel_num__contains=contact_no)
+                if client_name:
+                    query |= Q(name__icontains=client_name)
+                clients = Client.objects.filter(query)
+                if clients:
+                    search_query = search_query.filter(client__in=clients)
             print(search_query)
+
             context = {
                 'contact_no': contact_no,
                 'jo_no': jo_no,
