@@ -10,12 +10,33 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+import cloudinary.api
+import cloudinary.uploader
 from pathlib import Path
 import os
 from dotenv import load_dotenv
 import cloudinary
-import cloudinary.uploader
-import cloudinary.api
+
+# Cloudinary Configuration
+cloudinary.config(
+    cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    api_key=os.environ.get('CLOUDINARY_API_KEY'),
+    api_secret=os.environ.get('CLOUDINARY_API_SECRET'),
+    api_proxy=os.environ.get('CLOUDINARY_API_PROXY'),
+)
+# CLOUDINARY_STORAGE = {
+#     'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
+#     'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+#     'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
+#     'SECURE': True,
+#     'UPLOAD_PRESET': 'optimized',  # Use a Cloudinary Upload Preset
+#     'DEFAULT_TRANSFORMATION': [
+#         {'fetch_format': 'auto'},  # Automatically choose best format
+#         {'quality': 'auto'},  # Automatically adjust quality
+#     ],
+#     'api_proxy': 'https://proxy.server:3128'
+# }
+
 
 load_dotenv()
 
@@ -112,14 +133,14 @@ WSGI_APPLICATION = 'YourTime.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'django_yourtime',
-        'USER': 'root',
-        'PASSWORD': 'p@$$w0rD',
-        'HOST': 'localhost'
+        'NAME': 'yourtime$default',
+        'USER': 'yourtime',
+        'PASSWORD': 'Welcome123!',
+        'HOST': 'yourtime.mysql.pythonanywhere-services.com'
     },
-    'sqlite': {  # SQLite Database (Source)
+    'sqlite': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / "db_ol.sqlite3",
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -164,20 +185,6 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
-
-# Cloudinary Configuration
-CLOUDINARY_CLOUD_NAME = os.getenv('CLOUDINARY_CLOUD_NAME')
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': CLOUDINARY_CLOUD_NAME,
-    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
-    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
-    'SECURE': True,
-    'UPLOAD_PRESET': 'optimized',  # Use a Cloudinary Upload Preset
-    'DEFAULT_TRANSFORMATION': [
-        {'fetch_format': 'auto'},  # Automatically choose best format
-        {'quality': 'auto'},  # Automatically adjust quality
-    ],
-}
 
 # Use Cloudinary for media files (images, videos)
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
@@ -240,6 +247,3 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'dashboard'
 # which route to take after logging out
 LOGOUT_REDIRECT_URL = 'login'
-
-# Google Drive API
-GOOGLE_DRIVE_CREDENTIALS = BASE_DIR / "credentials.json"
