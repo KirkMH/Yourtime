@@ -19,3 +19,11 @@ class ClientUpdateForm(forms.ModelForm):
     class Meta:
         model = Client
         exclude = ('created_at', 'updated_at',)
+
+
+class InquiryForm(forms.ModelForm):
+    required_css_class = 'required'
+
+    class Meta:
+        model = Inquiry
+        exclude = ('created_at',)

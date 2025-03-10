@@ -40,3 +40,39 @@ class Client(models.Model):
 
     class Meta:
         ordering = ['name']
+
+
+class Inquiry(models.Model):
+    name = models.CharField(
+        _("Name"),
+        max_length=254,
+        null=False, blank=False
+    )
+    address = models.TextField()
+    mob_num = models.CharField(
+        _("Mobile Number"),
+        max_length=100,
+        null=True, blank=True)
+    tel_num = models.CharField(
+        _("Telephone Number"),
+        max_length=100,
+        null=True, blank=True)
+    email = models.EmailField(
+        _("Email Address"),
+        max_length=254,
+        null=True, blank=True)
+    issue = models.TextField(
+        _("Initial watch repair issue"),
+        null=True, blank=True
+    )
+    is_watch_owner = models.BooleanField(
+        _("Are you the watch owner?"),
+        default=False
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'From {self.name}: {self.issue}'
