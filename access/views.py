@@ -8,11 +8,27 @@ from django.views.generic import ListView
 from django.contrib import messages
 from django.http import JsonResponse
 
-from client.models import Client
+from client.models import Client, Inquiry
 from joborder.models import JobOrder, Payment, Watch
 from django.contrib.auth.models import User
 from .models import Employee
+from client.forms import InquiryForm
 from .forms import *
+
+
+def landing_page(request):
+    print(request.POST)
+    if request.POST:
+        form = InquiryForm(request.POST)
+        if form.is_valid():
+            print('saved')
+            form.save()
+            messages.success(request, "Inquiry was successfully sent.")
+        else:
+            print('not saved\n', form.errors)
+            messages.error(request, "Inquiry was not sent.")
+
+    return render(request, 'landing_page.html')
 
 
 @login_required

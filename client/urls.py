@@ -10,4 +10,9 @@ urlpatterns = [
          views.ClientUpdateView.as_view(), name='edit_client'),
     path('<int:pk>/detail',
          views.ClientDetailView.as_view(), name='client_detail'),
+
+    path('portal', views.portal_list, name='portal_list'),
+    path('portal/dt', views.PortalDTListView.as_view(), name='portal_dtlist'),
+    path('portal/<int:pk>/delete',
+         views.portalDeleteView, name='portal_delete'),
 ]
