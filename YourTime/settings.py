@@ -101,23 +101,28 @@ WSGI_APPLICATION = 'YourTime.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db_ol.sqlite3',
+#     }
+# }
+
+# when using mysql
 DATABASES = {
     'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'django_yourtime',
+        'USER': 'root',
+        'PASSWORD': 'p@$$w0rD',
+        'HOST': 'localhost'
+    },
+    'sqlite': {  # SQLite Database (Source)
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db_ol.sqlite3',
+        'NAME': BASE_DIR / "db_ol.sqlite3",
     }
 }
 
-# when using mysql
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'django_queens',
-#         'USER': 'root',
-#         'PASSWORD': 'p@$$w0rD',
-#         'HOST': 'localhost'
-#     }
-# }
 
 # # as per instructions from https://www.codementor.io/@jamesezechukwu/how-to-deploy-django-app-on-heroku-dtsee04d4
 # # ----------------------------------------------------------------------------

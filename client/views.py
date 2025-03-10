@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django_serverside_datatable.views import ServerSideDatatableView
@@ -62,3 +62,26 @@ class ClientDetailView(DetailView):
     model = Client
     template_name = "client/client_detail.html"
     context_object_name = 'client'
+
+
+###############################################################################################
+#                Client Inquiries
+###############################################################################################
+@login_required
+def portal_list(request):
+    return render(request, 'client/portal_list.html')
+
+
+@method_decorator(login_required, name='dispatch')
+class PortalDTListView(ServerSideDatatableView):
+    queryset = Inquiry.objects.all()
+    columns = ['pk', 'created_at', 'name', 'address', 'mob_num',
+               'tel_num', 'email', 'issue', 'is_watch_owner']
+
+
+@login_required
+def portalDeleteView(request, pk):
+    obj = get_object_or_404(Inquiry, pk=pk)
+    obj.delete()
+    messages.success(request, "The online inquiry was deleted successfully.")
+    return redirect('portal_list')
