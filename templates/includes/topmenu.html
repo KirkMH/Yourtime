@@ -30,7 +30,7 @@
                     <a class="dropdown-item" href="{% url 'jo_due_report' %}?type=past">Past Due Job Orders</a>
                 </li>
                 <li id="menu-within-week">
-                    <a class="dropdown-item" href="{% url 'jo_due_report' %}?type=week">Job Orders within the Week {{request.user.employee.can_view_daily_repairs}}</a>
+                    <a class="dropdown-item" href="{% url 'jo_due_report' %}?type=week">Job Orders within the Week</a>
                 </li>
                 {% if request.user.employee.can_view_daily_repairs %}
                 <li id="menu-daily-repair">
