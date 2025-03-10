@@ -342,10 +342,12 @@ class JobOrder(models.Model):
         return self.isClosed() and self.closed_at > self.promise_date
 
     def save(self, *args, **kwargs):
-        previous_status = self.__class__.objects.get(id=self.id).current_status
-        if previous_status != self.current_status:
-            JobOrderStatusUpdate.objects.create(
-                job_order=self, status=self.current_status)
+        if self.__class__.objects.filter(id=self.id).exists():
+            previous_status = self.__class__.objects.get(
+                id=self.id).current_status
+            if previous_status != self.current_status:
+                JobOrderStatusUpdate.objects.create(
+                    job_order=self, status=self.current_status)
         if self.current_status in CLOSE_STATUSES:
             self.closed_at = timezone.now().date()
         super().save(*args, **kwargs)
