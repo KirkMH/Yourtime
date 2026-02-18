@@ -1,5 +1,5 @@
 from django import forms
-from .models import userTypes
+from .models import userTypes, features
 
 
 class NewEmployeeForm(forms.Form):
@@ -10,6 +10,11 @@ class NewEmployeeForm(forms.Form):
     first_name = forms.CharField(max_length=100, required=True)
     last_name = forms.CharField(max_length=100, required=True)
     user_type = forms.ChoiceField(choices=userTypes, required=True)
+    # features = forms.MultipleChoiceField(
+    #     choices=[(f[0], f[1]['description']) for f in features],
+    #     required=False,
+    #     widget=forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input'})
+    # )
 
 
 class UpdateEmployeeForm(forms.Form):

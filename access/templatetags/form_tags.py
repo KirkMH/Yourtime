@@ -62,3 +62,14 @@ def accounting(amount):
 @register.filter
 def get_item(dictionary, key):
     return dictionary.get(key, '')
+
+@register.filter
+def count_char(value, arg):
+    return value.count(arg)
+
+@register.filter
+def split(value, arg):
+    if value:
+        return value.split(arg)
+    else:
+        return []

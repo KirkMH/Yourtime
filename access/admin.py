@@ -5,7 +5,7 @@ from django.forms import inlineformset_factory
 from django.utils.translation import gettext_lazy as _
 
 from django.contrib.auth.models import Group, User
-from .models import Employee
+from .models import Employee, UserAssignment
 
 
 # admin panel settings
@@ -34,10 +34,14 @@ class EmployeeInline(admin.StackedInline):
     verbose_name = _('Other Detail')
 
 
+class UserAssignmentAdmin(admin.TabularInline):
+    model = UserAssignment
+
+
 class UserAdmin(BaseUserAdmin):
     list_display = ('username', 'first_name', 'last_name',
                     'last_login', 'is_active')
-    inlines = (EmployeeInline, )
+    inlines = (EmployeeInline, UserAssignmentAdmin)
 
     fieldsets = (
         (None,
@@ -61,5 +65,6 @@ class UserAdmin(BaseUserAdmin):
 # Re-register UserAdmin
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
+admin.site.register(UserAssignment)
 # remove unnecessary models from admin panel
 admin.site.unregister(Group)

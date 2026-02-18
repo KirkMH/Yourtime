@@ -132,11 +132,16 @@ WSGI_APPLICATION = 'YourTime.wsgi.application'
 # when using mysql
 DATABASES = {
     'default': {
+        # 'ENGINE': 'django.db.backends.mysql',
+        # 'NAME': 'yourtime$default',
+        # 'USER': 'yourtime',
+        # 'PASSWORD': 'Welcome123!',
+        # 'HOST': 'yourtime.mysql.pythonanywhere-services.com'
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'yourtime$default',
-        'USER': 'yourtime',
-        'PASSWORD': 'Welcome123!',
-        'HOST': 'yourtime.mysql.pythonanywhere-services.com'
+        'NAME': 'django_yourtime',
+        'USER': 'root',
+        'PASSWORD': 'p4$$DB',
+        'HOST': 'localhost'
     },
     'sqlite': {
         'ENGINE': 'django.db.backends.sqlite3',

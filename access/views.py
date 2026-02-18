@@ -11,7 +11,7 @@ from django.http import JsonResponse
 from client.models import Client, Inquiry
 from joborder.models import JobOrder, Payment, Watch
 from django.contrib.auth.models import User
-from .models import Employee
+from .models import Employee, UserAssignment, features
 from client.forms import InquiryForm
 from .forms import *
 
@@ -159,18 +159,30 @@ def employeeCreate(request):
                     password='YTOPCpassword123!'
                 )
                 is_active = True
-            Employee.objects.create(
+            employee = Employee.objects.create(
                 user=user,
                 first_name=form.cleaned_data['first_name'],
                 last_name=form.cleaned_data['last_name'],
                 user_type=form.cleaned_data['user_type'],
                 is_active=is_active
             )
+            # Save features
+            selected_features = request.POST.getlist('features')
+            for feature in selected_features:
+                UserAssignment.objects.create(
+                    employee=employee,
+                    feature=feature
+                )
+            
             messages.success(request, "Employee was successfully created.")
             return redirect('employee_list')
     else:
         form = NewEmployeeForm()
-    return render(request, 'settings/employee_form.html', {'form': form})
+    return render(request, 'settings/employee_form.html', {
+        'form': form,
+        'features': features,
+        'selected_features': []
+    })
 
 
 @login_required
@@ -183,6 +195,16 @@ def employeeUpdate(request, pk):
             employee.last_name = form.cleaned_data['last_name']
             employee.user_type = form.cleaned_data['user_type']
             employee.save()
+
+            # Update features
+            selected_features = request.POST.getlist('features')
+            UserAssignment.objects.filter(employee=employee).delete()
+            for feature in selected_features:
+                UserAssignment.objects.create(
+                    employee=employee,
+                    feature=feature
+                )
+
             if form.cleaned_data['username'] != "":
                 setup_username(employee.pk, form.cleaned_data['username'])
             messages.success(request, "Employee was successfully updated.")
@@ -195,7 +217,13 @@ def employeeUpdate(request, pk):
             "user_type": employee.user_type,  # Ensure user_type exists in userTypes
         }
         form = NewEmployeeForm(initial=employee_data)
-        return render(request, 'settings/employee_form.html', {'form': form})
+        selected_features = UserAssignment.objects.filter(
+            employee=employee).values_list('feature', flat=True)
+        return render(request, 'settings/employee_form.html', {
+            'form': form,
+            'features': features,
+            'selected_features': selected_features
+        })
 
 
 @login_required

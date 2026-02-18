@@ -18,6 +18,170 @@ userTypes = [
     (9, 'Administrator')
 ]
 
+features = [
+
+  ('menu_dashboard', {
+    "id": 1,
+    "description": "Dashboard",
+    "sub_of": None
+  }),
+  ('menu_search', {
+    "id": 2,
+    "description": "Search",
+      "sub_of": None
+  }),
+  ('menu_records', {
+    "id": 3,
+    "description": "Records",
+    "sub_of": None
+  }),
+  ("menu-jo", {
+    "id": 4,
+    "description": "Job Orders",
+    "sub_of": "menu_records"
+  }),
+  ("photos-tab", {
+    "id": 5,
+    "description": "Photos",
+    "sub_of": "menu_records menu-jo"
+  }),
+  ("estimate-tab", {
+    "id": 6,
+    "description": "Estimate",
+    "sub_of": "menu_records menu-jo"
+  }),
+  ("assessments-tab", {
+    "id": 7,
+    "description": "Assessments",
+    "sub_of": "menu_records menu-jo"
+  }),
+  ("tests-tab", {
+    "id": 8,
+    "description": "Test Logs",
+    "sub_of": "menu_records menu-jo"
+  }),
+  ("charges-tab", {
+    "id": 9,
+    "description": "Charges",
+    "sub_of": "menu_records menu-jo"
+  }),
+  ("payments-tab", {
+    "id": 10,
+    "description": "Payments",
+    "sub_of": "menu_records menu-jo"
+  }),
+  ("receiving-tab", {
+    "id": 11,
+    "description":  "Receiving Report",
+    "sub_of": "menu_records menu-jo"
+  }),
+  ("releasing-tab", {
+    "id": 12,
+    "description":  "Releasing Report",
+    "sub_of": "menu_records menu-jo"
+  }),
+  ("menu-clients", {
+    "id": 13,
+    "description": "Clients",
+    "sub_of": "menu_records"
+  }),
+  ("menu-portal", {
+    "id": 14,
+    "description": "Online Inquiry",
+    "sub_of": "menu_records"
+  }),
+  ("menu-inquiry-logs", {
+    "id": 15,
+    "description": "Inquiry Logs",
+    "sub_of": "menu_records"
+  }),
+  ("menu-reports", {
+    "id": 16,
+    "description": "Reports",
+    "sub_of": None
+  }),
+  ("menu-past-due", {
+    "id": 17,
+    "description": "Past Due Job Orders",
+    "sub_of": "menu-reports"
+  }),
+  ("menu-within-week", {
+    "id": 18,
+    "description": "Job Orders within the Week",
+    "sub_of": "menu-reports"
+  }),
+  ("menu-daily-repair", {
+    "id": 19,
+    "description": "Daily Repair Report",
+    "sub_of": "menu-reports"
+  }),
+  ("menu-client-info", {
+    "id": 20,
+    "description": "Client Information Sheet",
+    "sub_of": "menu-reports"
+  }),
+  ("menu-metrics", {
+    "id": 21,
+    "description": "Technicians' Metrics",
+    "sub_of": "menu-reports"
+  }),
+  ("menu-collections-detailed", {
+    "id": 22,
+    "description": "Detailed Collections",
+    "sub_of": "menu-reports"
+  }),
+  ("menu-collections-summary", {
+    "id": 23,
+    "description": "Collections Summary",
+    "sub_of": "menu-reports"
+  }),
+  ("menu-receivables", {
+    "id": 24,
+    "description": "Accounts Receivables",
+    "sub_of": "menu-reports"
+  }),
+  ("menu-settings", {
+    "id": 25,
+    "description": "Settings",
+    "sub_of": None
+  }),
+  ("menu-users", {
+    "id": 26,
+    "description": "Employees",
+    "sub_of": "menu-settings"
+  }),
+  ("menu-repair-works", {
+    "id": 27,
+    "description": "Repair Works",
+    "sub_of": "menu-settings"
+  }),
+  ("menu-item-externals", {
+    "id": 28,
+    "description": "External - Case and Bracelet",
+    "sub_of": "menu-settings"
+  }),
+  ("menu-calibers", {
+    "id": 29,
+    "description": "Watch Calibers",
+    "sub_of": "menu-settings"
+  }),
+  ("menu-movements", {
+    "id": 30,
+    "description": "Watch Movements",
+    "sub_of": "menu-settings"
+  }),
+  ("menu-payment-modes", {
+    "id": 31,
+    "description": "Modes of Payment",
+    "sub_of": "menu-settings"
+  }),
+  ("menu-warranties", {
+    "id": 32,
+    "description": "Warranties",
+    "sub_of": "menu-settings"
+  })
+]
+
 
 class Technicians(models.Manager):
     def get_queryset(self):
@@ -141,3 +305,14 @@ class Employee(models.Model):
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
+
+
+class UserAssignment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    feature = models.CharField(max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f'{self.user.first_name} {self.user.last_name} - {self.feature}'

@@ -42,6 +42,23 @@ New Employee
             <div class="card-body">
                 <div class="col-12">
                     {% include '../includes/form_one_col.html' %}
+                    <div class="form-group">
+                        <label for="id_features" class="required">Features:</label>
+                        <span class="text-muted">(Check all that apply.)</span>
+                        <div id="id_features">
+                            {% for key, meta in features %}
+                                <div class="form-check">
+                                    {% for x in meta.sub_of|split:" " %}
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    {% endfor %}
+                                    <input class="form-check-input" type="checkbox" name="features" id="id_{{ key }}" data-sub-of="{{ meta.sub_of }}" value="{{ key }}" {% if key in selected_features %}checked{% endif %}>
+                                    <label class="form-check-label" for="id_{{ key }}">
+                                        {{ meta.description }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
                 </div>
             </div>
             
@@ -64,5 +81,42 @@ New Employee
         $(document).ready(function() {
             $("#menu-settings").addClass("active")
         })
+
+        $(document).on('change', 'input[name="features"]', function() {
+            var $this = $(this);
+            var $id = $this.attr('id').replace('id_', '');
+            var $subOf = $this.data('sub-of');
+            // if the subOf is none, it is a parent; mark all children as checked
+            $('input[name="features"][data-sub-of~="' + $id + '"]').prop('checked', $this.is(':checked'));
+            // if the subOf is not none, it is a child; if it was unchecked, mark the parent as unchecked
+            if ($subOf && $subOf.toString().length > 0) {
+                if (!$this.is(':checked')) {
+                    $subOf.split(" ").forEach(sub => {
+                        console.log(`Unchecking parent: ${sub}`);
+                        $('input[name="features"][id="id_' + sub + '"]').prop('checked', false);
+                    });
+                }
+                else {
+                    console.log($id);
+                    $parents = $subOf.split(" ");
+                    $parents.forEach(parentId => {
+                        var parent = [parentId];
+                        while (parent.length > 0) {
+                            var $currentParent = parent.shift();
+                            console.log(`Checking parent: ${$currentParent}`);              
+                            $allChildren = $('input[name="features"][data-sub-of~="' + $currentParent + '"]');
+                            console.log(`All children: ${$allChildren}`);
+                            console.log(`Checked children: ${$allChildren.filter(':checked').length}`);
+                            console.log(`Total children: ${$allChildren.length}`);
+                            if ($allChildren.filter(':checked').length == $allChildren.length) {
+                                $target = $('input[name="features"][id="id_' + $currentParent + '"]');
+                                $target.prop('checked', true);
+                                parent.unshift($target.data('sub-of').split(" "));
+                            }
+                        }
+                    });
+                }
+            }
+        });
     </script>
 {% endblock js %}
