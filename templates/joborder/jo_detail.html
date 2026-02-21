@@ -7,30 +7,46 @@
         <div class="card card-outline card-primary-color ml-4 mr-4 mb-4">
             <div class="card-header submenu">
                 <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+                    {% if 'photos-tab' in request.session.user_access %}
                     <li class="nav-item">
                         <a class="nav-link {{active.0}}" id="photos-tab" data-toggle="tab" href="#photos" role="tab" aria-controls="photos" aria-selected="{{selected.0}}">Photos</a>
                     </li>
+                    {% endif %}
+                    {% if 'estimate-tab' in request.session.user_access %}
                     <li class="nav-item">
                         <a class="nav-link {{active.1}}" id="estimate-tab" data-toggle="tab" href="#estimate" role="tab" aria-controls="estimate" aria-selected="{{selected.1}}">Estimate</a>
                     </li>
+                    {% endif %}
+                    {% if 'assessments-tab' in request.session.user_access %}
                     <li class="nav-item">
                         <a class="nav-link {{active.2}}" id="assessments-tab" data-toggle="tab" href="#assessments" role="tab" aria-controls="assessments" aria-selected="{{selected.2}}">Assessments</a>
                     </li>
+                    {% endif %}
+                    {% if 'tests-tab' in request.session.user_access %}
                     <li class="nav-item">
                         <a class="nav-link {{active.3}}" id="tests-tab" data-toggle="tab" href="#tests" role="tab" aria-controls="tests" aria-selected="{{selected.3}}">Test Logs</a>
                     </li>
+                    {% endif %}
+                    {% if 'charges-tab' in request.session.user_access %}
                     <li class="nav-item">
                         <a class="nav-link {{active.4}}" id="charges-tab" data-toggle="tab" href="#charges" role="tab" aria-controls="charges" aria-selected="{{selected.4}}">Charges</a>
                     </li>
+                    {% endif %}
+                    {% if 'payments-tab' in request.session.user_access %}
                     <li class="nav-item">
                         <a class="nav-link {{active.5}}" id="payments-tab" data-toggle="tab" href="#payments" role="tab" aria-controls="payments" aria-selected="{{selected.5}}">Payments</a>
                     </li>
+                    {% endif %}
+                    {% if 'receiving-tab' in request.session.user_access %}
                     <li class="nav-item">
                         <a class="nav-link" id="receiving-tab" href="{% url 'generate_job_order' joborder.pk 'receiving' %}" aria-selected="false">Receiving Report</a>
                     </li>
+                    {% endif %}
+                    {% if 'releasing-tab' in request.session.user_access %}
                     <li class="nav-item">
                         <a class="nav-link" id="releasing-tab" href="{% url 'generate_job_order' joborder.pk 'releasing' %}" aria-selected="false">Releasing Report</a>
                     </li>
+                    {% endif %}
                 </ul>
             </div>
             <div class="card-body">

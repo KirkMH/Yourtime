@@ -81,6 +81,10 @@ def search_page(request):
 
 @login_required
 def dashboard(request):
+    features = fetchUserAccess(request)
+    if 'menu_dashboard' not in features:
+        return redirect('search')
+    
     open_count = JobOrder.open_jobs.count()
     greeting = 'Good '
 
@@ -159,7 +163,7 @@ def employeeCreate(request):
                     password='YTOPCpassword123!'
                 )
                 is_active = True
-            employee = Employee.objects.create(
+            Employee.objects.create(
                 user=user,
                 first_name=form.cleaned_data['first_name'],
                 last_name=form.cleaned_data['last_name'],
@@ -170,7 +174,7 @@ def employeeCreate(request):
             selected_features = request.POST.getlist('features')
             for feature in selected_features:
                 UserAssignment.objects.create(
-                    employee=employee,
+                    user=user,
                     feature=feature
                 )
             
@@ -198,10 +202,10 @@ def employeeUpdate(request, pk):
 
             # Update features
             selected_features = request.POST.getlist('features')
-            UserAssignment.objects.filter(employee=employee).delete()
+            UserAssignment.objects.filter(user=employee.user).delete()
             for feature in selected_features:
                 UserAssignment.objects.create(
-                    employee=employee,
+                    user=employee.user,
                     feature=feature
                 )
 
@@ -218,7 +222,7 @@ def employeeUpdate(request, pk):
         }
         form = NewEmployeeForm(initial=employee_data)
         selected_features = UserAssignment.objects.filter(
-            employee=employee).values_list('feature', flat=True)
+            user=employee.user).values_list('feature', flat=True)
         return render(request, 'settings/employee_form.html', {
             'form': form,
             'features': features,
@@ -313,3 +317,12 @@ def employeeDelete(request, pk):
     employee.delete()
     messages.success(request, "Employee was successfully deleted.")
     return redirect('employee_list')
+
+
+def fetchUserAccess(request):
+    assignments = UserAssignment.objects.all().filter(user=request.user)
+    features = []
+    for assignment in assignments:
+        features.append(assignment.feature)
+    request.session['user_access'] = features
+    return features
