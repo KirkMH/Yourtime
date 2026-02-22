@@ -102,3 +102,12 @@ class PaymentForm(forms.ModelForm):
     class Meta:
         model = Payment
         exclude = ['job_order', 'received_by', ]
+
+
+
+class CSRLogForm(forms.ModelForm):
+    required_css_class = 'required'
+
+    class Meta:
+        model = CSRLog
+        exclude = ['job_order', 'received_by', 'interacted_on', 'last_updated']

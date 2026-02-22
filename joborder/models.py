@@ -584,3 +584,38 @@ class JobOrderStatusUpdate(models.Model):
         choices=JO_STATUS
     )
     updated_on = models.DateTimeField(auto_now_add=True)
+
+
+class CSRLogNotification(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(next_action__isnull=False).order_by('interacted_on')
+
+class CSRLog(models.Model):
+    STATUS = [
+        ('open', 'Open'),
+        ('in_progress', 'In Progress'),
+        ('closed', 'Closed'),
+    ]
+
+    job_order = models.ForeignKey(
+        JobOrder,
+        verbose_name=_("Job Order"),
+        related_name="csrlogs_jo",
+        on_delete=models.CASCADE
+    )
+    received_by = models.ForeignKey(
+        'access.Employee',
+        verbose_name=_("CSR"),
+        related_name="csrlogs_csr",
+        on_delete=models.CASCADE
+    )
+    interacted_on = models.DateTimeField(auto_now_add=True)
+    channel = models.CharField(max_length=50)
+    summary = models.TextField()
+    quoted_eta = models.DateTimeField(null=True, blank=True)
+    quoted_cost = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    comment_notes = models.TextField(blank=True, null=True)
+    next_action_owner = models.TextField(blank=True, null=True)
+    status = models.CharField(max_length=20, choices=STATUS, default='open')
+    last_updated = models.DateTimeField(auto_now=True)
+    

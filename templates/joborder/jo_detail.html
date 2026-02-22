@@ -47,6 +47,11 @@
                         <a class="nav-link" id="releasing-tab" href="{% url 'generate_job_order' joborder.pk 'releasing' %}" aria-selected="false">Releasing Report</a>
                     </li>
                     {% endif %}
+                    {% if 'csr-tab' in request.session.user_access %}
+                    <li class="nav-item">
+                        <a class="nav-link {{active.6}}" id="csr-tab" data-toggle="tab" href="#csr" role="tab" aria-controls="csr" aria-selected="{{selected.5}}">CSR Logs</a>
+                    </li>
+                    {% endif %}
                 </ul>
             </div>
             <div class="card-body">
@@ -310,6 +315,7 @@
                                     <td colspan="2">Total</td>
                                     <td class="text-right">{{ joborder.total_paid|peso }}</td>
                                     <td colspan="2"></td>
+                                </tr>
                             </tbody>
                         </table>
                         {% else %}
@@ -322,6 +328,41 @@
                     </div>
                     <div class="tab-pane fade" id="releasing" role="tabpanel" aria-labelledby="releasing-tab">
                         <p>Releasing tab.</p>
+                    </div>
+                    <div class="tab-pane fade" id="csr" role="tabpanel" aria-labelledby="csr-tab">
+                        <h5>CSR Logs</h5>
+                        {% if csr_logs %}
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Interacted On</th>
+                                    <th>Summary</th>
+                                    <th>Quoted ETA</th>
+                                    <th class="text-right">Quoted Cost</th>
+                                    <th>Next Action Owner</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for log in csr_logs %}
+                                <tr>
+                                    <td>
+                                        {{ log.interacted_on|date:"Y-m-d"|naturaltime }}<br />
+                                        <span class="text-muted smaller">Channel: {{ log.channel }}</span>
+                                    </td>
+                                    <td>{{ log.summary }}</td>
+                                    <td>{{ log.eta|date:"Y-m-d"|naturaltime }}</td>
+                                    <td class="text-right">{{ log.quoted_cost|peso }}</td>
+                                    <td>{{ log.next_action_owner }}</td>
+                                    <td>{{ log.status }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <p class="card-text">No CSR logs yet.</p>
+                        {% endif %}
+                        <a href="{% url 'jo_documentation_add' joborder.pk %}?type=csr-log" class="btn btn-outline-secondary">Add CSR Log</a>
                     </div>
                 </div>
             </div>

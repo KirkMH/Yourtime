@@ -70,6 +70,13 @@ objects = [
         'form': PaymentForm,
         'description': 'Payment details',
         'tab_index': 5
+    },
+    {
+        'type': 'csr-log',
+        'model': CSRLog,
+        'form': CSRLogForm,
+        'description': 'CSR Log details',
+        'tab_index': 6
     }
 ]
 
@@ -210,6 +217,8 @@ class JobOrderDetailView(DetailView):
         context['payments'] = Payment.objects.filter(
             job_order=self.object).order_by('id')
         context['clients'] = Client.objects.all()
+        context['csr_logs'] = CSRLog.objects.filter(
+            job_order=self.object).order_by('id')
         return context
 
 
@@ -385,6 +394,9 @@ class JobOrderDocumentationCreateView(CreateView):
         return addContext(context, type)
 
     def get_success_url(self):
+        type = self.request.GET.get('type')
+        if type == 'csr-log':
+            return reverse('search')
         return reverse('jo_details', kwargs={'pk': self.kwargs.get('pk')}) + f"?type={self.request.GET['type']}"
 
     def form_valid(self, form):
@@ -392,7 +404,7 @@ class JobOrderDocumentationCreateView(CreateView):
         jo = get_object_or_404(JobOrder, pk=self.kwargs.get('pk'))
         documentation = form.save(commit=False)
         documentation.job_order = jo
-        if type == 'payment':
+        if type in ['payment', 'csr-log']:
             emp = Employee.objects.filter(
                 user=self.request.user)
             if emp.count() > 0:

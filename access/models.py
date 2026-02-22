@@ -7,15 +7,16 @@ from django.utils import timezone
 
 # lists
 userTypes = [
-    (1, 'Technician'),
-    (2, 'Encoders / Customer Service / Aftersales & Telemarketing'),
-    (3, 'Parts Department'),
-    (4, 'Inventory & Purchasing Department'),
-    (5, 'Watch Security & Repair Coordinator'),
-    (6, 'HR Department'),
-    (7, 'Finance/Accounting'),
-    (8, 'Operations Manager'),
-    (9, 'Administrator')
+    (101, 'Technician'),
+    (201, 'Encoders'),
+    (202, 'Customer Service / Aftersales & Telemarketing'),
+    (301, 'Parts Department'),
+    (401, 'Inventory & Purchasing Department'),
+    (501, 'Watch Security & Repair Coordinator'),
+    (601, 'HR Department'),
+    (701, 'Finance/Accounting'),
+    (801, 'Operations Manager'),
+    (999, 'Administrator')
 ]
 
 features = [
@@ -78,6 +79,11 @@ features = [
   ("releasing-tab", {
     "id": 12,
     "description":  "Releasing Report",
+    "sub_of": "menu_records menu-jo"
+  }),
+  ("csr-tab", {
+    "id": 33,
+    "description":  "CSR Logs",
     "sub_of": "menu_records menu-jo"
   }),
   ("menu-clients", {
@@ -231,77 +237,77 @@ class Employee(models.Model):
 
     def can_see_jo_completion(self):
         print(f"can_see_jo_completion user_type: {self.user_type}")
-        return self.user_type >= 6
+        return self.user_type >= 601
 
     def can_see_revenue(self):
         print(f"can_see_revenue user_type: {self.user_type}")
-        return self.user_type >= 7
+        return self.user_type >= 701
 
     def can_add_edit_jo(self):
-        return self.user_type not in [2, 3, 6]
+        return self.user_type not in [201, 301, 601]
 
     def can_delete_jo(self):
-        return self.user_type in [5, 9]
+        return self.user_type in [501, 999]
 
     def can_upload_photos(self):
-        return self.user_type in [1, 2, 5, 8, 9]
+        return self.user_type in [101, 201, 501, 801, 999]
 
     def can_assess_and_test(self):
-        return self.user_type in [1, 5, 7, 8, 9]
+        return self.user_type in [101, 501, 701, 801, 999]
 
     def can_charge_and_invoice(self):
-        return self.user_type in [2, 3, 5, 7, 8, 9]
+        return self.user_type in [201, 301, 501, 701, 801, 999]
 
     def can_update_jo_status(self):
-        return self.user_type in [1, 2, 5, 7, 8, 9]
+        return self.user_type in [101, 201, 501, 701, 801, 999]
 
     def can_manage_clients(self):
-        return self.user_type in [2, 5, 7, 8, 9]
+        return self.user_type in [201, 501, 701, 801, 999]
 
     def read_only_clients(self):
-        return self.user_type in [7]
+        return self.user_type in [701]
 
     def can_view_employees(self):
-        return self.user_type in [6, 8, 9]
+        return self.user_type in [601, 801, 999]
 
     def can_manage_users(self):
-        return self.user_type in [9]
+        return self.user_type in [999]
 
     def can_access_repair_works(self):
-        return self.user_type not in [2, 6]
+        return self.user_type not in [201, 601]
 
     def can_manage_repair_works(self):
-        return self.user_type not in [2, 6, 7]
+        return self.user_type not in [201, 601, 701]
 
     def can_manage_parts_inventory(self):
-        return self.user_type in [3, 4, 5, 8, 9]
+        return self.user_type in [301, 401, 501, 801, 999]
 
     def can_access_payment_modes(self):
-        return self.user_type in [2, 3, 5, 8, 9]
+        return self.user_type in [201, 301, 501, 801, 999]
 
     def can_manage_payment_modes(self):
-        return self.user_type in [3, 5, 8, 9]
+        return self.user_type in [301, 501, 801, 999]
 
     def can_access_warranties(self):
-        return self.user_type in [2, 3, 5, 8, 9]
+        return self.user_type in [201, 301, 501, 801, 999]
 
     def can_manage_warranties(self):
-        return self.user_type in [3, 5, 8, 9]
+        return self.user_type in [301, 501, 801, 999]
 
     def can_manage_calibers(self):
-        return self.user_type in [3, 5, 8, 9]
+        return self.user_type in [301, 501, 801, 999]
 
     def can_manage_movements(self):
-        return self.user_type in [3, 5, 8, 9]
+        return self.user_type in [301, 501, 801, 999]
 
     def can_manage_externals(self):
-        return self.user_type in [3, 5, 8, 9]
+        return self.user_type in [301, 501, 801, 999]
 
     def can_print(self):
-        return self.user_type in [3, 4, 5, 6, 7, 8, 9]
+        return self.user_type in [301, 401, 501, 601, 701, 801, 999]
 
     def can_view_daily_repairs(self):
-        return self.user_type in [9]
+        return self.user_type in [999]
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'

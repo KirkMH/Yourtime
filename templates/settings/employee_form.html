@@ -109,7 +109,14 @@ New Employee
 
         $(document).on('change', '#id_user_type', function() {
             var $this = $(this);
-            if ($this.val() == 9) {
+            $('input[name="features"]').prop('checked', false);
+            if ($this.val() == 202) {
+                $('#id_menu_search').prop('checked', true);
+                $('#id_menu_records').prop('checked', true);
+                $('input[name="features"][data-sub-of~="menu_records"]').prop('checked', true);
+                $('#id_menu-clients').prop('checked', false);
+            }
+            else if ($this.val() == 999) {
                 $('input[name="features"]').prop('checked', true);
             }
         });
