@@ -22,7 +22,7 @@ cloudinary.config(
     cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAME'),
     api_key=os.environ.get('CLOUDINARY_API_KEY'),
     api_secret=os.environ.get('CLOUDINARY_API_SECRET'),
-    api_proxy=os.environ.get('CLOUDINARY_API_PROXY'),
+    secure=True
 )
 # CLOUDINARY_STORAGE = {
 #     'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
@@ -68,10 +68,8 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'widget_tweaks',
     'crispy_forms',
-    'bootstrap_modal_forms',
     'fontawesomefree',  # font-awesome
     'simple_history',   # for tracking changes in models (audit trail)
-    'storages',         # django-storages
     'cloudinary',
     'cloudinary_storage',
 
