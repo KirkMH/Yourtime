@@ -45,8 +45,12 @@ def search_page(request):
 
         if jo_no and jo_no.isdigit():
             query = JobOrder.objects.filter(pk=jo_no)
+            employee = Employee.objects.filter(user=request.user)
+            to_append = ''
+            if employee and employee.first().user_type == 202:
+                to_append = '?type=csr-log'
             if query:
-                return redirect('jo_details', pk=jo_no)
+                return redirect(reverse('jo_details', args=[jo_no]) + to_append)
             else:
                 err = "Job Order number does not exist."
         else:
