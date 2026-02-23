@@ -13,6 +13,7 @@ import cloudinary
 from .models import *
 from .forms import *
 from client.models import Client
+from access.models import NotificationCenter
 
 objects = [
     {
@@ -76,7 +77,7 @@ objects = [
         'model': CSRLog,
         'form': CSRLogForm,
         'description': 'CSR Log details',
-        'tab_index': 6
+        'tab_index': 8
     }
 ]
 
@@ -415,6 +416,12 @@ class JobOrderDocumentationCreateView(CreateView):
         documentation.save()
         if type == 'charge':
             documentation.addParticular()
+        elif type == 'csr-log' and documentation.next_action_owner:
+            NotificationCenter.objects.create(
+                notif_for=801, # managers group
+                message=documentation.next_action_owner,
+                destination=reverse('jo_details', kwargs={'pk': jo.pk}) + f"?type={type}"
+            )
         messages.success(self.request, getDescription(
             type) + ' was added successfully.')
         return super().form_valid(form)

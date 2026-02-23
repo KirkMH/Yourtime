@@ -55,6 +55,10 @@
       <ul class="navbar-nav ml-auto">
         <!-- top navigation menu -->
         {% include 'includes/topmenu.html' %}
+        <!-- notifications -->
+        {% if 'menu-notifications' in request.session.user_access %}
+        {% include 'includes/notif.html' %}
+        {% endif %}
         <!-- full screen -->
         <li class="nav-item">
           <a class="nav-link" data-widget="fullscreen" href="#" role="button"> <i class="fas fa-expand-arrows-alt"></i> </a>
@@ -138,9 +142,58 @@
 <script src="{% static 'js/toastr-loader.js' %}"></script>
 
 <script>
+  
+  function markAllRead() {
+    console.log('mark all read');
+    $.ajax({
+      url: '{% url "mark_all_notifications_read" %}',
+      type: 'POST',
+      success: function(response) {
+        console.log(response);
+        fetchNotifications();
+        toastr.success('All notifications marked as read');
+      }
+    });
+  }
+  
+  function fetchNotifications() {
+    $.ajax({
+      url: '{% url "fetch_notifications" %}',
+      type: 'GET',
+      success: function(response) {
+        $('#notif_num_unread').text(response.unread_count > 0 ? response.unread_count : '');
+        $('#last_notifications').html('');
+        for (const notif of response.last_notifications) {
+          let icon = !notif.is_read ? 'fas fa-envelope' : 'fas fa-envelope-open';
+          let color = notif.is_read ? 'text-muted' : 'text-primary';
+          $('#last_notifications').append(`
+            <div class="p-2">
+              <a href="${notif.destination}" class="dropdown-item">
+                <i class="${icon} mr-2"></i> ${notif.message}<br>
+                <span class="${color} text-sm">${notif.created_at}</span>
+              </a>
+            </div>
+          `);
+        }
+        $('#last_notifications').append(`
+          <div class="dropdown-divider"></div> 
+          <div class="p-2">
+            <button id="mark_all_read" class="dropdown-item text-center btn btn-sm btn-outline-primary" onclick="markAllRead()">
+              Mark all as read
+            </button>
+          </div>
+        `);
+      }
+    });
+  }
+  
   $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
+
+    fetchNotifications();
+    setInterval(fetchNotifications, 60000);
   });
+  
 </script>
 
 {% block js %}

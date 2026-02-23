@@ -24,4 +24,7 @@ urlpatterns = [
          views.employeeUpdate, name='employee_update'),
     path('employees/<int:pk>/delete',
          views.employeeDelete, name='employee_delete'),
+    path('notifications', views.fetchNotifications, name='fetch_notifications'),
+    path('notifications/mark-all-read', views.markAllNotificationsRead, name='mark_all_notifications_read'),
+    path('notifications/<int:pk>/open', views.openNotification, name='open_notification'),
 ]

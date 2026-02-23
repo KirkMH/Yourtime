@@ -1,17 +1,20 @@
 from typing import Any
 from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.db.models import F, Sum, Q
 from django.views.generic import ListView
 from django.contrib import messages
 from django.http import JsonResponse
+from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.views.decorators.csrf import csrf_exempt
 
 from client.models import Client, Inquiry
 from joborder.models import JobOrder, Payment, Watch
 from django.contrib.auth.models import User
-from .models import Employee, UserAssignment, features
+from .models import Employee, UserAssignment, features, NotificationCenter
 from client.forms import InquiryForm
 from .forms import *
 
@@ -326,3 +329,42 @@ def fetchUserAccess(request):
         features.append(assignment.feature)
     request.session['user_access'] = features
     return features
+
+
+def fetchNotifications(request):
+    notifications = NotificationCenter.objects.order_by('-created_at')[:10]
+    last_fetch = request.session.get('last_notif_fetch', None)
+    unread = 0
+    last_notifications = []
+    for x in notifications:
+        if not x.is_read:
+            unread += 1
+        last_notifications.append({
+            'message': x.message,
+            'destination': reverse('open_notification', args=[x.pk]),
+            'created_at': naturaltime(x.created_at),
+            'is_read': x.is_read
+        })
+
+    print(f"Last fetch: {last_fetch}")
+    print(f"Unread count: {unread}")
+    print(f"Last notifications: {last_notifications}")
+    
+    request.session['last_notif_fetch'] = timezone.now().isoformat()
+    return JsonResponse({'unread_count': unread, 'last_notifications': last_notifications})
+
+
+@csrf_exempt
+def markAllNotificationsRead(request):
+    notifications = NotificationCenter.objects.filter(is_read=False)
+    for notification in notifications:
+        notification.is_read = True
+        notification.save()
+    return JsonResponse({'success': True})
+
+
+def openNotification(request, pk):
+    notification = NotificationCenter.objects.get(pk=pk)
+    notification.is_read = True
+    notification.save()
+    return redirect(notification.destination)

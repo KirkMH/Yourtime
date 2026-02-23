@@ -144,6 +144,10 @@
                     $('#id_unit_price').val(particular_price[index]);
                 });
             }
+            else if (type === 'CSR Log details') {
+                $('#id_quoted_eta').attr('type', 'datetime-local');
+                $('#id_quoted_cost').attr('type', 'number');
+            }
 
             // on form submit
             $('#jo-form').on('submit', function(e) {

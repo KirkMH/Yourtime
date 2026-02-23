@@ -185,7 +185,12 @@ features = [
     "id": 32,
     "description": "Warranties",
     "sub_of": "menu-settings"
-  })
+  }),
+  ("menu-notifications", {
+    "id": 34,
+    "description": "Notifications",
+    "sub_of": None
+  }),
 ]
 
 
@@ -322,3 +327,14 @@ class UserAssignment(models.Model):
 
     def __str__(self):
         return f'{self.user.first_name} {self.user.last_name} - {self.feature}'
+
+
+class NotificationCenter(models.Model):
+  notif_for = models.ForeignKey(User, on_delete=models.CASCADE)
+  message = models.CharField(max_length=250)
+  destination = models.CharField(max_length=250)
+  is_read = models.BooleanField(default=False)
+  created_at = models.DateTimeField(auto_now_add=True)
+
+  def __str__(self):
+    return f'{self.notif_for.first_name} {self.notif_for.last_name}: {self.message}'
