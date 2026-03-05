@@ -1,3 +1,4 @@
+import re
 from typing import Any
 from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect
@@ -42,6 +43,9 @@ def search_page(request):
         contact_no = request.POST.get('contact_no')
         jo_no = request.POST.get('jo_no')
         client_name = request.POST.get('client_name')
+        # Strip numeric characters; ignore the field if nothing alphabetic remains
+        if client_name:
+            client_name = re.sub(r'[0-9]', '', client_name).strip() or None
 
         if jo_no and jo_no.isdigit():
             query = JobOrder.objects.filter(pk=jo_no)
